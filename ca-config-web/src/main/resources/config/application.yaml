@@ -1,0 +1,23 @@
+# 项目相关配置
+ca:
+  # 名称
+  name: Card-Alumni
+  # 版本
+  version: 1.0.0
+server:
+  port: 8090 #端口
+  tomcat:
+    uri-encoding: UTF-8 #编码
+
+spring:
+  profiles:
+    active: dev #环境
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss #日期格式
+  servlet:
+    multipart:
+     # 单个文件大小
+     max-file-size:  10MB
+     # 设置总上传的文件大小
+     max-request-size:  20MB

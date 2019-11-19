@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn">
+    <properties>
+        <!-- 日志存储位置 -->
+        <property name="LOG_HOME">ca-portal-web/data/logs</property>
+
+        <!-- 日志文件默认输出格式,不带行号输出(行号显示会影响日志输出性能);%C:大写,类名;%M:方法名;%m:错误信息;%n:换行 -->
+        <property name="log_pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %C.%M - %m%n</property>
+        <!-- 日志默认切割的最小单位 -->
+        <property name="every_file_size">10MB</property>
+        <!-- 日志默认输出级别 -->
+        <property name="output_log_level">INFO</property>
+
+        <!-- Info日志默认存放路径(Info级别日志) -->
+        <property name="info_fileName">${LOG_HOME}/info.log</property>
+        <!-- Info日志默认压缩路径,将超过指定文件大小的日志,自动存入按"年月"建立的文件夹下面并进行压缩,作为存档 -->
+        <property name="info_filePattern">${LOG_HOME}/%d{yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log.gz</property>
+        <!-- Info日志默认同一文件夹下可以存放的数量,不设置此属性则默认为7个 -->
+        <property name="info_max">7</property>
+
+        <!-- Warn日志默认存放路径(Warn级别日志) -->
+        <property name="warn_fileName">${LOG_HOME}/warn.log</property>
+        <!-- Warn日志默认压缩路径,将超过指定文件大小的日志,自动存入按"年月"建立的文件夹下面并进行压缩,作为存档 -->
+        <property name="warn_filePattern">${LOG_HOME}/%d{yyyy-MM}/warn-%d{yyyy-MM-dd}-%i.log.gz</property>
+        <!-- Warn日志默认同一文件夹下可以存放的数量,不设置此属性则默认为7个 -->
+        <property name="warn_max">7</property>
+
+        <!-- Error日志默认存放路径(Error级别日志) -->
+        <property name="error_fileName">${LOG_HOME}/error.log</property>
+        <!-- Error日志默认压缩路径,将超过指定文件大小的日志,自动存入按"年月"建立的文件夹下面并进行压缩,作为存档 -->
+        <property name="error_filePattern">${LOG_HOME}/%d{yyyy-MM}/error-%d{yyyy-MM-dd}-%i.log.gz</property>
+        <!-- Error日志默认同一文件夹下可以存放的数量,不设置此属性则默认为7个 -->
+        <property name="error_max">7</property>
+    </properties>
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="%d{yyyy/MM/dd HH:mm:ss.SSS} %t [%p] %c{1} (%F:%L) %msg%n" />
+        </Console>
+
+        <!-- 打印INFO级别的日志到文件 -->
+        <RollingFile name="InfoLogAppender" fileName="${info_fileName}"
+                     filePattern="${info_filePattern}">
+            <PatternLayout pattern="${log_pattern}" />
+            <Policies>
+                <!-- Policies子节点，基于指定文件大小的滚动策略，size属性用来定义每个日志文件的大小 -->
+                <SizeBasedTriggeringPolicy size="${every_file_size}" />
+                <!-- 按照时间间隔来进行日志文件的滚动，间隔单位可以是分钟、小时，具体需要根据filePattern的格式来进行判别 -->
+                、<TimeBasedTriggeringPolicy modulate="true" interval="1" />
+            </Policies>
+            <!-- 用来指定同一个文件夹下最多有几个日志文件时开始删除最旧的，创建新的(通过max属性) -->
+            <DefaultRolloverStrategy max="${info_max}" />
+            <!-- 匹配INFO级别 -->
+            <Filters>
+                <ThresholdFilter level="WARN" onMatch="DENY" onMismatch="NEUTRAL" />
+                <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+        </RollingFile>
+
+        <!-- 打印WARN级别的日志到文件 -->
+        <RollingFile name="WarnLogAppender" fileName="${warn_fileName}"
+                     filePattern="${warn_filePattern}">
+            <PatternLayout pattern="${log_pattern}" />
+            <Policies>
+                <!-- Policies子节点，基于指定文件大小的滚动策略，size属性用来定义每个日志文件的大小 -->
+                <SizeBasedTriggeringPolicy size="${every_file_size}" />
+                <!-- 按照时间间隔来进行日志文件的滚动，间隔单位可以是分钟、小时，具体需要根据filePattern的格式来进行判别 -->
+                <TimeBasedTriggeringPolicy modulate="true" interval="1" />
+            </Policies>
+            <!-- 用来指定同一个文件夹下最多有几个日志文件时开始删除最旧的，创建新的(通过max属性) -->
+            <DefaultRolloverStrategy max="${warn_max}" />
+            <!-- 匹配WARN级别 -->
+            <Filters>
+                <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="NEUTRAL" />
+                <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+        </RollingFile>
+
+        <!-- 打印ERROR级别的日志到文件 -->
+        <RollingFile name="ErrorLogAppender" fileName="${error_fileName}"
+                     filePattern="${error_filePattern}">
+            <PatternLayout pattern="${log_pattern}" />
+            <Policies>
+                <!-- Policies子节点，基于指定文件大小的滚动策略，size属性用来定义每个日志文件的大小 -->
+                <SizeBasedTriggeringPolicy size="${every_file_size}" />
+                <!-- 按照时间间隔来进行日志文件的滚动，间隔单位可以是分钟、小时，具体需要根据filePattern的格式来进行判别 -->
+                <TimeBasedTriggeringPolicy modulate="true" interval="1" />
+            </Policies>
+            <!-- 用来指定同一个文件夹下最多有几个日志文件时开始删除最旧的，创建新的(通过max属性) -->
+            <DefaultRolloverStrategy max="${error_max}" />
+            <!-- 匹配ERROR级别 -->
+            <Filters>
+                <ThresholdFilter level="FATAL" onMatch="DENY" onMismatch="NEUTRAL" />
+                <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+        </RollingFile>
+    </Appenders>
+
+    <loggers>
+        <!-- 设置对打印sql语句的支持 -->
+        <logger name="java.sql" level="debug" additivity="false">
+            <appender-ref ref="ConsoleAppender" />
+        </logger>
+        <Root level="${output_log_level}">
+            <AppenderRef ref="ConsoleAppender" />
+            <AppenderRef ref="InfoLogAppender" />
+            <AppenderRef ref="WarnLogAppender" />
+            <AppenderRef ref="ErrorLogAppender" />
+        </Root>
+    </loggers>
+</configuration>
