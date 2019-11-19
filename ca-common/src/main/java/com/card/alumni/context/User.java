@@ -16,7 +16,7 @@ import java.io.Serializable;
 public class User implements Serializable {
 
     /**
-     * 员工ID
+     * 用户ID
      */
     private Long id;
 
@@ -24,16 +24,6 @@ public class User implements Serializable {
      * 手机号
      */
     private String phone;
-
-    /**
-     * 小程序用户ID
-     */
-    private String openId;
-
-    /**
-     * 微信用户ID
-     */
-    private String unionId;
 
     /**
      * 用户名称
