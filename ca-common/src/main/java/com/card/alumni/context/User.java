@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 用户信息
@@ -15,23 +17,69 @@ import java.io.Serializable;
 @ToString
 public class User implements Serializable {
 
-    /**
-     * 用户ID
-     */
-    private Long id;
+    private Integer id;
 
-    /**
-     * 手机号
-     */
     private String phone;
 
-    /**
-     * 用户名称
-     */
     private String name;
 
-    /**
-     * 性别
-     */
-    private Integer gender;
+    private String idCard;
+
+    private Integer sex;
+
+    private String professional;
+
+    private Integer education;
+
+    private String acceptAnceDate;
+
+    private String graduateDate;
+
+    private Date birthday;
+
+    private Integer status;
+
+    private String secondTel;
+
+    private String qq;
+
+    private String wx;
+
+    private String email;
+
+    private String address;
+
+    private Integer classId;
+
+    private Integer collegeId;
+
+    private String collegeName;
+
+    private Integer facultyId;
+
+    private String facultyName;
+
+    private String photoImg;
+
+    private String workUnit;
+
+    private String duty;
+
+    private Integer alumniId;
+
+    private String alumniName;
+
+    private String signature;
+
+    private Integer schoolId;
+
+    private String schoolName;
+
+    private Date createTime;
+
+    private Date updateTime;
+
+    private Integer yn;
+
+    private List<Integer> roleIds;
 }

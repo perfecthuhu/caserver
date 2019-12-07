@@ -8,8 +8,14 @@ package com.card.alumni.exception;
  */
 public interface ResultCodeInterface {
 
+    /**
+     * 成功
+     */
     int SUCCESS_CODE = 0;
 
+    /**
+     * 系统内部异常
+     */
     int FAIL_CODE = 500;
 
     String SUCCESS_MSG = "成功";

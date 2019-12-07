@@ -1,6 +1,7 @@
 package com.card.alumni.common;
 
 
+import com.card.alumni.exception.ResultCodeEnum;
 import com.card.alumni.exception.ResultCodeInterface;
 
 import java.util.HashMap;
@@ -21,8 +22,7 @@ public class UnifiedResponse {
     private Object data;
 
     public UnifiedResponse() {
-        this.status = ResultCodeInterface.SUCCESS_CODE;
-        this.message = ResultCodeInterface.SUCCESS_MSG;
+        this(ResultCodeEnum.SUCCESS);
     }
 
     public UnifiedResponse(int status, String message) {
@@ -31,9 +31,7 @@ public class UnifiedResponse {
     }
 
     public UnifiedResponse(Object data) {
-        this.status = ResultCodeInterface.SUCCESS_CODE;
-        this.message = ResultCodeInterface.SUCCESS_MSG;
-
+        this(ResultCodeEnum.SUCCESS);
         if (data instanceof Long) {
             Map<String, Object> attachment = new HashMap<>();
             attachment.put("id", data);
@@ -43,14 +41,13 @@ public class UnifiedResponse {
         }
     }
 
-    public UnifiedResponse(ResultCodeInterface resultCodeInterface) {
-        this.status = resultCodeInterface.getCode();
-        this.message = resultCodeInterface.getMsg();
+    public UnifiedResponse(ResultCodeEnum resultCodeEnum) {
+        this.status = resultCodeEnum.getCode();
+        this.message = resultCodeEnum.getErrorMsg();
     }
 
     public UnifiedResponse(int status, String message, Object data) {
-        this.status = status;
-        this.message = message;
+        this(status, message);
         this.data = data;
     }
 
