@@ -9,6 +9,7 @@ import com.card.alumni.service.UserService;
 import com.card.alumni.utils.AESUtil;
 import com.card.alumni.utils.CookieUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.annotation.Resource;
@@ -23,6 +24,7 @@ import java.util.Objects;
  * @author sunxiaodong10 2019/12/7
  * @date 1:29 PM
  */
+@Component
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     @Resource
@@ -42,8 +44,12 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 redirect2LoginPage(request, response);
                 return false;
             }
+            if (user.getYn() == 1) {
+                userContext.setLoginStatus(SystemLoginStatusEnum.PASS);
+            } else {
+                userContext.setLoginStatus(SystemLoginStatusEnum.NOT_PASS);
+            }
             userContext.setUser(user);
-            userContext.setLoginStatus(SystemLoginStatusEnum.PASS);
         }
         return true;
     }
