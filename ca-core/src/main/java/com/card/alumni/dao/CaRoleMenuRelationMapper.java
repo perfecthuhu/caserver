@@ -27,4 +27,8 @@ public interface CaRoleMenuRelationMapper {
     int updateByPrimaryKeySelective(CaRoleMenuRelation record);
 
     int updateByPrimaryKey(CaRoleMenuRelation record);
+
+    int batchInsert(@Param("list") List<CaRoleMenuRelation> list);
+
+    int batchUpdate(List<CaRoleMenuRelation> list);
 }

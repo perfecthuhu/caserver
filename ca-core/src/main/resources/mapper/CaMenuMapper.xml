@@ -113,7 +113,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.card.alumni.entity.CaMenu" >
+  <insert id="insert" parameterType="com.card.alumni.entity.CaMenu" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_menu (id, name, type, 
       pid, permission, sort, 
       icon, path, visible, target, 
@@ -125,7 +125,7 @@
       #{creator,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updater,jdbcType=INTEGER}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=BIT})
   </insert>
-  <insert id="insertSelective" parameterType="com.card.alumni.entity.CaMenu" >
+  <insert id="insertSelective" parameterType="com.card.alumni.entity.CaMenu" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_menu
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

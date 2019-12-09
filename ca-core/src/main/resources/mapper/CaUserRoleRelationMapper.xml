@@ -105,7 +105,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.card.alumni.entity.CaUserRoleRelation" >
+  <insert id="insert" parameterType="com.card.alumni.entity.CaUserRoleRelation" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_user_role_relation (id, user_id, role_id, 
       creator, create_time, updater, 
       update_time, is_delete)
@@ -113,7 +113,7 @@
       #{creator,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updater,jdbcType=INTEGER}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=BIT})
   </insert>
-  <insert id="insertSelective" parameterType="com.card.alumni.entity.CaUserRoleRelation" >
+  <insert id="insertSelective" parameterType="com.card.alumni.entity.CaUserRoleRelation" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_user_role_relation
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -257,5 +257,46 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       is_delete = #{isDelete,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <insert id="batchInsert" parameterType="java.util.List" >
+    insert into ca_user_role_relation (id, user_id, role_id,
+    creator, create_time, updater,
+    update_time, is_delete)
+    values
+    <foreach collection="list" index="index" item="record" separator=",">
+    (#{record.id,jdbcType=INTEGER}, #{record.userId,jdbcType=INTEGER}, #{record.roleId,jdbcType=INTEGER},
+    #{record.creator,jdbcType=INTEGER}, #{record.createTime,jdbcType=TIMESTAMP}, #{record.updater,jdbcType=INTEGER},
+    #{record.updateTime,jdbcType=TIMESTAMP}, #{record.isDelete,jdbcType=BIT})
+    </foreach>
+  </insert>
+  <update id="batchUpdate" parameterType="com.card.alumni.entity.CaUserRoleRelation" >
+    <foreach collection="list" separator=";" item="record">
+      update ca_user_role_relation
+      <set >
+        <if test="record.userId != null" >
+          user_id = #{record.userId,jdbcType=INTEGER},
+        </if>
+        <if test="record.roleId != null" >
+          role_id = #{record.roleId,jdbcType=INTEGER},
+        </if>
+        <if test="record.creator != null" >
+          creator = #{record.creator,jdbcType=INTEGER},
+        </if>
+        <if test="record.createTime != null" >
+          create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="record.updater != null" >
+          updater = #{record.updater,jdbcType=INTEGER},
+        </if>
+        <if test="record.updateTime != null" >
+          update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="record.isDelete != null" >
+          is_delete = #{record.isDelete,jdbcType=BIT},
+        </if>
+      </set>
+      where id = #{record.id,jdbcType=INTEGER}
+    </foreach>
   </update>
 </mapper>
