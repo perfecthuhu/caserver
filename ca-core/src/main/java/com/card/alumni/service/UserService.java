@@ -26,7 +26,7 @@ public interface UserService {
      * @param userVO
      * @return
      */
-    UnifiedResponse submitUserInfo(UserVO userVO) throws CaException, Exception;
+    UnifiedResponse submitUserInfo(UserVO userVO) throws Exception;
 
     /**
      * 查询用户信息
@@ -40,5 +40,5 @@ public interface UserService {
      * @param verificatioCode
      * @return
      */
-    UnifiedResponse register(UserVO userVO, String verificatioCode) throws CaException, Exception;
+    UnifiedResponse register(UserVO userVO, String verificatioCode) throws Exception;
 }

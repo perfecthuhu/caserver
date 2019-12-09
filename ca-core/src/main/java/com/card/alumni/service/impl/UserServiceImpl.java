@@ -1,15 +1,22 @@
 package com.card.alumni.service.impl;
 
+import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.context.UserContext;
 import com.card.alumni.dao.CaUserMapper;
+import com.card.alumni.entity.CaRole;
 import com.card.alumni.entity.CaUser;
 import com.card.alumni.entity.CaUserExample;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.exception.ResultCodeEnum;
 import com.card.alumni.service.UserService;
+import com.card.alumni.utils.CookieUtils;
 import com.card.alumni.utils.VerificationCodeUtils;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.query.UserQuery;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -18,6 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author sunxiaodong10 2019/12/7
@@ -36,6 +44,7 @@ public class UserServiceImpl implements UserService {
         if (validateVerificatioCode(userVO, verificatioCode)) {
             throw new CaException("验证码错误");
         }
+        //TODO 增加cookie
         return new UnifiedResponse();
     }
 
@@ -68,8 +77,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UnifiedResponse queryUserVO(UserQuery userQuery) {
+        PageHelper.startPage(userQuery.getCurrentPage(), userQuery.getPageSize());
         List<CaUser> caUsers = caUserMapper.selectByExample(buildCaUserExample(userQuery));
-        return new UnifiedResponse(caUsers);
+        PageInfo<CaUser> pageInfo = new PageInfo<>(caUsers);
+        return new UnifiedResponse(new PageData<>(pageInfo.getTotal(), convertUserVOList(caUsers)));
+    }
+
+    private List<UserVO> convertUserVOList(List<CaUser> caUsers) {
+        if (CollectionUtils.isEmpty(caUsers)) {
+            return null;
+        }
+        return caUsers.stream().filter(Objects::nonNull).map(s -> {
+            UserVO userVO = new UserVO();
+            BeanUtils.copyProperties(s, userVO);
+            return userVO;
+        }).collect(Collectors.toList());
     }
 
     private  CaUserExample buildCaUserExample(UserQuery userQuery) {

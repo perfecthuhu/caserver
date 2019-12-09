@@ -10,8 +10,15 @@ import com.card.alumni.vo.query.ArticleQuery;
 public interface ArticleService {
 
     /**
-     * 查询新闻
+     * 查询首页新闻列表
      * @return
      */
     UnifiedResponse queryArticleService(ArticleQuery articleQuery);
+
+    /**
+     * 查询新闻详情
+     * @param id
+     * @return
+     */
+    UnifiedResponse queryArticleDetail(Integer id);
 }
