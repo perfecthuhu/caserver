@@ -5,7 +5,6 @@ import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.dao.CaAlumniMapper;
 import com.card.alumni.entity.CaAlumni;
 import com.card.alumni.entity.CaAlumniExample;
-import com.card.alumni.entity.CaUser;
 import com.card.alumni.service.AlumniService;
 import com.card.alumni.vo.AlumniVO;
 import com.card.alumni.vo.query.AlumniQuery;
