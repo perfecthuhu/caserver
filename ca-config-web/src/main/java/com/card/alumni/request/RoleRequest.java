@@ -13,4 +13,11 @@ public class RoleRequest implements Serializable {
 
     private Integer id;
 
+    private String name;
+
+    private String remark;
+
+    private String dataScope;
+
+    private String permission;
 }

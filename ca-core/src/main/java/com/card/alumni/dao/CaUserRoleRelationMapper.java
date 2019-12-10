@@ -27,4 +27,8 @@ public interface CaUserRoleRelationMapper {
     int updateByPrimaryKeySelective(CaUserRoleRelation record);
 
     int updateByPrimaryKey(CaUserRoleRelation record);
+
+    int batchInsert(@Param("list") List<CaUserRoleRelation> list);
+
+    int batchUpdate(List<CaUserRoleRelation> list);
 }

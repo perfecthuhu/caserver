@@ -11,22 +11,39 @@ import java.util.Objects;
  */
 public class RequestUtil {
 
+    /**
+     * 获取当前用户
+     *
+     * @return 用户信息
+     */
     public static User getUser() {
-        return UserContext.getCurrentUser();
+        UserContext context = UserContext.getCurrentUser();
+
+        return Objects.isNull(context) ? null : context.getUser();
     }
 
-    public static Long getUserId() {
-        User user = UserContext.getCurrentUser();
+    /**
+     * 获取当前用户
+     *
+     * @return 用户ID
+     */
+    public static Integer getUserId() {
+        User user = getUser();
         if (Objects.isNull(user)) {
-            return -1L;
+            return -1;
         }
         return user.getId();
     }
 
+    /**
+     * 获取当前用户名称
+     *
+     * @return 用户名称
+     */
     public static String getUserName() {
-        User user = UserContext.getCurrentUser();
+        User user = getUser();
         if (Objects.isNull(user)) {
-            return "系统";
+            return "匿名";
         }
         return user.getName();
     }

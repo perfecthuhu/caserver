@@ -108,7 +108,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.card.alumni.entity.CaRole" >
+  <insert id="insert" parameterType="com.card.alumni.entity.CaRole" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_role (id, name, remark, 
       data_scope, permission, creator, 
       create_time, updater, update_time, 
@@ -118,7 +118,7 @@
       #{createTime,jdbcType=TIMESTAMP}, #{updater,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{isDelete,jdbcType=BIT})
   </insert>
-  <insert id="insertSelective" parameterType="com.card.alumni.entity.CaRole" >
+  <insert id="insertSelective" parameterType="com.card.alumni.entity.CaRole" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_role
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
