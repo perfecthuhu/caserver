@@ -41,4 +41,5 @@ public interface UserService {
      * @return
      */
     UnifiedResponse register(UserVO userVO, String verificatioCode) throws Exception;
+
 }

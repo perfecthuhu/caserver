@@ -30,6 +30,10 @@ public class CaAlumni {
 
     private Integer type;
 
+    private Integer schoolId;
+
+    private Integer status;
+
     private Date createTime;
 
     private Date updateTime;

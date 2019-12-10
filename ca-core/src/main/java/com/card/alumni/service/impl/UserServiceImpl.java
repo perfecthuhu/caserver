@@ -2,11 +2,11 @@ package com.card.alumni.service.impl;
 
 import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.context.User;
 import com.card.alumni.context.UserContext;
 import com.card.alumni.dao.CaUserMapper;
-import com.card.alumni.entity.CaRole;
-import com.card.alumni.entity.CaUser;
-import com.card.alumni.entity.CaUserExample;
+import com.card.alumni.dao.CaUserRoleRelationMapper;
+import com.card.alumni.entity.*;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.exception.ResultCodeEnum;
 import com.card.alumni.service.UserService;
@@ -39,12 +39,14 @@ public class UserServiceImpl implements UserService {
     @Resource
     private CaUserMapper caUserMapper;
 
+    @Resource
+    private CaUserRoleRelationMapper caUserRoleRelationMapper;
+
     @Override
     public UnifiedResponse login(UserVO userVO, String verificatioCode) throws Exception  {
         if (validateVerificatioCode(userVO, verificatioCode)) {
             throw new CaException("验证码错误");
         }
-        //TODO 增加cookie
         return new UnifiedResponse();
     }
 
@@ -56,12 +58,20 @@ public class UserServiceImpl implements UserService {
             }
             CaUser caUser = caUserMapper.selectByPrimaryKey(userId);
             if (Objects.nonNull(caUser)) {
-                return new UnifiedResponse(caUser);
+                User user = convertUser(caUser);
+                user.setRoleIds(queryUserRole(userId));
+                return new UnifiedResponse(user);
             }
         } catch (Exception e) {
             LOGGER.error("查询用户异常, 入参:{}", userId, e);
         }
         return null;
+    }
+
+    private User convertUser(CaUser caUser) {
+        User user = new User();
+        BeanUtils.copyProperties(caUser, user);
+        return user;
     }
 
     @Override
@@ -100,32 +110,35 @@ public class UserServiceImpl implements UserService {
         if (Objects.isNull(userQuery)) {
             return example;
         }
-        if (Objects.isNull(userQuery.getId())) {
+        if (Objects.nonNull(userQuery.getId())) {
             criteria.andIdEqualTo(userQuery.getId());
         }
-        if (Objects.isNull(userQuery.getPhone())) {
+        if (Objects.nonNull(userQuery.getPhone())) {
             criteria.andPhoneEqualTo(userQuery.getPhone());
         }
-        if (Objects.isNull(userQuery.getName())) {
+        if (Objects.nonNull(userQuery.getName())) {
             criteria.andNameEqualTo(userQuery.getName());
         }
-        if (Objects.isNull(userQuery.getSex())) {
+        if (Objects.nonNull(userQuery.getSex())) {
             criteria.andSexEqualTo(userQuery.getSex());
         }
-        if (Objects.isNull(userQuery.getClassId())) {
+        if (Objects.nonNull(userQuery.getClassId())) {
             criteria.andIdEqualTo(userQuery.getClassId());
         }
-        if (Objects.isNull(userQuery.getCollegeId())) {
+        if (Objects.nonNull(userQuery.getCollegeId())) {
             criteria.andCollegeIdEqualTo(userQuery.getCollegeId());
         }
-        if (Objects.isNull(userQuery.getFacultyId())) {
+        if (Objects.nonNull(userQuery.getFacultyId())) {
             criteria.andFacultyIdEqualTo(userQuery.getFacultyId());
         }
-        if (Objects.isNull(userQuery.getAlumniId())) {
+        if (Objects.nonNull(userQuery.getAlumniId())) {
             criteria.andAlumniIdEqualTo(userQuery.getAlumniId());
         }
-        if (Objects.isNull(userQuery.getSchoolId())) {
+        if (Objects.nonNull(userQuery.getSchoolId())) {
             criteria.andSchoolIdEqualTo(userQuery.getSchoolId());
+        }
+        if (CollectionUtils.isNotEmpty(userQuery.getIdList())) {
+            criteria.andIdCardIn(userQuery.getIdList().stream().map(s -> s.toString()).collect(Collectors.toList()));
         }
         return example;
     }
@@ -158,4 +171,15 @@ public class UserServiceImpl implements UserService {
         }
         return flag;
     }
+
+    private List<Integer> queryUserRole(Integer userId) throws CaException {
+        CaUserRoleRelationExample example = new CaUserRoleRelationExample();
+        example.createCriteria().andUserIdEqualTo(userId);
+        List<CaUserRoleRelation> caUserRoleRelations = caUserRoleRelationMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(caUserRoleRelations)) {
+            throw new CaException("用户角色为空");
+        }
+        return caUserRoleRelations.stream().map(CaUserRoleRelation::getRoleId).collect(Collectors.toList());
+    }
+
 }

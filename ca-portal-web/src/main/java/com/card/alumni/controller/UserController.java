@@ -1,13 +1,18 @@
 package com.card.alumni.controller;
 
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.context.UserContext;
 import com.card.alumni.service.UserService;
+import com.card.alumni.utils.AESUtil;
+import com.card.alumni.utils.CookieUtils;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.query.UserQuery;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author sunxiaodong10 2019/12/8
@@ -28,8 +33,12 @@ public class UserController {
      * @throws Exception
      */
     @RequestMapping("/login")
-    public UnifiedResponse login(UserVO userVO, String verificatioCode) throws Exception {
-        return userService.login(userVO, verificatioCode);
+    public UnifiedResponse login(UserVO userVO, String verificatioCode, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        userService.login(userVO, verificatioCode);
+        Integer id = UserContext.getCurrentUser().getUser().getId();
+        String token = AESUtil.encrypt(id.toString(), "ca_manager_aes_token_pwd");
+        CookieUtils.setCookie(request, response, "token", token, 60 * 30, "utf-8");
+        return new UnifiedResponse();
     }
 
     /**

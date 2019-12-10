@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author sunxiaodong10 2019/12/9
@@ -29,4 +30,6 @@ public class UserQuery extends PageParam implements Serializable {
     private Integer alumniId;
 
     private Integer schoolId;
+
+    private List<Integer> idList;
 }

@@ -4,11 +4,9 @@ import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.context.SystemLoginStatusEnum;
 import com.card.alumni.context.User;
 import com.card.alumni.context.UserContext;
-import com.card.alumni.entity.CaUser;
 import com.card.alumni.service.UserService;
 import com.card.alumni.utils.AESUtil;
 import com.card.alumni.utils.CookieUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -96,11 +94,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         if (response.getStatus() != 0) {
             return null;
         }
-        CaUser caUser = (CaUser) response.getData();
-        User user = new User();
-        BeanUtils.copyProperties(caUser, user);
-        //TODO 查询用户角色 增加用户角色
-        return user;
+        return (User) response.getData();
     }
 
     @Override

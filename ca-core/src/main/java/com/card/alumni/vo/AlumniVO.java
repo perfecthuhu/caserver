@@ -39,13 +39,18 @@ public class AlumniVO implements Serializable {
 
     private Integer type;
 
+    private Integer schoolId;
+
+    private Integer status;
+
     private Date createTime;
 
     private Date updateTime;
 
-    private Integer leader_id;
+    private UserVO leader;
 
-    private List<Integer> admin_id;
+    private List<UserVO> adminVO;
 
-    private List<AlumniVO> childrenAlumniVO;
+    private List<UserVO> userVOList;
+
 }
