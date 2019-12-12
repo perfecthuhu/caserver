@@ -84,7 +84,7 @@ public class AlumniServiceImpl implements AlumniService {
         if (!CollectionUtils.isEmpty(userVOList)) {
             Map<Integer, UserVO> userVOMap = userVOList.stream().collect(Collectors.toMap(UserVO::getId, Function.identity()));
             caAlumniRoles.stream().filter(Objects::nonNull).forEach(s -> {
-                UserVO userVO = userVOMap.get(s.getStudentId();
+                UserVO userVO = userVOMap.get(s.getStudentId());
                 resultMap.merge(s.getRole(), Arrays.asList(userVO), (o, n) -> {
                     o.addAll(n);
                     return o;
@@ -98,7 +98,7 @@ public class AlumniServiceImpl implements AlumniService {
 
     private List<UserVO> queryByIdList(List<Integer> idList) {
         UserQuery userQuery = new UserQuery();
-        userQuery.setIdList();
+        userQuery.setIdList(idList);
         UnifiedResponse response = userService.queryUserVO(userQuery);
         List<UserVO> userVOList = null;
         if (response.getStatus() == 1) {
@@ -111,8 +111,9 @@ public class AlumniServiceImpl implements AlumniService {
     @Override
     public UnifiedResponse queryAlumniAudit(Integer id) {
         CaAlumniAuditLogExample example = new CaAlumniAuditLogExample();
-        example.createCriteria()
-        caAlumniAuditLogMapper.selectByExample()
+        example.createCriteria();
+        caAlumniAuditLogMapper.selectByExample(example);
+        return new UnifiedResponse();
     }
 
     @Override
