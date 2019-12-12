@@ -5,7 +5,11 @@ import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.dao.CaAlumniAuditLogMapper;
 import com.card.alumni.dao.CaAlumniMapper;
 import com.card.alumni.dao.CaAlumniRoleMapper;
-import com.card.alumni.entity.*;
+import com.card.alumni.entity.CaAlumni;
+import com.card.alumni.entity.CaAlumniAuditLogExample;
+import com.card.alumni.entity.CaAlumniExample;
+import com.card.alumni.entity.CaAlumniRole;
+import com.card.alumni.entity.CaAlumniRoleExample;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.service.AlumniService;
 import com.card.alumni.service.UserService;
@@ -20,7 +24,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 

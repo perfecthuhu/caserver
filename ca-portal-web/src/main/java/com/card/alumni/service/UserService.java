@@ -1,7 +1,6 @@
 package com.card.alumni.service;
 
 import com.card.alumni.common.UnifiedResponse;
-import com.card.alumni.exception.CaException;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.query.UserQuery;
 

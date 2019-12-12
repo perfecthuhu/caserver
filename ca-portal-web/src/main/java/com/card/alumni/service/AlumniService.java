@@ -4,8 +4,6 @@ import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.vo.query.AlumniQuery;
 
-import java.util.Date;
-
 /**
  * @author sunxiaodong10 2019/12/9
  * @date 11:03 PM
