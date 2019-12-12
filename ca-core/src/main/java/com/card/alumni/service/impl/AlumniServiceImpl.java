@@ -5,10 +5,7 @@ import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.dao.CaAlumniAuditLogMapper;
 import com.card.alumni.dao.CaAlumniMapper;
 import com.card.alumni.dao.CaAlumniRoleMapper;
-import com.card.alumni.entity.CaAlumni;
-import com.card.alumni.entity.CaAlumniExample;
-import com.card.alumni.entity.CaAlumniRole;
-import com.card.alumni.entity.CaAlumniRoleExample;
+import com.card.alumni.entity.*;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.service.AlumniService;
 import com.card.alumni.service.UserService;
@@ -20,9 +17,11 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -60,7 +59,10 @@ public class AlumniServiceImpl implements AlumniService {
             throw new CaException("协会不存在");
         }
         AlumniVO alumniVO = convertAlumniVO(caAlumni);
-
+        Map<Integer, List<UserVO>> userMap = queryAllAlumniPerson(id);
+        alumniVO.setLeader(userMap.get(3) == null ? null : userMap.get(0).get(0));
+        alumniVO.setAdminVO(userMap.get(2));
+        alumniVO.setUserVOList(userMap.get(1));
         return new UnifiedResponse();
     }
 
@@ -69,19 +71,40 @@ public class AlumniServiceImpl implements AlumniService {
         example.createCriteria().andAlumniIdEqualTo(id);
         List<CaAlumniRole> caAlumniRoles = caAlumniRoleMapper.selectByExample(example);
         Map<Integer, List<UserVO>> resultMap = new HashMap<>();
-        UserQuery userQuery = new UserQuery();
-        userQuery.setIdList(caAlumniRoles.stream().filter(Objects::nonNull).map(CaAlumniRole::getStudentId).collect(Collectors.toList()));
-        userQuery.setPageSize(500);
-        UnifiedResponse response = userService.queryUserVO(userQuery);
-        if (response.getStatus() == 1) {
-            //TODO
+        List<Integer> userIdList = caAlumniRoles.stream().filter(Objects::nonNull).map(CaAlumniRole::getStudentId).collect(Collectors.toList());
+        List<UserVO> userVOList = queryByIdList(userIdList);
+        if (!CollectionUtils.isEmpty(userVOList)) {
+            Map<Integer, UserVO> userVOMap = userVOList.stream().collect(Collectors.toMap(UserVO::getId, Function.identity()));
+            caAlumniRoles.stream().filter(Objects::nonNull).forEach(s -> {
+                UserVO userVO = userVOMap.get(s.getStudentId();
+                resultMap.merge(s.getRole(), Arrays.asList(userVO), (o, n) -> {
+                    o.addAll(n);
+                    return o;
+                });
+            });
+            resultMap.put(1, userVOList);
         }
+
         return resultMap;
+    }
+
+    private List<UserVO> queryByIdList(List<Integer> idList) {
+        UserQuery userQuery = new UserQuery();
+        userQuery.setIdList();
+        UnifiedResponse response = userService.queryUserVO(userQuery);
+        List<UserVO> userVOList = null;
+        if (response.getStatus() == 1) {
+            PageData<UserVO> data = (PageData<UserVO>) response.getData();
+            userVOList = data.getItems();
+        }
+        return userVOList;
     }
 
     @Override
     public UnifiedResponse queryAlumniAudit(Integer id) {
-        return null;
+        CaAlumniAuditLogExample example = new CaAlumniAuditLogExample();
+        example.createCriteria()
+        caAlumniAuditLogMapper.selectByExample()
     }
 
     @Override
