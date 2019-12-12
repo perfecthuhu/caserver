@@ -33,6 +33,6 @@ public class RoleController {
     @ApiOperation(value = "分页查询角色列表", notes = "分页查询角色列表", response = UnifiedResponse.class)
     public UnifiedResponse pageByRequest(@RequestBody RoleQueryRequest request) throws Exception {
 
-        return new UnifiedResponse(roleService.pageByKeyword(request));
+        return new UnifiedResponse(roleService.pageByRequest(request));
     }
 }

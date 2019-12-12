@@ -27,7 +27,7 @@ public interface RoleService {
 
     List<CaRole> listByIdList(List<Integer> idList) throws CaConfigException;
 
-    PageData<RoleModel> pageByKeyword(RoleQueryRequest request) throws CaConfigException;
+    PageData<RoleModel> pageByRequest(RoleQueryRequest request) throws CaConfigException;
 
 
     void deleteRoleMenuRelByRoleId(Integer roleId) throws CaConfigException;

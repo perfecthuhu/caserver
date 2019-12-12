@@ -137,7 +137,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public PageData<RoleModel> pageByKeyword(RoleQueryRequest request) throws CaConfigException {
+    public PageData<RoleModel> pageByRequest(RoleQueryRequest request) throws CaConfigException {
         int page = Objects.isNull(request.getPage()) ? 1 : request.getPage();
         int size = Objects.isNull(request.getSize()) ? 20 : request.getSize();
         String orderField = StringUtils.isBlank(request.getOrderField()) ? "create_time" : request.getOrderField();
