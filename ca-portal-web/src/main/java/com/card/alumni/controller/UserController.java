@@ -48,7 +48,8 @@ public class UserController {
      */
     @RequestMapping("/submit")
     public UnifiedResponse submitUserInfo(UserVO userVO) throws Exception {
-        return userService.submitUserInfo(userVO);
+        userService.submitUserInfo(userVO);
+        return new UnifiedResponse();
     }
 
     /**
@@ -58,7 +59,7 @@ public class UserController {
      */
     @RequestMapping("/query")
     public UnifiedResponse queryUserVO(UserQuery userQuery) {
-        return userService.queryUserVO(userQuery);
+        return new UnifiedResponse(userService.queryUserVO(userQuery));
     }
 
     /**
@@ -68,6 +69,7 @@ public class UserController {
      */
     @RequestMapping("/register")
     public UnifiedResponse register(UserVO userVO, String verificatioCode) throws Exception {
-        return userService.register(userVO, verificatioCode);
+        userService.register(userVO, verificatioCode);
+        return new UnifiedResponse();
     }
 }

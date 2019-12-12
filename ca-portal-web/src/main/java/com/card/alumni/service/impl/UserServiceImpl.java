@@ -44,24 +44,23 @@ public class UserServiceImpl implements UserService {
     private CaUserRoleRelationMapper caUserRoleRelationMapper;
 
     @Override
-    public UnifiedResponse login(UserVO userVO, String verificatioCode) throws Exception  {
+    public void login(UserVO userVO, String verificatioCode) throws Exception  {
         if (validateVerificatioCode(userVO, verificatioCode)) {
             throw new CaException("验证码错误");
         }
-        return new UnifiedResponse();
     }
 
     @Override
-    public UnifiedResponse queryUserById(Integer userId){
+    public User queryUserById(Integer userId){
         try {
             if (Objects.isNull(userId)) {
-                return new UnifiedResponse(ResultCodeEnum.PARAM_EMPTY);
+                throw new CaException("参数为空");
             }
             CaUser caUser = caUserMapper.selectByPrimaryKey(userId);
             if (Objects.nonNull(caUser)) {
                 User user = convertUser(caUser);
                 user.setRoleIds(queryUserRole(userId));
-                return new UnifiedResponse(user);
+                return user;
             }
         } catch (Exception e) {
             LOGGER.error("查询用户异常, 入参:{}", userId, e);
@@ -76,22 +75,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UnifiedResponse submitUserInfo(UserVO userVO) throws Exception {
+    public void submitUserInfo(UserVO userVO) throws Exception {
         CaUser caUser = new CaUser();
         BeanUtils.copyProperties(userVO, caUser);
         int count = caUserMapper.updateByPrimaryKey(caUser);
         if (count != 1) {
             throw new CaException("填写信息失败");
         }
-        return new UnifiedResponse();
     }
 
     @Override
-    public UnifiedResponse queryUserVO(UserQuery userQuery) {
+    public PageData<UserVO> queryUserVO(UserQuery userQuery) {
         PageHelper.startPage(userQuery.getCurrentPage(), userQuery.getPageSize());
         List<CaUser> caUsers = caUserMapper.selectByExample(buildCaUserExample(userQuery));
         PageInfo<CaUser> pageInfo = new PageInfo<>(caUsers);
-        return new UnifiedResponse(new PageData<>(pageInfo.getTotal(), convertUserVOList(caUsers)));
+        return new PageData<>(pageInfo.getTotal(), convertUserVOList(caUsers));
     }
 
     private List<UserVO> convertUserVOList(List<CaUser> caUsers) {
@@ -145,7 +143,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UnifiedResponse register(UserVO userVO, String verificatioCode) throws Exception {
+    public void register(UserVO userVO, String verificatioCode) throws Exception {
         if (Objects.isNull(userVO)) {
             throw new CaException("用户信息为空");
         }
@@ -161,7 +159,6 @@ public class UserServiceImpl implements UserService {
         if (count != 1) {
             throw new CaException("注册失败");
         }
-        return new UnifiedResponse();
     }
 
     private boolean validateVerificatioCode(UserVO userVO, String verificatioCode) {

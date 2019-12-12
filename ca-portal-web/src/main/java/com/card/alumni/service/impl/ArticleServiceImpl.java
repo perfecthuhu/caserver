@@ -28,7 +28,7 @@ public class ArticleServiceImpl implements ArticleService {
     private CaArticleMapper caArticleMapper;
 
     @Override
-    public UnifiedResponse queryArticleService(ArticleQuery articleQuery) {
+    public Map<Integer, List<ArticleVO>> queryArticleService(ArticleQuery articleQuery) throws Exception {
         CaArticleExample example = new CaArticleExample();
         List<CaArticle> caArticles = caArticleMapper.selectByExample(example);
         List<ArticleVO> articleVOList = caArticles.stream().map(s -> convertArticleVO(s)).collect(Collectors.toList());
@@ -39,13 +39,13 @@ public class ArticleServiceImpl implements ArticleService {
                 return o;
             });
         });
-        return new UnifiedResponse(resultMap);
+        return resultMap;
     }
 
     @Override
-    public UnifiedResponse queryArticleDetail(Integer id) {
+    public ArticleVO queryArticleDetail(Integer id) throws Exception {
         CaArticle caArticle = caArticleMapper.selectByPrimaryKey(id);
-        return new UnifiedResponse(convertArticleVO(caArticle));
+        return convertArticleVO(caArticle);
     }
 
     private ArticleVO convertArticleVO(CaArticle caArticle) {

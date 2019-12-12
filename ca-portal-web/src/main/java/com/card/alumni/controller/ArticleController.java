@@ -25,7 +25,7 @@ public class ArticleController {
      */
     @RequestMapping("/page")
     public UnifiedResponse queryArticleService(ArticleQuery articleQuery) {
-        return articleService.queryArticleService(articleQuery);
+        return new UnifiedResponse(articleService.queryArticleService(articleQuery));
     }
 
     /**
@@ -35,6 +35,6 @@ public class ArticleController {
      */
     @RequestMapping("/detail")
     public UnifiedResponse queryArticleDetail(Integer id) {
-        return articleService.queryArticleDetail(id);
+        return new UnifiedResponse(articleService.queryArticleDetail(id));
     }
 }

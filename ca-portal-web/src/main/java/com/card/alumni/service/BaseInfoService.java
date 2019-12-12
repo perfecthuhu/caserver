@@ -1,6 +1,10 @@
 package com.card.alumni.service;
 
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.vo.HomeVO;
+import com.card.alumni.vo.SchoolVO;
+
+import java.util.List;
 
 /**
  * @author sunxiaodong10 2019/12/9
@@ -12,12 +16,12 @@ public interface BaseInfoService {
      * 查询所有学校信息
      * @return
      */
-    UnifiedResponse querySchool();
+    List<SchoolVO> querySchool();
 
     /**
      * 查询首页结构信息
      * @return
      */
-    UnifiedResponse queryHomeInfo();
+    HomeVO queryHomeInfo();
 
 }

@@ -1,8 +1,14 @@
 package com.card.alumni.service;
 
+import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.entity.CaAlumniAuditLog;
 import com.card.alumni.exception.CaException;
+import com.card.alumni.vo.AlumniVO;
+import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.query.AlumniQuery;
+
+import java.util.List;
 
 /**
  * @author sunxiaodong10 2019/12/9
@@ -15,21 +21,21 @@ public interface AlumniService {
      * @param alumniQuery
      * @return
      */
-    UnifiedResponse queryAlumniService(AlumniQuery alumniQuery);
+    PageData<AlumniVO> queryAlumniService(AlumniQuery alumniQuery);
 
     /**
      * 查询单个协会
      * @param id
      * @return
      */
-    UnifiedResponse queryAlumniDetail(Integer id) throws CaException;
+    AlumniVO queryAlumniDetail(Integer id) throws CaException;
 
     /**
      * 查询协会待审核记录
      * @param id
      * @return
      */
-    UnifiedResponse queryAlumniAudit(Integer id);
+    List<UserVO> queryAlumniAudit(Integer id);
 
     /**
      * 审核加入协会申请
@@ -37,5 +43,5 @@ public interface AlumniService {
      * @param status
      * @return
      */
-    UnifiedResponse auidtAlumniRecord(Integer id, Integer status);
+    Boolean auidtAlumniRecord(Integer id, Integer status);
 }

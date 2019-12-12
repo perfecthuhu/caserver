@@ -24,7 +24,7 @@ public class BaseInfoController {
      */
     @RequestMapping("/school")
     public UnifiedResponse querySchool() {
-        return baseInfoService.querySchool();
+        return new UnifiedResponse(baseInfoService.querySchool());
     }
 
     /**
@@ -33,6 +33,6 @@ public class BaseInfoController {
      */
     @RequestMapping("/home")
     public UnifiedResponse queryHomeInfo() {
-        return baseInfoService.queryHomeInfo();
+        return new UnifiedResponse(baseInfoService.queryHomeInfo());
     }
 }

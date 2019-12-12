@@ -10,7 +10,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum  AlumniRoleEnum {
-
+    MEMBER(1, "普通成员"),
+    ADMIN(2, "管理员"),
+    LEADER(3, "会长")
     ;
 
     private Integer code;

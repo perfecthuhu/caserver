@@ -26,6 +26,6 @@ public class AlumniController {
      */
     @RequestMapping("/page")
     public UnifiedResponse queryAlumniService(AlumniQuery alumniQuery) {
-        return alumniService.queryAlumniService(alumniQuery);
+        return new UnifiedResponse(alumniService.queryAlumniService(alumniQuery));
     }
 }

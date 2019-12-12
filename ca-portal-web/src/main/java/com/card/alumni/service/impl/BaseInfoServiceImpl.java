@@ -48,7 +48,7 @@ public class BaseInfoServiceImpl implements BaseInfoService {
     private CaHomeGuideMapper caHomeGuideMapper;
 
     @Override
-    public UnifiedResponse querySchool() {
+    public List<SchoolVO> querySchool() {
         CaSchoolExample example = new CaSchoolExample();
         example.createCriteria();
         List<CaSchool> schoolList = caSchoolMapper.selectByExample(example);
@@ -60,11 +60,11 @@ public class BaseInfoServiceImpl implements BaseInfoService {
                 return schoolVO;
             }).collect(Collectors.toList());
         }
-        return new UnifiedResponse(result);
+        return result;
     }
 
     @Override
-    public UnifiedResponse queryHomeInfo() {
+    public HomeVO queryHomeInfo() {
         HomeVO homeVO = new HomeVO();
         Date date = new Date(System.currentTimeMillis());
         CaHomePageExample example = new CaHomePageExample();
