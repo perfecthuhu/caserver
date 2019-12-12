@@ -87,14 +87,11 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     private User getUser(HttpServletRequest request) {
         String token = CookieUtils.getCookieValue(request, "token", "utf-8");
         String tokenId = AESUtil.decrypt(token, "ca_manager_aes_token_pwd");
-        UnifiedResponse response = userService.queryUserById(Integer.parseInt(tokenId));
-        if (Objects.isNull(response)) {
+        User user = userService.queryUserById(Integer.parseInt(tokenId));
+        if (Objects.isNull(user)) {
             return null;
         }
-        if (response.getStatus() != 0) {
-            return null;
-        }
-        return (User) response.getData();
+        return user;
     }
 
     @Override

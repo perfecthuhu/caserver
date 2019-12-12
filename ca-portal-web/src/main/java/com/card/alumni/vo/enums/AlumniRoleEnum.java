@@ -17,4 +17,6 @@ public enum  AlumniRoleEnum {
 
     private Integer code;
     private String desc;
+
+
 }

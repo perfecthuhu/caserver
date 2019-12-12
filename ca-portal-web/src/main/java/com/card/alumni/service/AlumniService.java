@@ -6,6 +6,7 @@ import com.card.alumni.entity.CaAlumniAuditLog;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.vo.AlumniVO;
 import com.card.alumni.vo.UserVO;
+import com.card.alumni.vo.enums.AlumniAuditStatusEnum;
 import com.card.alumni.vo.query.AlumniQuery;
 
 import java.util.List;
@@ -43,5 +44,13 @@ public interface AlumniService {
      * @param status
      * @return
      */
-    Boolean auidtAlumniRecord(Integer id, Integer status);
+    Boolean auidtAlumniRecord(Integer id, AlumniAuditStatusEnum status) throws CaException;
+
+    /**
+     * 分配管理员
+     * @param id
+     * @param userId
+     * @return
+     */
+    Boolean appointAdmin(Integer id, Integer userId) throws CaException;
 }

@@ -8,10 +8,12 @@ import com.card.alumni.dao.CaAlumniRoleMapper;
 import com.card.alumni.entity.*;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.service.AlumniService;
+import com.card.alumni.service.BaseService;
 import com.card.alumni.service.UserService;
 import com.card.alumni.vo.AlumniVO;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.enums.AlumniAuditStatusEnum;
+import com.card.alumni.vo.enums.AlumniRoleEnum;
 import com.card.alumni.vo.query.AlumniQuery;
 import com.card.alumni.vo.query.UserQuery;
 import com.github.pagehelper.PageHelper;
@@ -34,7 +36,7 @@ import java.util.stream.Collectors;
  * @date 11:08 PM
  */
 @Service
-public class AlumniServiceImpl implements AlumniService {
+public class AlumniServiceImpl extends BaseService implements AlumniService {
 
     @Resource
     private CaAlumniMapper caAlumniMapper;
@@ -96,11 +98,10 @@ public class AlumniServiceImpl implements AlumniService {
     private List<UserVO> queryByIdList(List<Integer> idList) {
         UserQuery userQuery = new UserQuery();
         userQuery.setIdList(idList);
-        UnifiedResponse response = userService.queryUserVO(userQuery);
+        PageData<UserVO> userVOPageData = userService.queryUserVO(userQuery);
         List<UserVO> userVOList = null;
-        if (response.getStatus() == 1) {
-            PageData<UserVO> data = (PageData<UserVO>) response.getData();
-            userVOList = data.getItems();
+        if (Objects.nonNull(userVOPageData)) {
+            userVOList = userVOPageData.getItems();
         }
         return userVOList;
     }
@@ -120,8 +121,57 @@ public class AlumniServiceImpl implements AlumniService {
     }
 
     @Override
-    public Boolean auidtAlumniRecord(Integer id, Integer status) {
-        return null;
+    public Boolean auidtAlumniRecord(Integer id, AlumniAuditStatusEnum statusEnum) throws CaException {
+        validateUserLimit(getUserId(), id);
+        CaAlumniAuditLog alumniAuditLog = new CaAlumniAuditLog();
+        alumniAuditLog.setId(id);
+        alumniAuditLog.setAuditStatus(statusEnum.getCode());
+        int count = caAlumniAuditLogMapper.updateByPrimaryKeySelective(alumniAuditLog);
+        if (count != 1) {
+            throw new CaException("审核失败");
+        }
+        return true;
+    }
+
+    private void validateUserLimit(Integer userId, Integer id) throws CaException {
+        CaAlumniRole alumniRole = getCaAlumniRole(userId, id);
+        if (Objects.isNull(alumniRole) || (!AlumniRoleEnum.LEADER.getCode().equals(alumniRole.getRole())
+                && !AlumniRoleEnum.ADMIN.getCode().equals(alumniRole.getRole()))) {
+            throw new CaException("无权限");
+        }
+    }
+
+    @Override
+    public Boolean appointAdmin(Integer id, Integer userId) throws CaException {
+        validateAppointAdmin(getUserId(), id);
+        CaAlumniRole role = new CaAlumniRole();
+        role.setRole(AlumniRoleEnum.ADMIN.getCode());
+        CaAlumniRoleExample example = new CaAlumniRoleExample();
+        example.createCriteria().andAlumniIdEqualTo(id).andStudentIdEqualTo(userId);
+        int count = caAlumniRoleMapper.updateByExampleSelective(role, example);
+        if (count != 1) {
+            throw new CaException("分配管理员失败");
+        }
+        return true;
+    }
+
+    private void validateAppointAdmin(Integer userId, Integer id) throws CaException {
+        CaAlumniRole caAlumniRole = getCaAlumniRole(userId, id);
+        if (Objects.isNull(caAlumniRole) || !AlumniRoleEnum.LEADER.getCode().equals(caAlumniRole.getRole())) {
+            throw new CaException("无权限");
+        }
+    }
+
+    private CaAlumniRole getCaAlumniRole(Integer userId, Integer alumniId) {
+        CaAlumniRoleExample example = new CaAlumniRoleExample();
+        example.createCriteria()
+                .andAlumniIdEqualTo(alumniId)
+                .andStudentIdEqualTo(userId);
+        List<CaAlumniRole> caAlumniRoles = caAlumniRoleMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(caAlumniRoles)) {
+            return null;
+        }
+        return caAlumniRoles.get(0);
     }
 
     private List<AlumniVO> convertAlumniVOList(List<CaAlumni> caAlumnis) {
