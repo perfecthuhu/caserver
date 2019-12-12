@@ -13,4 +13,6 @@ public class CaConstants {
     public static final String MIDDLE_BAR = "-";
 
     public static final String BLANK = " ";
+
+    public static final int ZERO = 0;
 }

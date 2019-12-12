@@ -1,4 +1,4 @@
-package com.card.alumni.request;
+package com.card.alumni.request.common;
 
 import lombok.Data;
 

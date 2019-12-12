@@ -2,8 +2,9 @@ package com.card.alumni.dao;
 
 import com.card.alumni.entity.CaMenu;
 import com.card.alumni.entity.CaMenuExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface CaMenuMapper {
     int countByExample(CaMenuExample example);
@@ -27,4 +28,8 @@ public interface CaMenuMapper {
     int updateByPrimaryKeySelective(CaMenu record);
 
     int updateByPrimaryKey(CaMenu record);
+
+    int getMaxRankByParentId(Integer pid);
+
+    int batchUpdate(List<CaMenu> list);
 }

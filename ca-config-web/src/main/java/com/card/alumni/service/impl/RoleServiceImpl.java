@@ -116,6 +116,14 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public RoleModel findModelById(Integer id) throws CaConfigException {
+
+        CaRole role = findById(id);
+
+        return convert2Model(role);
+    }
+
+    @Override
     public List<CaRole> listByIdList(List<Integer> idList) throws CaConfigException {
         if (CollectionUtils.isEmpty(idList)) {
             return Lists.newArrayList();
@@ -247,7 +255,7 @@ public class RoleServiceImpl implements RoleService {
         criteria.andIsDeleteEqualTo(Boolean.FALSE);
         criteria.andNameEqualTo(request.getName());
         if (Objects.nonNull(request.getId())) {
-            criteria.andIdEqualTo(request.getId());
+            criteria.andIdNotEqualTo(request.getId());
         }
         List<CaRole> roleList = caRoleMapper.selectByExample(example);
 

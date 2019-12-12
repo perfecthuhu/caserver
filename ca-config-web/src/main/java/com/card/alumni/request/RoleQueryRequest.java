@@ -1,5 +1,6 @@
 package com.card.alumni.request;
 
+import com.card.alumni.request.common.BaseQueryRequest;
 import lombok.Data;
 
 import java.io.Serializable;

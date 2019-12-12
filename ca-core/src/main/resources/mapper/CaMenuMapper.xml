@@ -368,4 +368,62 @@
       is_delete = #{isDelete,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="getMaxRankByParentId" resultMap="java.lang.Integer" parameterType="java.lang.Integer" >
+    select
+    MAX(rank)
+    from ca_menu
+    where pid = #{pid,jdbcType=INTEGER}
+  </select>
+
+  <update id="batchUpdate" parameterType="com.card.alumni.entity.CaMenu" >
+    <foreach collection="list" separator=";" item="record">
+      update ca_menu
+      <set >
+        <if test="record.name != null" >
+          name = #{record.name,jdbcType=VARCHAR},
+        </if>
+        <if test="record.type != null" >
+          type = #{record.type,jdbcType=INTEGER},
+        </if>
+        <if test="record.pid != null" >
+          pid = #{record.pid,jdbcType=INTEGER},
+        </if>
+        <if test="record.permission != null" >
+          permission = #{record.permission,jdbcType=VARCHAR},
+        </if>
+        <if test="record.sort != null" >
+          sort = #{record.sort,jdbcType=INTEGER},
+        </if>
+        <if test="record.icon != null" >
+          icon = #{record.icon,jdbcType=VARCHAR},
+        </if>
+        <if test="record.path != null" >
+          path = #{record.path,jdbcType=VARCHAR},
+        </if>
+        <if test="record.visible != null" >
+          visible = #{record.visible,jdbcType=BIT},
+        </if>
+        <if test="record.target != null" >
+          target = #{record.target,jdbcType=VARCHAR},
+        </if>
+        <if test="record.creator != null" >
+          creator = #{record.creator,jdbcType=INTEGER},
+        </if>
+        <if test="record.createTime != null" >
+          create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="record.updater != null" >
+          updater = #{record.updater,jdbcType=INTEGER},
+        </if>
+        <if test="record.updateTime != null" >
+          update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="record.isDelete != null" >
+          is_delete = #{record.isDelete,jdbcType=BIT},
+        </if>
+      </set>
+      where id = #{record.id,jdbcType=INTEGER}
+    </foreach>
+  </update>
 </mapper>
