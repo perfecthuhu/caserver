@@ -26,31 +26,40 @@ public interface AlumniService {
 
     /**
      * 查询单个协会
-     * @param id
+     * @param alumniId
      * @return
      */
-    AlumniVO queryAlumniDetail(Integer id) throws CaException;
+    AlumniVO queryAlumniDetail(Integer alumniId) throws CaException;
 
     /**
      * 查询协会待审核记录
-     * @param id
+     * @param alumniId
      * @return
      */
-    List<UserVO> queryAlumniAudit(Integer id);
+    List<UserVO> queryAlumniAudit(Integer alumniId);
 
     /**
      * 审核加入协会申请
-     * @param id
+     * @param alumniId
      * @param status
      * @return
      */
-    Boolean auidtAlumniRecord(Integer id, AlumniAuditStatusEnum status) throws CaException;
+    Boolean auidtAlumniRecord(Integer alumniId, AlumniAuditStatusEnum status) throws CaException;
 
     /**
      * 分配管理员
-     * @param id
+     * @param alumniId
      * @param userId
      * @return
      */
-    Boolean appointAdmin(Integer id, Integer userId) throws CaException;
+    Boolean appointAdmin(Integer alumniId, Integer userId) throws CaException;
+
+    /**
+     * 申请加入协会
+     * @param alumniId
+     * @return
+     * @throws CaException
+     */
+    Boolean applyAlumni(Integer alumniId) throws CaException;
+
 }

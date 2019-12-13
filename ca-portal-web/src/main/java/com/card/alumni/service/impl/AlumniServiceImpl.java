@@ -155,6 +155,12 @@ public class AlumniServiceImpl extends BaseService implements AlumniService {
         return true;
     }
 
+    @Override
+    public Boolean applyAlumni(Integer alumniId) throws CaException {
+        //TODO
+        return null;
+    }
+
     private void validateAppointAdmin(Integer userId, Integer id) throws CaException {
         CaAlumniRole caAlumniRole = getCaAlumniRole(userId, id);
         if (Objects.isNull(caAlumniRole) || !AlumniRoleEnum.LEADER.getCode().equals(caAlumniRole.getRole())) {

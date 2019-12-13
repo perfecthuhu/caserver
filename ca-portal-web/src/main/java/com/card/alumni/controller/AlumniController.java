@@ -1,6 +1,7 @@
 package com.card.alumni.controller;
 
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.exception.CaException;
 import com.card.alumni.service.AlumniService;
 import com.card.alumni.vo.enums.AlumniAuditStatusEnum;
 import com.card.alumni.vo.query.AlumniQuery;
@@ -35,6 +36,7 @@ public class AlumniController {
      * @param id
      * @return
      */
+    @RequestMapping("/detail")
     public UnifiedResponse queryAlumniDetail(Integer id) throws Exception {
         return new UnifiedResponse(alumniService.queryAlumniDetail(id));
     }
@@ -44,6 +46,7 @@ public class AlumniController {
      * @param id
      * @return
      */
+    @RequestMapping("/audit/list")
     public UnifiedResponse queryAlumniAudit(Integer id) {
         return new UnifiedResponse(alumniService.queryAlumniAudit(id));
     }
@@ -53,6 +56,7 @@ public class AlumniController {
      * @param id
      * @return
      */
+    @RequestMapping("/audit/pass")
     public UnifiedResponse auidtAlumniRecordPass(Integer id) throws Exception {
         return new UnifiedResponse(alumniService.auidtAlumniRecord(id, AlumniAuditStatusEnum.PASS));
     }
@@ -62,17 +66,40 @@ public class AlumniController {
      * @param id
      * @return
      */
+    @RequestMapping("/audit/reject")
     public UnifiedResponse auidtAlumniRecordReject(Integer id) throws Exception {
         return new UnifiedResponse(alumniService.auidtAlumniRecord(id, AlumniAuditStatusEnum.REJECT));
     }
 
     /**
-     * 分配管理员
+     * 退出协会
      * @param id
+     * @return
+     */
+    @RequestMapping("/audit/reject")
+    public UnifiedResponse exitAlumn(Integer id) throws Exception {
+        return new UnifiedResponse(alumniService.auidtAlumniRecord(id, AlumniAuditStatusEnum.EXIT));
+    }
+
+    /**
+     * 分配管理员
+     * @param alumniId
      * @param userId
      * @return
      */
-    public UnifiedResponse appointAdmin(Integer id, Integer userId) throws Exception {
-        return new UnifiedResponse(alumniService.appointAdmin(id, userId));
+    @RequestMapping("/appoint/admin")
+    public UnifiedResponse appointAdmin(Integer alumniId, Integer userId) throws Exception {
+        return new UnifiedResponse(alumniService.appointAdmin(alumniId, userId));
+    }
+
+    /**
+     * 申请加入协会
+     * @param alumniId
+     * @return
+     * @throws CaException
+     */
+    @RequestMapping("/apply")
+    public UnifiedResponse applyAlumni(Integer alumniId) throws Exception {
+        return new UnifiedResponse(alumniService.applyAlumni(alumniId));
     }
 }
