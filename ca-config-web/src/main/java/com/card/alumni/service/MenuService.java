@@ -27,9 +27,9 @@ public interface MenuService {
 
     CaMenu findById(Integer id) throws CaConfigException;
 
-    int getMaxRankByParentId(Integer pid) throws CaConfigException;
-
     MenuModel findModelById(Integer id) throws CaConfigException;
+
+    int getMaxRankByParentId(Integer pid) throws CaConfigException;
 
     List<CaMenu> listRankByParentId(Integer parentId) throws CaConfigException;
 

@@ -7,6 +7,7 @@ import com.card.alumni.entity.CaMenu;
 import com.card.alumni.entity.CaMenuExample;
 import com.card.alumni.entity.CaRoleMenuRelation;
 import com.card.alumni.entity.CaRoleMenuRelationExample;
+import com.card.alumni.enums.MenuTargetEnum;
 import com.card.alumni.exception.CaConfigException;
 import com.card.alumni.model.MenuModel;
 import com.card.alumni.request.MenuQueryRequest;
@@ -193,17 +194,17 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public int getMaxRankByParentId(Integer pid) throws CaConfigException {
-        Integer maxRank = caMenuMapper.getMaxRankByParentId(pid);
-        return maxRank < CaConstants.ZERO ? CaConstants.ZERO : maxRank;
-    }
-
-    @Override
     public MenuModel findModelById(Integer id) throws CaConfigException {
 
         CaMenu menu = findById(id);
 
         return convert2Model(menu);
+    }
+
+    @Override
+    public int getMaxRankByParentId(Integer pid) throws CaConfigException {
+        Integer maxRank = caMenuMapper.getMaxRankByParentId(pid);
+        return maxRank < CaConstants.ZERO ? CaConstants.ZERO : maxRank;
     }
 
     @Override
@@ -337,6 +338,10 @@ public class MenuServiceImpl implements MenuService {
         }
         if (StringUtils.isBlank(request.getTarget())) {
             throw new CaConfigException("菜单打开方式不能为空");
+        }
+        MenuTargetEnum targetEnum = MenuTargetEnum.getEnumByType(request.getTarget());
+        if (Objects.isNull(targetEnum)) {
+            throw new CaConfigException("非法的菜单打开方式");
         }
         if (Objects.isNull(request.getPid()) || request.getPid() < DEFAULT_PARENT_ID) {
             request.setPid(DEFAULT_PARENT_ID);

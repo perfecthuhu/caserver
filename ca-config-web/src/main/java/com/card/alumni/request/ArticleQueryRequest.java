@@ -9,4 +9,18 @@ import lombok.Data;
  */
 @Data
 public class ArticleQueryRequest extends BaseQueryRequest {
+
+    private String keyword;
+
+    private Integer type;
+
+    private Boolean isPublish;
+
+    private Integer page;
+
+    private Integer size;
+
+    private String orderField;
+
+    private String orderType;
 }
