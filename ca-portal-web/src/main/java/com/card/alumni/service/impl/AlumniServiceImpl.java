@@ -23,11 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -157,8 +153,21 @@ public class AlumniServiceImpl extends BaseService implements AlumniService {
 
     @Override
     public Boolean applyAlumni(Integer alumniId) throws CaException {
-        //TODO
-        return null;
+        int count = caAlumniAuditLogMapper.insert(buildCaAlumniAuditLog(alumniId));
+        if (count == 1) {
+            throw new CaException("申请失败");
+        }
+        return true;
+    }
+
+    private CaAlumniAuditLog buildCaAlumniAuditLog(Integer alumniId) {
+        CaAlumniAuditLog caAlumniAuditLog = new CaAlumniAuditLog();
+        caAlumniAuditLog.setAlumniId(alumniId);
+        caAlumniAuditLog.setStudentId(getUserId());
+        caAlumniAuditLog.setAuditStatus(AlumniAuditStatusEnum.APPLY.getCode());
+        caAlumniAuditLog.setCreateTime(new Date(System.currentTimeMillis()));
+        caAlumniAuditLog.setUpdateTime(new Date(System.currentTimeMillis()));
+        return caAlumniAuditLog;
     }
 
     private void validateAppointAdmin(Integer userId, Integer id) throws CaException {
