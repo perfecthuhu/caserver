@@ -5,15 +5,15 @@ import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.context.User;
 import com.card.alumni.dao.CaUserMapper;
 import com.card.alumni.dao.CaUserRoleRelationMapper;
-import com.card.alumni.entity.CaUser;
-import com.card.alumni.entity.CaUserExample;
-import com.card.alumni.entity.CaUserRoleRelation;
-import com.card.alumni.entity.CaUserRoleRelationExample;
+import com.card.alumni.dao.CaUserTagMapper;
+import com.card.alumni.entity.*;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.exception.ResultCodeEnum;
 import com.card.alumni.service.UserService;
 import com.card.alumni.utils.VerificationCodeUtils;
 import com.card.alumni.vo.UserVO;
+import com.card.alumni.vo.enums.StatusEnum;
+import com.card.alumni.vo.enums.UserTagEnum;
 import com.card.alumni.vo.query.UserQuery;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -22,8 +22,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -39,6 +41,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private CaUserMapper caUserMapper;
+
+    @Resource
+    private CaUserTagMapper caUserTagMapper;
 
     @Override
     public void login(UserVO userVO, String verificatioCode) throws Exception  {
@@ -71,13 +76,49 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void submitUserInfo(UserVO userVO) throws Exception {
         CaUser caUser = new CaUser();
         BeanUtils.copyProperties(userVO, caUser);
+        caUser.setUpdateTime(new Date(System.currentTimeMillis()));
+        caUser.setCreateTime(new Date(System.currentTimeMillis()));
         int count = caUserMapper.updateByPrimaryKey(caUser);
         if (count != 1) {
             throw new CaException("填写信息失败");
         }
+        caUserTagMapper.insert(convert2CaUserTag(userVO));
+        if (count != 1) {
+            throw new CaException("填写信息失败");
+        }
+    }
+
+    private CaUserTag convert2CaUserTag(UserVO userVO) {
+        CaUserTag caUserTag = new CaUserTag();
+        caUserTag.setStudentId(userVO.getId());
+        List<Integer> userTagId = userVO.getUserTagId();
+        if (CollectionUtils.isNotEmpty(userTagId)) {
+            userTagId.stream().forEach(s -> {
+                UserTagEnum userTagEnum = UserTagEnum.getUserTagEnum(s);
+                switch (userTagEnum) {
+                    case GIRL_FRIEND:
+                        caUserTag.setGirlFriend(StatusEnum.YES.getCode());
+                        break;
+                    case RESOURCE:
+                        caUserTag.setResource(StatusEnum.YES.getCode());
+                        break;
+                    case FOOD:
+                        caUserTag.setFood(StatusEnum.YES.getCode());
+                        break;
+                    case JOB:
+                        caUserTag.setJob(StatusEnum.YES.getCode());
+                        break;
+                    default:
+                }
+            });
+        }
+        caUserTag.setCreateTime(new Date(System.currentTimeMillis()));
+        caUserTag.setUpdateTime(new Date(System.currentTimeMillis()));
+        return caUserTag;
     }
 
     @Override
