@@ -9,6 +9,7 @@ import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.query.UserQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,7 +37,7 @@ public class UserController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/login")
+    @PostMapping("/login")
     @ApiOperation(value = "登陆", notes = "登陆", response = UnifiedResponse.class)
     public UnifiedResponse login(String phone, String code, HttpServletRequest request, HttpServletResponse response) throws Exception {
         UserVO userVO = new UserVO();
@@ -53,7 +54,7 @@ public class UserController {
      * @param userVO
      * @return
      */
-    @RequestMapping("/submit")
+    @PostMapping("/submit")
     @ApiOperation(value = "填写用户信息", notes = "填写用户信息", response = UnifiedResponse.class)
     public UnifiedResponse submitUserInfo(@RequestBody UserVO userVO) throws Exception {
         userService.submitUserInfo(userVO);
@@ -65,7 +66,7 @@ public class UserController {
      * @param userQuery
      * @return
      */
-    @RequestMapping("/query")
+    @PostMapping("/query")
     @ApiOperation(value = "查询用户信息", notes = "查询用户信息", response = UnifiedResponse.class)
     public UnifiedResponse queryUserVO(@RequestBody UserQuery userQuery) {
         return new UnifiedResponse(userService.queryUserVO(userQuery));
@@ -77,7 +78,7 @@ public class UserController {
      * @param code
      * @return
      */
-    @RequestMapping("/register")
+    @PostMapping("/register")
     @ApiOperation(value = "注册用户", notes = "注册用户", response = UnifiedResponse.class)
     public UnifiedResponse register(String phone, String code) throws Exception {
         UserVO userVO = new UserVO();

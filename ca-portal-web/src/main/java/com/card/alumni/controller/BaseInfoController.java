@@ -4,6 +4,7 @@ import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.service.BaseInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,7 +26,7 @@ public class BaseInfoController {
      * 查询所有学校信息
      * @return
      */
-    @RequestMapping("/school")
+    @GetMapping("/school")
     @ApiOperation(value = "查询所有学校信息", notes = "查询所有学校信息", response = UnifiedResponse.class)
     public UnifiedResponse querySchool() {
         return new UnifiedResponse(baseInfoService.querySchool());
@@ -35,7 +36,7 @@ public class BaseInfoController {
      * 查询首页结构信息
      * @return
      */
-    @RequestMapping("/home")
+    @GetMapping("/home")
     @ApiOperation(value = "查询首页结构信息", notes = "查询首页结构信息", response = UnifiedResponse.class)
     public UnifiedResponse queryHomeInfo() {
         return new UnifiedResponse(baseInfoService.queryHomeInfo());

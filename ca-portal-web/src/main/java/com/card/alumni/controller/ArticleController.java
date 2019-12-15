@@ -5,9 +5,7 @@ import com.card.alumni.service.ArticleService;
 import com.card.alumni.vo.query.ArticleQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -27,7 +25,7 @@ public class ArticleController {
      * 查询首页新闻列表
      * @return
      */
-    @RequestMapping("/page")
+    @PostMapping("/page")
     @ApiOperation(value = "查询首页新闻列表", notes = "查询首页新闻列表", response = UnifiedResponse.class)
     public UnifiedResponse queryArticleService(@RequestBody ArticleQuery articleQuery) throws Exception {
         return new UnifiedResponse(articleService.queryArticleService(articleQuery));
@@ -38,7 +36,7 @@ public class ArticleController {
      * @param id
      * @return
      */
-    @RequestMapping("/detail")
+    @GetMapping("/detail")
     @ApiOperation(value = "查询新闻详情", notes = "查询新闻详情", response = UnifiedResponse.class)
     public UnifiedResponse queryArticleDetail(Integer id) throws Exception {
         return new UnifiedResponse(articleService.queryArticleDetail(id));
