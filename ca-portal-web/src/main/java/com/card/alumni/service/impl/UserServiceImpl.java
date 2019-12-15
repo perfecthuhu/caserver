@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PageData<UserVO> queryUserVO(UserQuery userQuery) {
-        PageHelper.startPage(userQuery.getCurrentPage(), userQuery.getPageSize());
+        PageHelper.startPage(userQuery.getPage(), userQuery.getPageSize());
         List<CaUser> caUsers = caUserMapper.selectByExample(buildCaUserExample(userQuery));
         PageInfo<CaUser> pageInfo = new PageInfo<>(caUsers);
         return new PageData<>(pageInfo.getTotal(), convertUserVOList(caUsers));

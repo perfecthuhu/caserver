@@ -76,7 +76,7 @@ public class AlumniController {
      * @param id
      * @return
      */
-    @RequestMapping("/audit/reject")
+    @RequestMapping("/audit/exit")
     public UnifiedResponse exitAlumn(Integer id) throws Exception {
         return new UnifiedResponse(alumniService.auidtAlumniRecord(id, AlumniAuditStatusEnum.EXIT));
     }

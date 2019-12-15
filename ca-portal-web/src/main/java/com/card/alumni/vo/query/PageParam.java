@@ -13,7 +13,7 @@ public class PageParam {
     /**
      * 当前页码
      */
-    private Integer currentPage = 1;
+    private Integer page = 1;
     /**
      * 页面大小
      */

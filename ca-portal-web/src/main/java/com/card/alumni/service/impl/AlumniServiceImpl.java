@@ -53,7 +53,7 @@ public class AlumniServiceImpl extends BaseService implements AlumniService {
     @Override
     public PageData<AlumniVO> queryAlumniService(AlumniQuery alumniQuery) {
         CaAlumniExample example = buildCaAlumniExample(alumniQuery);
-        PageHelper.startPage(alumniQuery.getCurrentPage(), alumniQuery.getPageSize());
+        PageHelper.startPage(alumniQuery.getPage(), alumniQuery.getPageSize());
         List<CaAlumni> caAlumni = caAlumniMapper.selectByExample(example);
         PageInfo<CaAlumni> pageInfo = new PageInfo<>(caAlumni);
         return new PageData<>(pageInfo.getTotal(), convertAlumniVOList(caAlumni));
