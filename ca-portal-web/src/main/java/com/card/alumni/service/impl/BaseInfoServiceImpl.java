@@ -68,7 +68,7 @@ public class BaseInfoServiceImpl implements BaseInfoService {
         Date date = new Date(System.currentTimeMillis());
         CaHomePageExample example = new CaHomePageExample();
         example.createCriteria().andStartTimeLessThan(date)
-                .andEndTimeGreaterThanOrEqualTo(date);
+                .andEndTimeGreaterThanOrEqualTo(date).andIsDeleteEqualTo(Boolean.FALSE);
         List<CaHomePage> caHomePages = caHomePageMapper.selectByExample(example);
         Integer homeId = caHomePages.get(0).getId();
         CaHomeBannerExample exampleBanner = new CaHomeBannerExample();

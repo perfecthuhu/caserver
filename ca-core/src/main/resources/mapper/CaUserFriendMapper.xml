@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.card.alumni.dao.CaHomePageMapper" >
-  <resultMap id="BaseResultMap" type="com.card.alumni.entity.CaHomePage" >
+<mapper namespace="com.card.alumni.dao.CaUserFriendMapper" >
+  <resultMap id="BaseResultMap" type="com.card.alumni.entity.CaUserFriend" >
     <constructor >
       <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="start_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
-      <arg column="end_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
-      <arg column="is_delete" jdbcType="BIT" javaType="java.lang.Boolean" />
-      <arg column="updater" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="friend_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="creator" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="updater" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="is_delete" jdbcType="BIT" javaType="java.lang.Boolean" />
     </constructor>
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -73,16 +72,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, name, start_time, end_time, is_delete, updater, update_time, creator, create_time
+    id, user_id, friend_id, creator, create_time, updater, update_time, is_delete
   </sql>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.card.alumni.entity.CaHomePageExample" >
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.card.alumni.entity.CaUserFriendExample" >
     select
     <if test="distinct" >
       distinct
     </if>
     'true' as QUERYID,
     <include refid="Base_Column_List" />
-    from ca_home_page
+    from ca_user_friend
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -93,52 +92,38 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from ca_home_page
+    from ca_user_friend
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from ca_home_page
+    delete from ca_user_friend
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.card.alumni.entity.CaHomePageExample" >
-    delete from ca_home_page
+  <delete id="deleteByExample" parameterType="com.card.alumni.entity.CaUserFriendExample" >
+    delete from ca_user_friend
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.card.alumni.entity.CaHomePage" useGeneratedKeys="true" keyProperty="id" >
-    insert into ca_home_page (id, name, start_time, 
-      end_time, is_delete, updater, 
-      update_time, creator, create_time
-      )
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, 
-      #{endTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=BIT}, #{updater,jdbcType=INTEGER}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{creator,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
-      )
+  <insert id="insert" parameterType="com.card.alumni.entity.CaUserFriend" useGeneratedKeys="true" keyProperty="id" >
+    insert into ca_user_friend (id, user_id, friend_id, 
+      creator, create_time, updater, 
+      update_time, is_delete)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{friendId,jdbcType=INTEGER}, 
+      #{creator,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updater,jdbcType=INTEGER}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=BIT})
   </insert>
-  <insert id="insertSelective" parameterType="com.card.alumni.entity.CaHomePage" >
-    insert into ca_home_page
+  <insert id="insertSelective" parameterType="com.card.alumni.entity.CaUserFriend" >
+    insert into ca_user_friend
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
       </if>
-      <if test="name != null" >
-        name,
+      <if test="userId != null" >
+        user_id,
       </if>
-      <if test="startTime != null" >
-        start_time,
-      </if>
-      <if test="endTime != null" >
-        end_time,
-      </if>
-      <if test="isDelete != null" >
-        is_delete,
-      </if>
-      <if test="updater != null" >
-        updater,
-      </if>
-      <if test="updateTime != null" >
-        update_time,
+      <if test="friendId != null" >
+        friend_id,
       </if>
       <if test="creator != null" >
         creator,
@@ -146,28 +131,25 @@
       <if test="createTime != null" >
         create_time,
       </if>
+      <if test="updater != null" >
+        updater,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="isDelete != null" >
+        is_delete,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="name != null" >
-        #{name,jdbcType=VARCHAR},
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
       </if>
-      <if test="startTime != null" >
-        #{startTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="endTime != null" >
-        #{endTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="isDelete != null" >
-        #{isDelete,jdbcType=BIT},
-      </if>
-      <if test="updater != null" >
-        #{updater,jdbcType=INTEGER},
-      </if>
-      <if test="updateTime != null" >
-        #{updateTime,jdbcType=TIMESTAMP},
+      <if test="friendId != null" >
+        #{friendId,jdbcType=INTEGER},
       </if>
       <if test="creator != null" >
         #{creator,jdbcType=INTEGER},
@@ -175,37 +157,34 @@
       <if test="createTime != null" >
         #{createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="updater != null" >
+        #{updater,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDelete != null" >
+        #{isDelete,jdbcType=BIT},
+      </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.card.alumni.entity.CaHomePageExample" resultType="java.lang.Integer" >
-    select count(*) from ca_home_page
+  <select id="countByExample" parameterType="com.card.alumni.entity.CaUserFriendExample" resultType="java.lang.Integer" >
+    select count(*) from ca_user_friend
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map" >
-    update ca_home_page
+    update ca_user_friend
     <set >
       <if test="record.id != null" >
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.name != null" >
-        name = #{record.name,jdbcType=VARCHAR},
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=INTEGER},
       </if>
-      <if test="record.startTime != null" >
-        start_time = #{record.startTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.endTime != null" >
-        end_time = #{record.endTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.isDelete != null" >
-        is_delete = #{record.isDelete,jdbcType=BIT},
-      </if>
-      <if test="record.updater != null" >
-        updater = #{record.updater,jdbcType=INTEGER},
-      </if>
-      <if test="record.updateTime != null" >
-        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      <if test="record.friendId != null" >
+        friend_id = #{record.friendId,jdbcType=INTEGER},
       </if>
       <if test="record.creator != null" >
         creator = #{record.creator,jdbcType=INTEGER},
@@ -213,46 +192,42 @@
       <if test="record.createTime != null" >
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.updater != null" >
+        updater = #{record.updater,jdbcType=INTEGER},
+      </if>
+      <if test="record.updateTime != null" >
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.isDelete != null" >
+        is_delete = #{record.isDelete,jdbcType=BIT},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByExample" parameterType="map" >
-    update ca_home_page
+    update ca_user_friend
     set id = #{record.id,jdbcType=INTEGER},
-      name = #{record.name,jdbcType=VARCHAR},
-      start_time = #{record.startTime,jdbcType=TIMESTAMP},
-      end_time = #{record.endTime,jdbcType=TIMESTAMP},
-      is_delete = #{record.isDelete,jdbcType=BIT},
+      user_id = #{record.userId,jdbcType=INTEGER},
+      friend_id = #{record.friendId,jdbcType=INTEGER},
+      creator = #{record.creator,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
       updater = #{record.updater,jdbcType=INTEGER},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      creator = #{record.creator,jdbcType=INTEGER},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP}
+      is_delete = #{record.isDelete,jdbcType=BIT}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.card.alumni.entity.CaHomePage" >
-    update ca_home_page
+  <update id="updateByPrimaryKeySelective" parameterType="com.card.alumni.entity.CaUserFriend" >
+    update ca_user_friend
     <set >
-      <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
       </if>
-      <if test="startTime != null" >
-        start_time = #{startTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="endTime != null" >
-        end_time = #{endTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="isDelete != null" >
-        is_delete = #{isDelete,jdbcType=BIT},
-      </if>
-      <if test="updater != null" >
-        updater = #{updater,jdbcType=INTEGER},
-      </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      <if test="friendId != null" >
+        friend_id = #{friendId,jdbcType=INTEGER},
       </if>
       <if test="creator != null" >
         creator = #{creator,jdbcType=INTEGER},
@@ -260,19 +235,27 @@
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="updater != null" >
+        updater = #{updater,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDelete != null" >
+        is_delete = #{isDelete,jdbcType=BIT},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.card.alumni.entity.CaHomePage" >
-    update ca_home_page
-    set name = #{name,jdbcType=VARCHAR},
-      start_time = #{startTime,jdbcType=TIMESTAMP},
-      end_time = #{endTime,jdbcType=TIMESTAMP},
-      is_delete = #{isDelete,jdbcType=BIT},
+  <update id="updateByPrimaryKey" parameterType="com.card.alumni.entity.CaUserFriend" >
+    update ca_user_friend
+    set user_id = #{userId,jdbcType=INTEGER},
+      friend_id = #{friendId,jdbcType=INTEGER},
+      creator = #{creator,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
       updater = #{updater,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      creator = #{creator,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
+      is_delete = #{isDelete,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

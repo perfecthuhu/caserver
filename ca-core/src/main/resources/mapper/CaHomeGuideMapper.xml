@@ -10,9 +10,11 @@
       <arg column="rank" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="back_color" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="back_img" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="creator" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="updater" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
-      <arg column="yn" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="is_delete" jdbcType="BIT" javaType="java.lang.Boolean" />
     </constructor>
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -74,8 +76,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, home_page_id, name, redirect_path, rank, back_color, back_img, create_time, update_time, 
-    yn
+    id, home_page_id, name, redirect_path, rank, back_color, back_img, creator, create_time, 
+    updater, update_time, is_delete
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.card.alumni.entity.CaHomeGuideExample" >
     select
@@ -108,15 +110,17 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.card.alumni.entity.CaHomeGuide" >
+  <insert id="insert" parameterType="com.card.alumni.entity.CaHomeGuide" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_home_guide (id, home_page_id, name, 
       redirect_path, rank, back_color, 
-      back_img, create_time, update_time, 
-      yn)
+      back_img, creator, create_time, 
+      updater, update_time, is_delete
+      )
     values (#{id,jdbcType=INTEGER}, #{homePageId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
       #{redirectPath,jdbcType=VARCHAR}, #{rank,jdbcType=INTEGER}, #{backColor,jdbcType=VARCHAR}, 
-      #{backImg,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{yn,jdbcType=INTEGER})
+      #{backImg,jdbcType=VARCHAR}, #{creator,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updater,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=BIT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.card.alumni.entity.CaHomeGuide" >
     insert into ca_home_guide
@@ -142,14 +146,20 @@
       <if test="backImg != null" >
         back_img,
       </if>
+      <if test="creator != null" >
+        creator,
+      </if>
       <if test="createTime != null" >
         create_time,
+      </if>
+      <if test="updater != null" >
+        updater,
       </if>
       <if test="updateTime != null" >
         update_time,
       </if>
-      <if test="yn != null" >
-        yn,
+      <if test="isDelete != null" >
+        is_delete,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -174,14 +184,20 @@
       <if test="backImg != null" >
         #{backImg,jdbcType=VARCHAR},
       </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=INTEGER},
+      </if>
       <if test="createTime != null" >
         #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null" >
+        #{updater,jdbcType=INTEGER},
       </if>
       <if test="updateTime != null" >
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="yn != null" >
-        #{yn,jdbcType=INTEGER},
+      <if test="isDelete != null" >
+        #{isDelete,jdbcType=BIT},
       </if>
     </trim>
   </insert>
@@ -215,14 +231,20 @@
       <if test="record.backImg != null" >
         back_img = #{record.backImg,jdbcType=VARCHAR},
       </if>
+      <if test="record.creator != null" >
+        creator = #{record.creator,jdbcType=INTEGER},
+      </if>
       <if test="record.createTime != null" >
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updater != null" >
+        updater = #{record.updater,jdbcType=INTEGER},
       </if>
       <if test="record.updateTime != null" >
         update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.yn != null" >
-        yn = #{record.yn,jdbcType=INTEGER},
+      <if test="record.isDelete != null" >
+        is_delete = #{record.isDelete,jdbcType=BIT},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -238,9 +260,11 @@
       rank = #{record.rank,jdbcType=INTEGER},
       back_color = #{record.backColor,jdbcType=VARCHAR},
       back_img = #{record.backImg,jdbcType=VARCHAR},
+      creator = #{record.creator,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      updater = #{record.updater,jdbcType=INTEGER},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      yn = #{record.yn,jdbcType=INTEGER}
+      is_delete = #{record.isDelete,jdbcType=BIT}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -266,14 +290,20 @@
       <if test="backImg != null" >
         back_img = #{backImg,jdbcType=VARCHAR},
       </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=INTEGER},
+      </if>
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null" >
+        updater = #{updater,jdbcType=INTEGER},
       </if>
       <if test="updateTime != null" >
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="yn != null" >
-        yn = #{yn,jdbcType=INTEGER},
+      <if test="isDelete != null" >
+        is_delete = #{isDelete,jdbcType=BIT},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -286,9 +316,11 @@
       rank = #{rank,jdbcType=INTEGER},
       back_color = #{backColor,jdbcType=VARCHAR},
       back_img = #{backImg,jdbcType=VARCHAR},
+      creator = #{creator,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
+      updater = #{updater,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      yn = #{yn,jdbcType=INTEGER}
+      is_delete = #{isDelete,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

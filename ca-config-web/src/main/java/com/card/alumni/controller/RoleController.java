@@ -64,7 +64,7 @@ public class RoleController {
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "根据ID删除角色(刘明宇)", notes = "根据ID删除角色", response = UnifiedResponse.class)
+    @ApiOperation(value = "根据ID删除角色", notes = "根据ID删除角色", response = UnifiedResponse.class)
     public UnifiedResponse deleteById(@PathVariable("id") Integer id) throws Exception {
 
         LOGGER.info("{} delete role by id. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());

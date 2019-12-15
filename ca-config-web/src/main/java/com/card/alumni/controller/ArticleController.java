@@ -66,7 +66,7 @@ public class ArticleController {
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "根据ID删除文章(刘明宇)", notes = "根据ID删除文章", response = UnifiedResponse.class)
+    @ApiOperation(value = "根据ID删除文章", notes = "根据ID删除文章", response = UnifiedResponse.class)
     public UnifiedResponse deleteById(@PathVariable("id") Integer id) throws Exception {
 
         LOGGER.info("{} delete article by id. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());

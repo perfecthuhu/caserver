@@ -79,7 +79,7 @@ public class MenuController {
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "根据ID删除菜单(刘明宇)", notes = "根据ID删除菜单", response = UnifiedResponse.class)
+    @ApiOperation(value = "根据ID删除菜单", notes = "根据ID删除菜单", response = UnifiedResponse.class)
     public UnifiedResponse deleteById(@PathVariable("id") Integer id) throws Exception {
 
         LOGGER.info("{} delete menu by id. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());

@@ -1,15 +1,19 @@
 package com.card.alumni.service.impl;
 
 import com.card.alumni.common.PageData;
-import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.dao.CaAlumniAuditLogMapper;
 import com.card.alumni.dao.CaAlumniMapper;
 import com.card.alumni.dao.CaAlumniRoleMapper;
-import com.card.alumni.entity.*;
+import com.card.alumni.entity.CaAlumni;
+import com.card.alumni.entity.CaAlumniAuditLog;
+import com.card.alumni.entity.CaAlumniAuditLogExample;
+import com.card.alumni.entity.CaAlumniExample;
+import com.card.alumni.entity.CaAlumniRole;
+import com.card.alumni.entity.CaAlumniRoleExample;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.service.AlumniService;
-import com.card.alumni.service.BaseService;
 import com.card.alumni.service.UserService;
+import com.card.alumni.utils.RequestUtil;
 import com.card.alumni.vo.AlumniVO;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.enums.AlumniAuditStatusEnum;
@@ -32,7 +36,7 @@ import java.util.stream.Collectors;
  * @date 11:08 PM
  */
 @Service
-public class AlumniServiceImpl extends BaseService implements AlumniService {
+public class AlumniServiceImpl implements AlumniService {
 
     @Resource
     private CaAlumniMapper caAlumniMapper;
@@ -118,7 +122,7 @@ public class AlumniServiceImpl extends BaseService implements AlumniService {
 
     @Override
     public Boolean auidtAlumniRecord(Integer id, AlumniAuditStatusEnum statusEnum) throws CaException {
-        validateUserLimit(getUserId(), id);
+        validateUserLimit(RequestUtil.getUserId(), id);
         CaAlumniAuditLog alumniAuditLog = new CaAlumniAuditLog();
         alumniAuditLog.setId(id);
         alumniAuditLog.setAuditStatus(statusEnum.getCode());
@@ -139,7 +143,7 @@ public class AlumniServiceImpl extends BaseService implements AlumniService {
 
     @Override
     public Boolean appointAdmin(Integer id, Integer userId) throws CaException {
-        validateAppointAdmin(getUserId(), id);
+        validateAppointAdmin(RequestUtil.getUserId(), id);
         CaAlumniRole role = new CaAlumniRole();
         role.setRole(AlumniRoleEnum.ADMIN.getCode());
         CaAlumniRoleExample example = new CaAlumniRoleExample();

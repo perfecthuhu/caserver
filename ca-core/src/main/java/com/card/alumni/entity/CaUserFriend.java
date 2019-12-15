@@ -2,18 +2,12 @@ package com.card.alumni.entity;
 
 import java.util.Date;
 
-public class CaHomeBanner {
+public class CaUserFriend {
     private Integer id;
 
-    private Integer homePageId;
+    private Integer userId;
 
-    private String title;
-
-    private String path;
-
-    private Integer rank;
-
-    private String redirectPath;
+    private Integer friendId;
 
     private Integer creator;
 
@@ -25,13 +19,10 @@ public class CaHomeBanner {
 
     private Boolean isDelete;
 
-    public CaHomeBanner(Integer id, Integer homePageId, String title, String path, Integer rank, String redirectPath, Integer creator, Date createTime, Integer updater, Date updateTime, Boolean isDelete) {
+    public CaUserFriend(Integer id, Integer userId, Integer friendId, Integer creator, Date createTime, Integer updater, Date updateTime, Boolean isDelete) {
         this.id = id;
-        this.homePageId = homePageId;
-        this.title = title;
-        this.path = path;
-        this.rank = rank;
-        this.redirectPath = redirectPath;
+        this.userId = userId;
+        this.friendId = friendId;
         this.creator = creator;
         this.createTime = createTime;
         this.updater = updater;
@@ -39,7 +30,7 @@ public class CaHomeBanner {
         this.isDelete = isDelete;
     }
 
-    public CaHomeBanner() {
+    public CaUserFriend() {
         super();
     }
 
@@ -51,44 +42,20 @@ public class CaHomeBanner {
         this.id = id;
     }
 
-    public Integer getHomePageId() {
-        return homePageId;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setHomePageId(Integer homePageId) {
-        this.homePageId = homePageId;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public String getTitle() {
-        return title;
+    public Integer getFriendId() {
+        return friendId;
     }
 
-    public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path == null ? null : path.trim();
-    }
-
-    public Integer getRank() {
-        return rank;
-    }
-
-    public void setRank(Integer rank) {
-        this.rank = rank;
-    }
-
-    public String getRedirectPath() {
-        return redirectPath;
-    }
-
-    public void setRedirectPath(String redirectPath) {
-        this.redirectPath = redirectPath == null ? null : redirectPath.trim();
+    public void setFriendId(Integer friendId) {
+        this.friendId = friendId;
     }
 
     public Integer getCreator() {

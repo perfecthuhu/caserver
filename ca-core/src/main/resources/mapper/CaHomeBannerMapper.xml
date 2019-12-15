@@ -3,7 +3,7 @@
 <mapper namespace="com.card.alumni.dao.CaHomeBannerMapper" >
   <resultMap id="BaseResultMap" type="com.card.alumni.entity.CaHomeBanner" >
     <constructor >
-      <idArg column="id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="home_page_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="title" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="path" jdbcType="VARCHAR" javaType="java.lang.String" />
@@ -93,15 +93,15 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from ca_home_banner
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from ca_home_banner
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
   </delete>
   <delete id="deleteByExample" parameterType="com.card.alumni.entity.CaHomeBannerExample" >
     delete from ca_home_banner
@@ -109,12 +109,12 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.card.alumni.entity.CaHomeBanner" >
+  <insert id="insert" parameterType="com.card.alumni.entity.CaHomeBanner" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_home_banner (id, home_page_id, title, 
       path, rank, redirect_path, 
       creator, create_time, updater, 
       update_time, is_delete)
-    values (#{id,jdbcType=BIGINT}, #{homePageId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{homePageId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
       #{path,jdbcType=VARCHAR}, #{rank,jdbcType=INTEGER}, #{redirectPath,jdbcType=VARCHAR}, 
       #{creator,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updater,jdbcType=INTEGER}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=BIT})
@@ -158,7 +158,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
-        #{id,jdbcType=BIGINT},
+        #{id,jdbcType=INTEGER},
       </if>
       <if test="homePageId != null" >
         #{homePageId,jdbcType=INTEGER},
@@ -202,7 +202,7 @@
     update ca_home_banner
     <set >
       <if test="record.id != null" >
-        id = #{record.id,jdbcType=BIGINT},
+        id = #{record.id,jdbcType=INTEGER},
       </if>
       <if test="record.homePageId != null" >
         home_page_id = #{record.homePageId,jdbcType=INTEGER},
@@ -241,7 +241,7 @@
   </update>
   <update id="updateByExample" parameterType="map" >
     update ca_home_banner
-    set id = #{record.id,jdbcType=BIGINT},
+    set id = #{record.id,jdbcType=INTEGER},
       home_page_id = #{record.homePageId,jdbcType=INTEGER},
       title = #{record.title,jdbcType=VARCHAR},
       path = #{record.path,jdbcType=VARCHAR},
@@ -290,7 +290,7 @@
         is_delete = #{isDelete,jdbcType=BIT},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.card.alumni.entity.CaHomeBanner" >
     update ca_home_banner
@@ -304,6 +304,6 @@
       updater = #{updater,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       is_delete = #{isDelete,jdbcType=BIT}
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

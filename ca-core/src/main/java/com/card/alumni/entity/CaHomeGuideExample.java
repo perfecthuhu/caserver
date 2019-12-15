@@ -565,6 +565,66 @@ public class CaHomeGuideExample {
             return (Criteria) this;
         }
 
+        public Criteria andCreatorIsNull() {
+            addCriterion("creator is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorIsNotNull() {
+            addCriterion("creator is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorEqualTo(Integer value) {
+            addCriterion("creator =", value, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorNotEqualTo(Integer value) {
+            addCriterion("creator <>", value, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorGreaterThan(Integer value) {
+            addCriterion("creator >", value, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorGreaterThanOrEqualTo(Integer value) {
+            addCriterion("creator >=", value, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorLessThan(Integer value) {
+            addCriterion("creator <", value, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorLessThanOrEqualTo(Integer value) {
+            addCriterion("creator <=", value, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorIn(List<Integer> values) {
+            addCriterion("creator in", values, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorNotIn(List<Integer> values) {
+            addCriterion("creator not in", values, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorBetween(Integer value1, Integer value2) {
+            addCriterion("creator between", value1, value2, "creator");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorNotBetween(Integer value1, Integer value2) {
+            addCriterion("creator not between", value1, value2, "creator");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateTimeIsNull() {
             addCriterion("create_time is null");
             return (Criteria) this;
@@ -622,6 +682,66 @@ public class CaHomeGuideExample {
 
         public Criteria andCreateTimeNotBetween(Date value1, Date value2) {
             addCriterion("create_time not between", value1, value2, "createTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdaterIsNull() {
+            addCriterion("updater is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdaterIsNotNull() {
+            addCriterion("updater is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdaterEqualTo(Integer value) {
+            addCriterion("updater =", value, "updater");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdaterNotEqualTo(Integer value) {
+            addCriterion("updater <>", value, "updater");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdaterGreaterThan(Integer value) {
+            addCriterion("updater >", value, "updater");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdaterGreaterThanOrEqualTo(Integer value) {
+            addCriterion("updater >=", value, "updater");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdaterLessThan(Integer value) {
+            addCriterion("updater <", value, "updater");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdaterLessThanOrEqualTo(Integer value) {
+            addCriterion("updater <=", value, "updater");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdaterIn(List<Integer> values) {
+            addCriterion("updater in", values, "updater");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdaterNotIn(List<Integer> values) {
+            addCriterion("updater not in", values, "updater");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdaterBetween(Integer value1, Integer value2) {
+            addCriterion("updater between", value1, value2, "updater");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdaterNotBetween(Integer value1, Integer value2) {
+            addCriterion("updater not between", value1, value2, "updater");
             return (Criteria) this;
         }
 
@@ -685,63 +805,63 @@ public class CaHomeGuideExample {
             return (Criteria) this;
         }
 
-        public Criteria andYnIsNull() {
-            addCriterion("yn is null");
+        public Criteria andIsDeleteIsNull() {
+            addCriterion("is_delete is null");
             return (Criteria) this;
         }
 
-        public Criteria andYnIsNotNull() {
-            addCriterion("yn is not null");
+        public Criteria andIsDeleteIsNotNull() {
+            addCriterion("is_delete is not null");
             return (Criteria) this;
         }
 
-        public Criteria andYnEqualTo(Integer value) {
-            addCriterion("yn =", value, "yn");
+        public Criteria andIsDeleteEqualTo(Boolean value) {
+            addCriterion("is_delete =", value, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andYnNotEqualTo(Integer value) {
-            addCriterion("yn <>", value, "yn");
+        public Criteria andIsDeleteNotEqualTo(Boolean value) {
+            addCriterion("is_delete <>", value, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andYnGreaterThan(Integer value) {
-            addCriterion("yn >", value, "yn");
+        public Criteria andIsDeleteGreaterThan(Boolean value) {
+            addCriterion("is_delete >", value, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andYnGreaterThanOrEqualTo(Integer value) {
-            addCriterion("yn >=", value, "yn");
+        public Criteria andIsDeleteGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("is_delete >=", value, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andYnLessThan(Integer value) {
-            addCriterion("yn <", value, "yn");
+        public Criteria andIsDeleteLessThan(Boolean value) {
+            addCriterion("is_delete <", value, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andYnLessThanOrEqualTo(Integer value) {
-            addCriterion("yn <=", value, "yn");
+        public Criteria andIsDeleteLessThanOrEqualTo(Boolean value) {
+            addCriterion("is_delete <=", value, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andYnIn(List<Integer> values) {
-            addCriterion("yn in", values, "yn");
+        public Criteria andIsDeleteIn(List<Boolean> values) {
+            addCriterion("is_delete in", values, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andYnNotIn(List<Integer> values) {
-            addCriterion("yn not in", values, "yn");
+        public Criteria andIsDeleteNotIn(List<Boolean> values) {
+            addCriterion("is_delete not in", values, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andYnBetween(Integer value1, Integer value2) {
-            addCriterion("yn between", value1, value2, "yn");
+        public Criteria andIsDeleteBetween(Boolean value1, Boolean value2) {
+            addCriterion("is_delete between", value1, value2, "isDelete");
             return (Criteria) this;
         }
 
-        public Criteria andYnNotBetween(Integer value1, Integer value2) {
-            addCriterion("yn not between", value1, value2, "yn");
+        public Criteria andIsDeleteNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("is_delete not between", value1, value2, "isDelete");
             return (Criteria) this;
         }
     }

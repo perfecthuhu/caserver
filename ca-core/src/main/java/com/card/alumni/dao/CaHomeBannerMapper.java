@@ -10,7 +10,7 @@ public interface CaHomeBannerMapper {
 
     int deleteByExample(CaHomeBannerExample example);
 
-    int deleteByPrimaryKey(Long id);
+    int deleteByPrimaryKey(Integer id);
 
     int insert(CaHomeBanner record);
 
@@ -18,7 +18,7 @@ public interface CaHomeBannerMapper {
 
     List<CaHomeBanner> selectByExample(CaHomeBannerExample example);
 
-    CaHomeBanner selectByPrimaryKey(Long id);
+    CaHomeBanner selectByPrimaryKey(Integer id);
 
     int updateByExampleSelective(@Param("record") CaHomeBanner record, @Param("example") CaHomeBannerExample example);
 
