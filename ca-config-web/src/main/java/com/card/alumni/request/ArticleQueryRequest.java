@@ -15,12 +15,4 @@ public class ArticleQueryRequest extends BaseQueryRequest {
     private Integer type;
 
     private Boolean isPublish;
-
-    private Integer page;
-
-    private Integer size;
-
-    private String orderField;
-
-    private String orderType;
 }
