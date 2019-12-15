@@ -1,6 +1,5 @@
 package com.card.alumni.service.impl;
 
-import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.dao.CaHomeBannerMapper;
 import com.card.alumni.dao.CaHomeGuideMapper;
 import com.card.alumni.dao.CaHomePageMapper;
@@ -88,6 +87,6 @@ public class BaseInfoServiceImpl implements BaseInfoService {
             BeanUtils.copyProperties(s, homeGuideVO);
             return homeGuideVO;
         }).collect(Collectors.toList()));
-        return new UnifiedResponse(homeVO);
+        return homeVO;
     }
 }

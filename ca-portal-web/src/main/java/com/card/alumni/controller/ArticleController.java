@@ -24,7 +24,7 @@ public class ArticleController {
      * @return
      */
     @RequestMapping("/page")
-    public UnifiedResponse queryArticleService(ArticleQuery articleQuery) {
+    public UnifiedResponse queryArticleService(ArticleQuery articleQuery) throws Exception {
         return new UnifiedResponse(articleService.queryArticleService(articleQuery));
     }
 
@@ -34,7 +34,7 @@ public class ArticleController {
      * @return
      */
     @RequestMapping("/detail")
-    public UnifiedResponse queryArticleDetail(Integer id) {
+    public UnifiedResponse queryArticleDetail(Integer id) throws Exception {
         return new UnifiedResponse(articleService.queryArticleDetail(id));
     }
 }
