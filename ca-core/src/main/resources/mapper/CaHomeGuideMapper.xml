@@ -323,4 +323,53 @@
       is_delete = #{isDelete,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="getMaxRankByHomePageId" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+    select
+    MAX(rank)
+    from ca_home_guide
+    where home_page_id = #{homePageId,jdbcType=INTEGER} and is_delete = 0
+  </select>
+
+  <update id="batchUpdate" parameterType="com.card.alumni.entity.CaHomeGuide" >
+    <foreach collection="list" separator=";" item="record">
+      update ca_home_guide
+      <set >
+        <if test="record.homePageId != null" >
+          home_page_id = #{record.homePageId,jdbcType=INTEGER},
+        </if>
+        <if test="record.name != null" >
+          name = #{record.name,jdbcType=VARCHAR},
+        </if>
+        <if test="record.redirectPath != null" >
+          redirect_path = #{record.redirectPath,jdbcType=VARCHAR},
+        </if>
+        <if test="record.rank != null" >
+          rank = #{record.rank,jdbcType=INTEGER},
+        </if>
+        <if test="record.backColor != null" >
+          back_color = #{record.backColor,jdbcType=VARCHAR},
+        </if>
+        <if test="record.backImg != null" >
+          back_img = #{record.backImg,jdbcType=VARCHAR},
+        </if>
+        <if test="record.creator != null" >
+          creator = #{record.creator,jdbcType=INTEGER},
+        </if>
+        <if test="record.createTime != null" >
+          create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="record.updater != null" >
+          updater = #{record.updater,jdbcType=INTEGER},
+        </if>
+        <if test="record.updateTime != null" >
+          update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="record.isDelete != null" >
+          is_delete = #{record.isDelete,jdbcType=BIT},
+        </if>
+      </set>
+      where id = #{record.id,jdbcType=INTEGER}
+    </foreach>
+  </update>
 </mapper>

@@ -164,6 +164,13 @@ public class HomePageServiceImpl implements HomePageService {
         model.setUpdater(entity.getUpdater());
         model.setCreateTime(entity.getCreateTime());
         model.setUpdateTime(entity.getUpdateTime());
+        model.setStatusDesc("主页已失效");
+
+        long currentTime = System.currentTimeMillis();
+        if (entity.getStartTime().getTime() <= currentTime
+                && currentTime >= entity.getEndTime().getTime()) {
+            model.setStatusDesc("主页生效中");
+        }
         return model;
     }
 

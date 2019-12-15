@@ -27,4 +27,8 @@ public interface CaHomeGuideMapper {
     int updateByPrimaryKeySelective(CaHomeGuide record);
 
     int updateByPrimaryKey(CaHomeGuide record);
+
+    int getMaxRankByHomePageId(Integer homePageId);
+
+    int batchUpdate(List<CaHomeGuide> list);
 }

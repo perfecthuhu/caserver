@@ -27,4 +27,8 @@ public interface CaHomeBannerMapper {
     int updateByPrimaryKeySelective(CaHomeBanner record);
 
     int updateByPrimaryKey(CaHomeBanner record);
+
+    int getMaxRankByHomePageId(Integer homePageId);
+
+    int batchUpdate(List<CaHomeBanner> list);
 }

@@ -373,7 +373,7 @@
     select
     MAX(rank)
     from ca_menu
-    where pid = #{pid,jdbcType=INTEGER}
+    where pid = #{pid,jdbcType=INTEGER} and is_delete = 0
   </select>
 
   <update id="batchUpdate" parameterType="com.card.alumni.entity.CaMenu" >

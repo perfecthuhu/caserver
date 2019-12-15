@@ -6,22 +6,20 @@ import java.io.Serializable;
 
 /**
  * @author liumingyu
- * @date 2019-12-15 2:05 PM
+ * @date 2019-12-15 9:14 PM
  */
 @Data
-public class HomeGuideRequest implements Serializable {
+public class HomeBannerRequest implements Serializable {
 
     private Integer id;
 
     private Integer homePageId;
 
-    private String name;
+    private String title;
+
+    private String path;
 
     private Integer rank;
 
     private String redirectPath;
-
-    private String backColor;
-
-    private String backImg;
 }

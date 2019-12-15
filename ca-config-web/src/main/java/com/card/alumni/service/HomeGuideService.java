@@ -1,11 +1,13 @@
 package com.card.alumni.service;
 
 import com.card.alumni.common.PageData;
-import com.card.alumni.entity.CaHomePage;
+import com.card.alumni.entity.CaHomeGuide;
 import com.card.alumni.exception.CaConfigException;
-import com.card.alumni.model.HomePageModel;
-import com.card.alumni.request.HomePageQueryRequest;
-import com.card.alumni.request.HomePageRequest;
+import com.card.alumni.model.HomeGuideModel;
+import com.card.alumni.request.HomeGuideQueryRequest;
+import com.card.alumni.request.HomeGuideRequest;
+
+import java.util.List;
 
 /**
  * @author liumingyu
@@ -13,15 +15,21 @@ import com.card.alumni.request.HomePageRequest;
  */
 public interface HomeGuideService {
 
-    Integer save(HomePageRequest request) throws CaConfigException;
+    Integer save(HomeGuideRequest request) throws CaConfigException;
 
-    void update(HomePageRequest request) throws CaConfigException;
+    void update(HomeGuideRequest request) throws CaConfigException;
 
     void deleteById(Integer id) throws CaConfigException;
 
-    CaHomePage findById(Integer id) throws CaConfigException;
+    void rank(Integer homePageId, List<Integer> guideIdList) throws CaConfigException;
 
-    HomePageModel findModelById(Integer id) throws CaConfigException;
+    CaHomeGuide findById(Integer id) throws CaConfigException;
 
-    PageData<HomePageModel> pageByRequest(HomePageQueryRequest request) throws CaConfigException;
+    HomeGuideModel findModelById(Integer id) throws CaConfigException;
+
+    List<CaHomeGuide> listRankByHomePageId(Integer homePageId) throws CaConfigException;
+
+    List<HomeGuideModel> listRankModelByHomePageId(Integer homePageId) throws CaConfigException;
+
+    PageData<HomeGuideModel> pageByRequest(HomeGuideQueryRequest request) throws CaConfigException;
 }

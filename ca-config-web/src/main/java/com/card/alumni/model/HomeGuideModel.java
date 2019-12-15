@@ -10,23 +10,27 @@ import java.util.Date;
  * @date 2019-12-15 2:05 PM
  */
 @Data
-public class HomePageModel implements Serializable {
+public class HomeGuideModel implements Serializable {
 
     private Integer id;
 
+    private Integer homePageId;
+
     private String name;
 
-    private Date startTime;
+    private String redirectPath;
 
-    private Date endTime;
+    private Integer rank;
 
-    private Integer updater;
+    private String backColor;
 
-    private Date updateTime;
+    private String backImg;
 
     private Integer creator;
 
     private Date createTime;
 
-    private String statusDesc;
+    private Integer updater;
+
+    private Date updateTime;
 }
