@@ -5,6 +5,7 @@ import com.card.alumni.exception.CaException;
 import com.card.alumni.service.AlumniService;
 import com.card.alumni.vo.enums.AlumniAuditStatusEnum;
 import com.card.alumni.vo.query.AlumniQuery;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,7 +28,7 @@ public class AlumniController {
      * @return
      */
     @RequestMapping("/page")
-    public UnifiedResponse queryAlumniService(AlumniQuery alumniQuery) {
+    public UnifiedResponse queryAlumniService(@RequestBody AlumniQuery alumniQuery) {
         return new UnifiedResponse(alumniService.queryAlumniService(alumniQuery));
     }
 

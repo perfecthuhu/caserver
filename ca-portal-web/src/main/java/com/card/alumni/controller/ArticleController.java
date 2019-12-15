@@ -3,6 +3,7 @@ package com.card.alumni.controller;
 import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.service.ArticleService;
 import com.card.alumni.vo.query.ArticleQuery;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,7 +25,7 @@ public class ArticleController {
      * @return
      */
     @RequestMapping("/page")
-    public UnifiedResponse queryArticleService(ArticleQuery articleQuery) throws Exception {
+    public UnifiedResponse queryArticleService(@RequestBody ArticleQuery articleQuery) throws Exception {
         return new UnifiedResponse(articleService.queryArticleService(articleQuery));
     }
 

@@ -7,6 +7,7 @@ import com.card.alumni.utils.AESUtil;
 import com.card.alumni.utils.CookieUtils;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.query.UserQuery;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,14 +28,16 @@ public class UserController {
 
     /**
      * 登陆
-     * @param userVO
-     * @param verificatioCode
+     * @param phone
+     * @param code
      * @return
      * @throws Exception
      */
     @RequestMapping("/login")
-    public UnifiedResponse login(UserVO userVO, String verificatioCode, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        userService.login(userVO, verificatioCode);
+    public UnifiedResponse login(String phone, String code, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        UserVO userVO = new UserVO();
+        userVO.setPhone(phone);
+        userService.login(userVO, code);
         Integer id = UserContext.getCurrentUser().getUser().getId();
         String token = AESUtil.encrypt(id.toString(), "ca_manager_aes_token_pwd");
         CookieUtils.setCookie(request, response, "token", token, 60 * 30, "utf-8");
@@ -47,7 +50,7 @@ public class UserController {
      * @return
      */
     @RequestMapping("/submit")
-    public UnifiedResponse submitUserInfo(UserVO userVO) throws Exception {
+    public UnifiedResponse submitUserInfo(@RequestBody UserVO userVO) throws Exception {
         userService.submitUserInfo(userVO);
         return new UnifiedResponse();
     }
@@ -58,18 +61,21 @@ public class UserController {
      * @return
      */
     @RequestMapping("/query")
-    public UnifiedResponse queryUserVO(UserQuery userQuery) {
+    public UnifiedResponse queryUserVO(@RequestBody UserQuery userQuery) {
         return new UnifiedResponse(userService.queryUserVO(userQuery));
     }
 
     /**
      * 注册用户
-     * @param verificatioCode
+     * @param phone
+     * @param code
      * @return
      */
     @RequestMapping("/register")
-    public UnifiedResponse register(UserVO userVO, String verificatioCode) throws Exception {
-        userService.register(userVO, verificatioCode);
+    public UnifiedResponse register(String phone, String code) throws Exception {
+        UserVO userVO = new UserVO();
+        userVO.setPhone(phone);
+        userService.register(userVO, code);
         return new UnifiedResponse();
     }
 }

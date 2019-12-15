@@ -40,9 +40,6 @@ public class UserServiceImpl implements UserService {
     @Resource
     private CaUserMapper caUserMapper;
 
-    @Resource
-    private CaUserRoleRelationMapper caUserRoleRelationMapper;
-
     @Override
     public void login(UserVO userVO, String verificatioCode) throws Exception  {
         if (validateVerificatioCode(userVO, verificatioCode)) {
@@ -59,7 +56,6 @@ public class UserServiceImpl implements UserService {
             CaUser caUser = caUserMapper.selectByPrimaryKey(userId);
             if (Objects.nonNull(caUser)) {
                 User user = convertUser(caUser);
-                user.setRoleIds(queryUserRole(userId));
                 return user;
             }
         } catch (Exception e) {
@@ -168,16 +164,6 @@ public class UserServiceImpl implements UserService {
             flag = true;
         }
         return flag;
-    }
-
-    private List<Integer> queryUserRole(Integer userId) throws CaException {
-        CaUserRoleRelationExample example = new CaUserRoleRelationExample();
-        example.createCriteria().andUserIdEqualTo(userId);
-        List<CaUserRoleRelation> caUserRoleRelations = caUserRoleRelationMapper.selectByExample(example);
-        if (CollectionUtils.isEmpty(caUserRoleRelations)) {
-            throw new CaException("用户角色为空");
-        }
-        return caUserRoleRelations.stream().map(CaUserRoleRelation::getRoleId).collect(Collectors.toList());
     }
 
 }

@@ -81,5 +81,4 @@ public class User implements Serializable {
 
     private Integer yn;
 
-    private List<Integer> roleIds;
 }
