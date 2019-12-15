@@ -167,7 +167,7 @@ public class AlumniServiceImpl implements AlumniService {
     private CaAlumniAuditLog buildCaAlumniAuditLog(Integer alumniId) {
         CaAlumniAuditLog caAlumniAuditLog = new CaAlumniAuditLog();
         caAlumniAuditLog.setAlumniId(alumniId);
-        caAlumniAuditLog.setStudentId(getUserId());
+        caAlumniAuditLog.setStudentId(RequestUtil.getUserId());
         caAlumniAuditLog.setAuditStatus(AlumniAuditStatusEnum.APPLY.getCode());
         caAlumniAuditLog.setCreateTime(new Date(System.currentTimeMillis()));
         caAlumniAuditLog.setUpdateTime(new Date(System.currentTimeMillis()));
