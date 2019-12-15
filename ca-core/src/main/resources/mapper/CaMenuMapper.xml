@@ -369,7 +369,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="getMaxRankByParentId" resultMap="java.lang.Integer" parameterType="java.lang.Integer" >
+  <select id="getMaxRankByParentId" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
     select
     MAX(rank)
     from ca_menu
