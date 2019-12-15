@@ -7,6 +7,8 @@ import com.card.alumni.utils.AESUtil;
 import com.card.alumni.utils.CookieUtils;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.query.UserQuery;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping("/user")
+@Api(value = "用户模块", tags = "用户模块")
 public class UserController {
 
     @Resource
@@ -34,6 +37,7 @@ public class UserController {
      * @throws Exception
      */
     @RequestMapping("/login")
+    @ApiOperation(value = "登陆", notes = "登陆", response = UnifiedResponse.class)
     public UnifiedResponse login(String phone, String code, HttpServletRequest request, HttpServletResponse response) throws Exception {
         UserVO userVO = new UserVO();
         userVO.setPhone(phone);
@@ -50,6 +54,7 @@ public class UserController {
      * @return
      */
     @RequestMapping("/submit")
+    @ApiOperation(value = "填写用户信息", notes = "填写用户信息", response = UnifiedResponse.class)
     public UnifiedResponse submitUserInfo(@RequestBody UserVO userVO) throws Exception {
         userService.submitUserInfo(userVO);
         return new UnifiedResponse();
@@ -61,6 +66,7 @@ public class UserController {
      * @return
      */
     @RequestMapping("/query")
+    @ApiOperation(value = "查询用户信息", notes = "查询用户信息", response = UnifiedResponse.class)
     public UnifiedResponse queryUserVO(@RequestBody UserQuery userQuery) {
         return new UnifiedResponse(userService.queryUserVO(userQuery));
     }
@@ -72,6 +78,7 @@ public class UserController {
      * @return
      */
     @RequestMapping("/register")
+    @ApiOperation(value = "注册用户", notes = "注册用户", response = UnifiedResponse.class)
     public UnifiedResponse register(String phone, String code) throws Exception {
         UserVO userVO = new UserVO();
         userVO.setPhone(phone);

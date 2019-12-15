@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author sunxiaodong10 2019/12/9
@@ -72,5 +73,5 @@ public class UserVO implements Serializable {
 
     private String schoolName;
 
-    private Integer yn;
+    private List<Integer> userTagId;
 }
