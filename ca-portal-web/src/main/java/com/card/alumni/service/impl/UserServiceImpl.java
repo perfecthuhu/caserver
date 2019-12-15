@@ -187,7 +187,7 @@ public class UserServiceImpl implements UserService {
         if (Objects.isNull(userVO.getPhone())) {
             throw new CaException("手机号码为空");
         }
-        if (validateVerificatioCode(userVO, verificatioCode)) {
+        if (!validateVerificatioCode(userVO, verificatioCode)) {
             throw new CaException("验证码错误");
         }
         CaUser caUser = new CaUser();

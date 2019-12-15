@@ -7,6 +7,9 @@ import com.card.alumni.context.UserContext;
 import com.card.alumni.service.UserService;
 import com.card.alumni.utils.AESUtil;
 import com.card.alumni.utils.CookieUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -25,6 +28,8 @@ import java.util.Objects;
 @Component
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
+    private Logger LOGGER = LoggerFactory.getLogger(LoginInterceptor.class);
+
     @Resource
     private UserService userService;
 
@@ -32,6 +37,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         UserContext userContext = UserContext.getCurrentUser();
         String path = request.getRequestURI();
+        LOGGER.info(path);
         if(Objects.isNull(userContext)) {
             userContext = new UserContext();
             UserContext.setCurrentUser(userContext);
@@ -40,7 +46,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             User user = getUser(request);
             if (Objects.isNull(user)) {
                 redirect2LoginPage(request, response);
-                return false;
+                return true;
             }
             if (user.getYn() == 1) {
                 userContext.setLoginStatus(SystemLoginStatusEnum.PASS);
@@ -81,11 +87,26 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     private boolean needLogin(String path) {
         //TODO 判断url是否需要登陆
+        if (path.startsWith("/doc.html")) {
+            return false;
+        }
+        if (path.startsWith("/swagger")) {
+            return false;
+        }
+        if (path.startsWith("/user/login")) {
+            return false;
+        }
+        if (path.startsWith("/user/register")) {
+            return false;
+        }
         return true;
     }
 
     private User getUser(HttpServletRequest request) {
         String token = CookieUtils.getCookieValue(request, "token", "utf-8");
+        if (StringUtils.isBlank(token)) {
+            return null;
+        }
         String tokenId = AESUtil.decrypt(token, "ca_manager_aes_token_pwd");
         User user = userService.queryUserById(Integer.parseInt(tokenId));
         if (Objects.isNull(user)) {
