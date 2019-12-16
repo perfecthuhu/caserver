@@ -1,7 +1,6 @@
 package com.card.alumni.controller;
 
 import com.card.alumni.common.UnifiedResponse;
-import com.card.alumni.context.UserContext;
 import com.card.alumni.service.UserService;
 import com.card.alumni.utils.AESUtil;
 import com.card.alumni.utils.CookieUtils;

@@ -35,7 +35,6 @@
       <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="yn" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="role_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
     </constructor>
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -100,7 +99,7 @@
     id, phone, name, id_card, sex, professional, education, accept_ance_date, graduate_date, 
     birthday, status, second_tel, qq, wx, email, address, class_id, college_id, college_name, 
     faculty_id, faculty_name, photo_img, work_unit, duty, alumni_id, alumni_name, signature, 
-    school_id, school_name, create_time, update_time, yn, role_id
+    school_id, school_name, create_time, update_time, yn
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.card.alumni.entity.CaUserExample" >
     select
@@ -144,7 +143,7 @@
       work_unit, duty, alumni_id, 
       alumni_name, signature, school_id, 
       school_name, create_time, update_time, 
-      yn, role_id)
+      yn)
     values (#{id,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{idCard,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, #{professional,jdbcType=VARCHAR}, 
       #{education,jdbcType=INTEGER}, #{acceptAnceDate,jdbcType=VARCHAR}, #{graduateDate,jdbcType=VARCHAR}, 
@@ -155,7 +154,7 @@
       #{workUnit,jdbcType=VARCHAR}, #{duty,jdbcType=VARCHAR}, #{alumniId,jdbcType=INTEGER}, 
       #{alumniName,jdbcType=VARCHAR}, #{signature,jdbcType=VARCHAR}, #{schoolId,jdbcType=INTEGER}, 
       #{schoolName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{yn,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER})
+      #{yn,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.card.alumni.entity.CaUser" >
     insert into ca_user
@@ -256,9 +255,6 @@
       <if test="yn != null" >
         yn,
       </if>
-      <if test="roleId != null" >
-        role_id,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -356,9 +352,6 @@
       </if>
       <if test="yn != null" >
         #{yn,jdbcType=INTEGER},
-      </if>
-      <if test="roleId != null" >
-        #{roleId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -467,9 +460,6 @@
       <if test="record.yn != null" >
         yn = #{record.yn,jdbcType=INTEGER},
       </if>
-      <if test="record.roleId != null" >
-        role_id = #{record.roleId,jdbcType=INTEGER},
-      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -508,8 +498,7 @@
       school_name = #{record.schoolName,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      yn = #{record.yn,jdbcType=INTEGER},
-      role_id = #{record.roleId,jdbcType=INTEGER}
+      yn = #{record.yn,jdbcType=INTEGER}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -610,9 +599,6 @@
       <if test="yn != null" >
         yn = #{yn,jdbcType=INTEGER},
       </if>
-      <if test="roleId != null" >
-        role_id = #{roleId,jdbcType=INTEGER},
-      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -648,8 +634,7 @@
       school_name = #{schoolName,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      yn = #{yn,jdbcType=INTEGER},
-      role_id = #{roleId,jdbcType=INTEGER}
+      yn = #{yn,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
