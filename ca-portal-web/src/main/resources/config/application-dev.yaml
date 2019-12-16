@@ -52,6 +52,18 @@ spring:
     restart:
       # 热部署开关
       enabled: true
+  redis:
+    database: 0
+    host: 47.105.149.158
+    port: 6379
+    password: caserver
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: -1ms
+    timeout: 300ms
 
 mybatis:
   configuration:
