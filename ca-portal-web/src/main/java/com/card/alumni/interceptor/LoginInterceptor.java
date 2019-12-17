@@ -7,6 +7,8 @@ import com.card.alumni.context.UserContext;
 import com.card.alumni.service.UserService;
 import com.card.alumni.utils.AESUtil;
 import com.card.alumni.utils.CookieUtils;
+import com.card.alumni.utils.RedisUtils;
+import com.card.alumni.vo.CaProtalWebConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +34,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private RedisUtils redisUtils;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -86,7 +91,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     }
 
     private boolean needLogin(String path) {
-        //TODO 判断url是否需要登陆
         if (path.startsWith("/doc.html")) {
             return false;
         }
@@ -105,8 +109,16 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     private User getUser(HttpServletRequest request) {
         String token = CookieUtils.getCookieValue(request, "token", "utf-8");
         if (StringUtils.isBlank(token)) {
+            token = request.getHeader("token");
+        }
+        if (StringUtils.isBlank(token)) {
             return null;
         }
+        boolean isExist = redisUtils.hasKey(token);
+        if (!isExist) {
+            return null;
+        }
+        redisUtils.expire(token, CaProtalWebConstants.TOKEN_EXPIRE_TIME);
         String tokenId = AESUtil.decrypt(token, "ca_manager_aes_token_pwd");
         User user = userService.queryUserById(Integer.parseInt(tokenId));
         if (Objects.isNull(user)) {

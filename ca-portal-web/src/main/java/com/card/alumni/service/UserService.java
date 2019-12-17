@@ -13,6 +13,12 @@ import com.card.alumni.vo.query.UserQuery;
 public interface UserService {
 
 
+    /**
+     * 登陆
+     * @param userVO
+     * @param verificatioCode
+     * @throws Exception
+     */
     void login(UserVO userVO, String verificatioCode) throws Exception ;
 
     /**

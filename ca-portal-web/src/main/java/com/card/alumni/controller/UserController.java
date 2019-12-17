@@ -4,7 +4,9 @@ import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.service.UserService;
 import com.card.alumni.utils.AESUtil;
 import com.card.alumni.utils.CookieUtils;
+import com.card.alumni.utils.RedisUtils;
 import com.card.alumni.utils.RequestUtil;
+import com.card.alumni.vo.CaProtalWebConstants;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.query.UserQuery;
 import io.swagger.annotations.Api;
@@ -30,6 +32,9 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private RedisUtils redisUtils;
+
     /**
      * 登陆
      * @param phone
@@ -46,6 +51,8 @@ public class UserController {
         Integer id = RequestUtil.getUserId();
         String token = AESUtil.encrypt(id.toString(), "ca_manager_aes_token_pwd");
         CookieUtils.setCookie(request, response, "token", token, 60 * 30, "utf-8");
+        response.setHeader("token", token);
+        redisUtils.set(token, "", CaProtalWebConstants.TOKEN_EXPIRE_TIME);
         return new UnifiedResponse();
     }
 
