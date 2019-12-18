@@ -49,4 +49,10 @@ public interface UserService {
      */
     void register(UserVO userVO, String verificatioCode) throws Exception;
 
+    /**
+     * 发送验证码
+     * @param phone
+     */
+    void sendValidateCode(String phone) throws Exception;
+
 }

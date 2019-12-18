@@ -93,4 +93,17 @@ public class UserController {
         userService.register(userVO, code);
         return new UnifiedResponse();
     }
+
+    /**
+     * 发送验证码
+     * @param phone
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/send/code")
+    @ApiOperation(value = "发送验证码", notes = "发送验证码", response = UnifiedResponse.class)
+    public UnifiedResponse sendCode(String phone) throws Exception {
+        userService.sendValidateCode(phone);
+        return new UnifiedResponse();
+    }
 }

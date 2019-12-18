@@ -10,6 +10,7 @@ import com.card.alumni.entity.*;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.exception.ResultCodeEnum;
 import com.card.alumni.service.UserService;
+import com.card.alumni.utils.RedisUtils;
 import com.card.alumni.utils.VerificationCodeUtils;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.enums.StatusEnum;
@@ -44,6 +45,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private CaUserTagMapper caUserTagMapper;
+    
+    @Resource
+    private RedisUtils redisUtils;
 
     @Override
     public void login(UserVO userVO, String verificatioCode) throws Exception  {
@@ -198,11 +202,20 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public void sendValidateCode(String phone) throws Exception {
+        String code = VerificationCodeUtils.getVerificationCode(phone);
+        redisUtils.set("CA_VALIDATE_CODE_KEY_" + phone, code);
+    }
+
     private boolean validateVerificatioCode(UserVO userVO, String verificatioCode) {
         boolean flag = false;
-        String code = VerificationCodeUtils.getVerificationCode(userVO.getPhone());
-        if (code.equals(verificatioCode)) {
-            flag = true;
+        Object validateCodeCache = redisUtils.get("CA_VALIDATE_CODE_KEY_" + userVO.getPhone());
+        if (Objects.nonNull(validateCodeCache)) {
+            String code = (String) validateCodeCache;
+            if (code.equals(verificatioCode)) {
+                flag = true;
+            }
         }
         return flag;
     }
