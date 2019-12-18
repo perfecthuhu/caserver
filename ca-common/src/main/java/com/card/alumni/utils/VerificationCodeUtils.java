@@ -44,7 +44,8 @@ public class VerificationCodeUtils {
         if (StringUtils.isEmpty(result)) {
             sendMsg(phone, code);
         }
-        int success = (int) JSONObject.parseObject(result).get("code");
+        String isSussess = (String) JSONObject.parseObject(result).get("code");
+        Integer success = Integer.parseInt(isSussess);
         if (success == 1) {
             return true;
         }
