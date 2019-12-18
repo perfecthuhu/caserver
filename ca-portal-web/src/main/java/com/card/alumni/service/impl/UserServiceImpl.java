@@ -205,7 +205,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void sendValidateCode(String phone) throws Exception {
         String code = VerificationCodeUtils.getVerificationCode(phone);
-        redisUtils.set("CA_VALIDATE_CODE_KEY_" + phone, code);
+        redisUtils.set("CA_VALIDATE_CODE_KEY_" + phone, code, 60);
     }
 
     private boolean validateVerificatioCode(UserVO userVO, String verificatioCode) {
