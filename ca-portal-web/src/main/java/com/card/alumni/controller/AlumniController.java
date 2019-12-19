@@ -3,6 +3,7 @@ package com.card.alumni.controller;
 import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.service.AlumniService;
+import com.card.alumni.vo.AlumniVO;
 import com.card.alumni.vo.enums.AlumniAuditStatusEnum;
 import com.card.alumni.vo.query.AlumniQuery;
 import io.swagger.annotations.Api;
@@ -111,5 +112,29 @@ public class AlumniController {
     @ApiOperation(value = "申请加入协会", notes = "申请加入协会", response = UnifiedResponse.class)
     public UnifiedResponse applyAlumni(Integer alumniId) throws Exception {
         return new UnifiedResponse(alumniService.applyAlumni(alumniId));
+    }
+
+    /**
+     * 创建协会
+     * @param alumniVO
+     * @return
+     * @throws CaException
+     */
+    @PostMapping("/create")
+    @ApiOperation(value = "申请创建协会", notes = "申请创建协会", response = UnifiedResponse.class)
+    UnifiedResponse createAlumni(AlumniVO alumniVO) throws CaException {
+        return new UnifiedResponse(alumniService.createAlumni(alumniVO));
+    }
+
+    /**
+     * 修改协会信息
+     * @param alumniVO
+     * @return
+     * @throws CaException
+     */
+    @PostMapping("/update")
+    @ApiOperation(value = "更新协会信息", notes = "更新协会信息", response = UnifiedResponse.class)
+    UnifiedResponse updateAlimni(AlumniVO alumniVO) throws CaException {
+        return new UnifiedResponse(alumniService.updateAlimni(alumniVO));
     }
 }

@@ -62,4 +62,20 @@ public interface AlumniService {
      */
     Boolean applyAlumni(Integer alumniId) throws CaException;
 
+    /**
+     * 创建协会
+     * @param alumniVO
+     * @return
+     * @throws CaException
+     */
+    Boolean createAlumni(AlumniVO alumniVO) throws CaException;
+
+    /**
+     * 修改协会信息
+     * @param alumniVO
+     * @return
+     * @throws CaException
+     */
+    Boolean updateAlimni(AlumniVO alumniVO) throws CaException;
+
 }

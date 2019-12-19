@@ -18,12 +18,14 @@ import com.card.alumni.vo.AlumniVO;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.enums.AlumniAuditStatusEnum;
 import com.card.alumni.vo.enums.AlumniRoleEnum;
+import com.card.alumni.vo.enums.AlumniTypeEnum;
 import com.card.alumni.vo.query.AlumniQuery;
 import com.card.alumni.vo.query.UserQuery;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -121,8 +123,21 @@ public class AlumniServiceImpl implements AlumniService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean auidtAlumniRecord(Integer id, AlumniAuditStatusEnum statusEnum) throws CaException {
         validateUserLimit(RequestUtil.getUserId(), id);
+
+        CaAlumniAuditLog caAlumniAuditLog = caAlumniAuditLogMapper.selectByPrimaryKey(id);
+
+        switch (statusEnum) {
+            case PASS:
+                insertAlumniRole(caAlumniAuditLog);
+                break;
+            case EXIT:
+                deleteAlumniRole(caAlumniAuditLog);
+                break;
+            default:
+        }
         CaAlumniAuditLog alumniAuditLog = new CaAlumniAuditLog();
         alumniAuditLog.setId(id);
         alumniAuditLog.setAuditStatus(statusEnum.getCode());
@@ -131,6 +146,44 @@ public class AlumniServiceImpl implements AlumniService {
             throw new CaException("审核失败");
         }
         return true;
+    }
+
+    private void deleteAlumniRole(CaAlumniAuditLog caAlumniAuditLog) throws CaException {
+        CaAlumniRoleExample example = new CaAlumniRoleExample();
+        example.createCriteria().andStudentIdEqualTo(caAlumniAuditLog.getStudentId())
+                .andAlumniIdEqualTo(caAlumniAuditLog.getStudentId());
+        List<CaAlumniRole> caAlumniRoles = caAlumniRoleMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(caAlumniRoles) || caAlumniRoles.size() != 1) {
+            throw new CaException("审核异常");
+        }
+        CaAlumniRole alumniRole = caAlumniRoles.get(0);
+        if (AlumniRoleEnum.LEADER.getCode().equals(alumniRole.getRole())) {
+            throw new CaException("会长不能退出协会");
+        }
+        int count = caAlumniRoleMapper.deleteByPrimaryKey(alumniRole.getId());
+        if (count == 0) {
+            throw new CaException("审核失败");
+        }
+    }
+
+    private void insertAlumniRole(CaAlumniAuditLog caAlumniAuditLog) throws CaException  {
+        CaAlumniRole alumniRole = convertCaAlumniRole(caAlumniAuditLog);
+        int count = caAlumniRoleMapper.insert(alumniRole);
+        if (count != 1) {
+            throw new CaException("审核失败");
+        }
+    }
+
+    private CaAlumniRole convertCaAlumniRole(CaAlumniAuditLog caAlumniAuditLog) {
+        CaAlumniRole alumniRole = new CaAlumniRole();
+        alumniRole.setAlumniId(caAlumniAuditLog.getAlumniId());
+        alumniRole.setStudentId(caAlumniAuditLog.getStudentId());
+        alumniRole.setCreateTime(new Date(System.currentTimeMillis()));
+        alumniRole.setUpdateTime(new Date(System.currentTimeMillis()));
+        alumniRole.setRole(AlumniRoleEnum.MEMBER.getCode());
+
+        return alumniRole;
+
     }
 
     private void validateUserLimit(Integer userId, Integer id) throws CaException {
@@ -162,6 +215,56 @@ public class AlumniServiceImpl implements AlumniService {
             throw new CaException("申请失败");
         }
         return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean createAlumni(AlumniVO alumniVO) throws CaException {
+        validateAlimniVO(alumniVO);
+        CaAlumni alumni = buildCaAlumni(alumniVO);
+        int count = caAlumniMapper.insert(alumni);
+        if (count != 1) {
+            throw new CaException("创建协会失败");
+        }
+        CaAlumniRole caAlumniRole = new CaAlumniRole();
+        caAlumniRole.setStudentId(RequestUtil.getUserId());
+        caAlumniRole.setAlumniId(alumni.getId());
+        caAlumniRole.setRole(AlumniRoleEnum.LEADER.getCode());
+        caAlumniRole.setCreateTime(new Date(System.currentTimeMillis()));
+        caAlumniRole.setUpdateTime(new Date(System.currentTimeMillis()));
+        count = caAlumniRoleMapper.insert(caAlumniRole);
+        if (count != 1) {
+            throw new CaException("创建协会失败");
+        }
+        return true;
+    }
+
+    @Override
+    public Boolean updateAlimni(AlumniVO alumniVO) throws CaException {
+        validateUserLimit(RequestUtil.getUserId(), alumniVO.getId());
+        CaAlumni alumni = convertAlumniVO(alumniVO);
+        int count = caAlumniMapper.updateByPrimaryKeySelective(alumni);
+        if (count != 1) {
+            throw new CaException("协会信息保存失败");
+        }
+        return true;
+    }
+
+    private void validateAlimniVO(AlumniVO alumniVO) throws CaException {
+        if (Objects.isNull(alumniVO)) {
+            throw new CaException("协会信息为空");
+        }
+        if (Objects.isNull(alumniVO.getName()))  {
+            throw new CaException("协会名称为空");
+        }
+    }
+
+    private CaAlumni buildCaAlumni(AlumniVO alumniVO) {
+        CaAlumni alumni = new CaAlumni();
+        BeanUtils.copyProperties(alumniVO, alumni);
+        alumni.setPartentId(AlumniTypeEnum.ASSOCIATION.getCode());
+        alumni.setType(AlumniTypeEnum.ASSOCIATION.getCode());
+        return alumni;
     }
 
     private CaAlumniAuditLog buildCaAlumniAuditLog(Integer alumniId) {
@@ -201,6 +304,12 @@ public class AlumniServiceImpl implements AlumniService {
         AlumniVO alumniVO = new AlumniVO();
         BeanUtils.copyProperties(caAlumni, alumniVO);
         return alumniVO;
+    }
+
+    private CaAlumni convertAlumniVO(AlumniVO alumniVO) {
+        CaAlumni caAlumni = new CaAlumni();
+        BeanUtils.copyProperties(alumniVO, caAlumni);
+        return caAlumni;
     }
 
     private CaAlumniExample buildCaAlumniExample(AlumniQuery alumniQuery) {
