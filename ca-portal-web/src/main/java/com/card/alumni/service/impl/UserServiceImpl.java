@@ -220,6 +220,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void sendValidateCode(String phone) throws Exception {
+        if (Objects.nonNull(queryUserByPhone(phone))) {
+            throw new CaException("手机号已注册，请直接登陆");
+        }
         String code = VerificationCodeUtils.getVerificationCode(phone);
         redisUtils.set("CA_VALIDATE_CODE_KEY_" + phone, code, 60);
     }
