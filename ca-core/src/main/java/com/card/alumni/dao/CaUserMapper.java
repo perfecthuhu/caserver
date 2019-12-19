@@ -27,4 +27,6 @@ public interface CaUserMapper {
     int updateByPrimaryKeySelective(CaUser record);
 
     int updateByPrimaryKey(CaUser record);
+
+    CaUser selectByPhone(String phone);
 }

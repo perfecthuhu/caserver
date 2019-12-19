@@ -19,6 +19,7 @@ import com.card.alumni.vo.query.UserQuery;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -53,6 +54,10 @@ public class UserServiceImpl implements UserService {
     public void login(UserVO userVO, String verificatioCode) throws Exception  {
         if (validateVerificatioCode(userVO, verificatioCode)) {
             throw new CaException("验证码错误");
+        }
+        CaUser caUser = queryUserByPhone(userVO.getPhone());
+        if (Objects.isNull(caUser)) {
+            throw new CaException("手机号码未注册，请注册后登陆");
         }
     }
 
@@ -194,12 +199,23 @@ public class UserServiceImpl implements UserService {
         if (!validateVerificatioCode(userVO, verificatioCode)) {
             throw new CaException("验证码错误");
         }
+        if (Objects.nonNull(queryUserByPhone(userVO.getPhone()))) {
+            throw new CaException("手机号已注册，请直接登陆");
+        }
         CaUser caUser = new CaUser();
         BeanUtils.copyProperties(userVO, caUser);
         int count = caUserMapper.insert(caUser);
         if (count != 1) {
             throw new CaException("注册失败");
         }
+    }
+
+    private CaUser queryUserByPhone(String phone) {
+        if (StringUtils.isBlank(phone)) {
+            return null;
+        }
+        CaUser caUser = caUserMapper.selectByPhone(phone);
+        return caUser;
     }
 
     @Override

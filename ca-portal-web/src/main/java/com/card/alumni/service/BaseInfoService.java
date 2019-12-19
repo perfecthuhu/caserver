@@ -1,8 +1,10 @@
 package com.card.alumni.service;
 
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.exception.CaException;
 import com.card.alumni.vo.HomeVO;
 import com.card.alumni.vo.SchoolVO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -24,4 +26,9 @@ public interface BaseInfoService {
      */
     HomeVO queryHomeInfo();
 
+    /**
+     * 上传文件
+     * @param file
+     */
+    String uploadFile(MultipartFile file, Long maxSize) throws CaException;
 }

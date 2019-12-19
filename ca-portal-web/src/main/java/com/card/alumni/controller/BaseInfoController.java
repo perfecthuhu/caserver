@@ -1,12 +1,15 @@
 package com.card.alumni.controller;
 
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.exception.CaException;
 import com.card.alumni.service.BaseInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 
@@ -40,5 +43,11 @@ public class BaseInfoController {
     @ApiOperation(value = "查询首页结构信息", notes = "查询首页结构信息", response = UnifiedResponse.class)
     public UnifiedResponse queryHomeInfo() {
         return new UnifiedResponse(baseInfoService.queryHomeInfo());
+    }
+
+    @GetMapping("/upload")
+    @ApiOperation(value = "上传文件及图片", notes = "上传文件及图片", response = UnifiedResponse.class)
+    public UnifiedResponse uploadFile(@RequestParam("file") MultipartFile file, Long maxSize) throws CaException {
+        return new UnifiedResponse(baseInfoService.uploadFile(file, maxSize));
     }
 }

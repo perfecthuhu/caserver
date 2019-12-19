@@ -12,16 +12,22 @@ import com.card.alumni.entity.CaHomePage;
 import com.card.alumni.entity.CaHomePageExample;
 import com.card.alumni.entity.CaSchool;
 import com.card.alumni.entity.CaSchoolExample;
+import com.card.alumni.exception.CaException;
 import com.card.alumni.service.BaseInfoService;
 import com.card.alumni.vo.HomeBannerVO;
 import com.card.alumni.vo.HomeGuideVO;
 import com.card.alumni.vo.HomeVO;
 import com.card.alumni.vo.SchoolVO;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -33,6 +39,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class BaseInfoServiceImpl implements BaseInfoService {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(BaseInfoServiceImpl.class);
 
     @Resource
     private CaSchoolMapper caSchoolMapper;
@@ -89,4 +97,30 @@ public class BaseInfoServiceImpl implements BaseInfoService {
         }).collect(Collectors.toList()));
         return homeVO;
     }
+
+    @Override
+    public String uploadFile(MultipartFile file, Long maxSize) throws CaException {
+        if (file.isEmpty()) {
+            throw new CaException("请重新选择文件，文件为空");
+        }
+        if (maxSize == null || maxSize <= 0) {
+            maxSize = 2 * 1024 * 1024L;
+        }
+        if (file.getSize() > maxSize) {
+            throw new CaException("图片上传失败，文件过大，请重新选择！");
+        }
+        String fileName = file.getOriginalFilename();
+        String filePath = "/home/work/servers/tomcat8/webapps/";
+        String path = filePath + fileName;
+        File dest = new File(path);
+        try {
+            file.transferTo(dest);
+            LOGGER.info("上传成功");
+            return "上传成功";
+        } catch (IOException e) {
+            LOGGER.error("文件上传失败", e);
+        }
+        return "47.105.149.158:8080/" + path;
+    }
+
 }
