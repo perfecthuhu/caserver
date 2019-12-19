@@ -53,6 +53,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 redirect2LoginPage(request, response);
                 return true;
             }
+            if (user.getYn() == 0) {
+                redirect2AddPersonalInformation(request, response);
+            }
             if (user.getYn() == 1) {
                 userContext.setLoginStatus(SystemLoginStatusEnum.PASS);
             } else {
@@ -63,21 +66,29 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         return true;
     }
 
+    private void redirect2AddPersonalInformation(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            if (isAjaxRequest(request)) {
+                PrintWriter writer = response.getWriter();
+                writer.write("{\"status\":0,\"message\":\"未登陆\",\"data\":{\"loginStatus\":0}}");
+                return;
+            }
+            response.sendError(404);
+        } catch (IOException e) {
+            LOGGER.error("已登陆，未认证重定向失败", e);
+        }
+    }
+
     private void redirect2LoginPage(HttpServletRequest request, HttpServletResponse response) {
         try {
             if (isAjaxRequest(request)) {
                 PrintWriter writer = response.getWriter();
-                writer.write("{\"error\":\"noLogin\"}");
+                writer.write("{\"status\":0,\"message\":\"未登陆\",\"data\":{\"loginStatus\":-1}}");
                 return;
             }
-            response.setHeader("Pragma","No-cache");
-            response.setHeader("Cache-Control","no-cache");
-            response.setDateHeader("Expires", 0);
-            //TODO 登陆URL
-            String loginUrl  = "";
-            response.sendRedirect(loginUrl);
+            response.sendError(404);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("跳转登陆页失败", e);
         }
     }
 
