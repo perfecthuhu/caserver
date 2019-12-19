@@ -1,6 +1,5 @@
 package com.card.alumni.interceptor;
 
-import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.context.SystemLoginStatusEnum;
 import com.card.alumni.context.User;
 import com.card.alumni.context.UserContext;
