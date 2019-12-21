@@ -83,8 +83,8 @@ public class UserController {
      */
     @PostMapping("/send/code")
     @ApiOperation(value = "发送验证码", notes = "发送验证码", response = UnifiedResponse.class)
-    public UnifiedResponse sendCode(@RequestBody String phone) throws Exception {
-        userService.sendValidateCode(phone);
+    public UnifiedResponse sendCode(@RequestBody UserPhoneCodeVO phone) throws Exception {
+        userService.sendValidateCode(phone.getPhone());
         return new UnifiedResponse();
     }
 }

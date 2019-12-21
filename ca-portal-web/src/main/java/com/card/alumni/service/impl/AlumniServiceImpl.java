@@ -1,5 +1,6 @@
 package com.card.alumni.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.card.alumni.common.PageData;
 import com.card.alumni.dao.CaAlumniAuditLogMapper;
 import com.card.alumni.dao.CaAlumniMapper;
@@ -23,6 +24,8 @@ import com.card.alumni.vo.query.AlumniQuery;
 import com.card.alumni.vo.query.UserQuery;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +43,8 @@ import java.util.stream.Collectors;
 @Service
 public class AlumniServiceImpl implements AlumniService {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(AlumniServiceImpl.class);
+
     @Resource
     private CaAlumniMapper caAlumniMapper;
 
@@ -54,15 +59,19 @@ public class AlumniServiceImpl implements AlumniService {
 
     @Override
     public PageData<AlumniVO> queryAlumniService(AlumniQuery alumniQuery) {
+        LOGGER.info("查询群组 param:{}", JSON.toJSONString(alumniQuery));
         CaAlumniExample example = buildCaAlumniExample(alumniQuery);
         PageHelper.startPage(alumniQuery.getPage(), alumniQuery.getPageSize());
         List<CaAlumni> caAlumni = caAlumniMapper.selectByExample(example);
         PageInfo<CaAlumni> pageInfo = new PageInfo<>(caAlumni);
-        return new PageData<>(pageInfo.getTotal(), convertAlumniVOList(caAlumni));
+        PageData<AlumniVO> alumniVOPageData = new PageData<>(pageInfo.getTotal(), convertAlumniVOList(caAlumni));
+        LOGGER.info("查询群组 result:{}", JSON.toJSONString(alumniVOPageData));
+        return alumniVOPageData;
     }
 
     @Override
     public AlumniVO queryAlumniDetail(Integer id) throws CaException {
+        LOGGER.info("查询协会细节 param:{}", id);
         CaAlumni caAlumni = caAlumniMapper.selectByPrimaryKey(id);
         if (Objects.isNull(caAlumni)) {
             throw new CaException("协会不存在");
@@ -72,6 +81,7 @@ public class AlumniServiceImpl implements AlumniService {
         alumniVO.setLeader(userMap.get(3) == null ? null : userMap.get(0).get(0));
         alumniVO.setAdminVO(userMap.get(2));
         alumniVO.setUserVOList(userMap.get(1));
+        LOGGER.info("查询协会细节 result:{}", alumniVO);
         return alumniVO;
     }
 
@@ -110,6 +120,7 @@ public class AlumniServiceImpl implements AlumniService {
 
     @Override
     public List<UserVO> queryAlumniAudit(Integer id) {
+        LOGGER.info("查询协会代审信息 param:{}", id);
         CaAlumniAuditLogExample example = new CaAlumniAuditLogExample();
         example.createCriteria()
                 .andAlumniIdEqualTo(id)
@@ -119,7 +130,9 @@ public class AlumniServiceImpl implements AlumniService {
             return null;
         }
         List<Integer> userIdList = caAlumniAuditLogs.stream().map(CaAlumniAuditLog::getStudentId).collect(Collectors.toList());
-        return queryByIdList(userIdList);
+        List<UserVO> userVOList = queryByIdList(userIdList);
+        LOGGER.info("查询协会代审信息 result:{}", userVOList);
+        return userVOList;
     }
 
     @Override
@@ -220,6 +233,7 @@ public class AlumniServiceImpl implements AlumniService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean createAlumni(AlumniVO alumniVO) throws CaException {
+        LOGGER.info("创建协会 param:{}", JSON.toJSONString(alumniVO));
         validateAlimniVO(alumniVO);
         CaAlumni alumni = buildCaAlumni(alumniVO);
         int count = caAlumniMapper.insert(alumni);
@@ -241,6 +255,7 @@ public class AlumniServiceImpl implements AlumniService {
 
     @Override
     public Boolean updateAlimni(AlumniVO alumniVO) throws CaException {
+        LOGGER.info("更想协会信息 param:{}", JSON.toJSONString(alumniVO));
         validateUserLimit(RequestUtil.getUserId(), alumniVO.getId());
         CaAlumni alumni = convertAlumniVO(alumniVO);
         int count = caAlumniMapper.updateByPrimaryKeySelective(alumni);
