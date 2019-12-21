@@ -1,20 +1,18 @@
 package com.card.alumni.controller;
 
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.entity.CaUser;
 import com.card.alumni.service.UserService;
 import com.card.alumni.utils.AESUtil;
 import com.card.alumni.utils.CookieUtils;
 import com.card.alumni.utils.RedisUtils;
-import com.card.alumni.utils.RequestUtil;
 import com.card.alumni.vo.CaProtalWebConstants;
 import com.card.alumni.vo.UserVO;
+import com.card.alumni.vo.query.UserPhoneCodeVO;
 import com.card.alumni.vo.query.UserQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -37,18 +35,16 @@ public class UserController {
 
     /**
      * 登陆
-     * @param phone
-     * @param code
      * @return
      * @throws Exception
      */
     @PostMapping("/login")
     @ApiOperation(value = "登陆", notes = "登陆", response = UnifiedResponse.class)
-    public UnifiedResponse login(String phone, String code, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public UnifiedResponse login(@RequestBody UserPhoneCodeVO phoneCode, HttpServletRequest request, HttpServletResponse response) throws Exception {
         UserVO userVO = new UserVO();
-        userVO.setPhone(phone);
-        userService.login(userVO, code);
-        Integer id = RequestUtil.getUserId();
+        userVO.setPhone(phoneCode.getPhone());
+        CaUser caUser = userService.login(userVO, phoneCode.getCode());
+        Integer id = caUser.getId();
         String token = AESUtil.encrypt(id.toString(), "ca_manager_aes_token_pwd");
         CookieUtils.setCookie(request, response, "token", token, 60 * 30, "utf-8");
         response.setHeader("token", token);
@@ -80,21 +76,6 @@ public class UserController {
     }
 
     /**
-     * 注册用户
-     * @param phone
-     * @param code
-     * @return
-     */
-    @PostMapping("/register")
-    @ApiOperation(value = "注册用户", notes = "注册用户", response = UnifiedResponse.class)
-    public UnifiedResponse register(String phone, String code) throws Exception {
-        UserVO userVO = new UserVO();
-        userVO.setPhone(phone);
-        userService.register(userVO, code);
-        return new UnifiedResponse();
-    }
-
-    /**
      * 发送验证码
      * @param phone
      * @return
@@ -102,8 +83,8 @@ public class UserController {
      */
     @PostMapping("/send/code")
     @ApiOperation(value = "发送验证码", notes = "发送验证码", response = UnifiedResponse.class)
-    public UnifiedResponse sendCode(String phone) throws Exception {
-        userService.sendValidateCode(phone);
+    public UnifiedResponse sendCode(@RequestBody UserPhoneCodeVO phone) throws Exception {
+        userService.sendValidateCode(phone.getPhone());
         return new UnifiedResponse();
     }
 }

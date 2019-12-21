@@ -3,6 +3,7 @@ package com.card.alumni.service;
 import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.context.User;
+import com.card.alumni.entity.CaUser;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.query.UserQuery;
 
@@ -19,7 +20,7 @@ public interface UserService {
      * @param verificatioCode
      * @throws Exception
      */
-    void login(UserVO userVO, String verificatioCode) throws Exception ;
+    CaUser login(UserVO userVO, String verificatioCode) throws Exception ;
 
     /**
      * 根据用户ID查询用户信息
@@ -43,11 +44,12 @@ public interface UserService {
     PageData<UserVO> queryUserVO(UserQuery userQuery);
 
     /**
-     * 注册用户
-     * @param verificatioCode
+     * 手机号查询用户信息
+     * @param phone
      * @return
+     * @throws Exception
      */
-    void register(UserVO userVO, String verificatioCode) throws Exception;
+    CaUser queryUserByPhone(String phone) throws Exception;
 
     /**
      * 发送验证码

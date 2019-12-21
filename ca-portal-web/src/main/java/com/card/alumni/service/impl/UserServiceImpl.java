@@ -1,5 +1,6 @@
 package com.card.alumni.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.context.User;
@@ -51,31 +52,35 @@ public class UserServiceImpl implements UserService {
     private RedisUtils redisUtils;
 
     @Override
-    public void login(UserVO userVO, String verificatioCode) throws Exception  {
+    public CaUser login(UserVO userVO, String verificatioCode) throws Exception  {
         if (!validateVerificatioCode(userVO, verificatioCode)) {
             throw new CaException("验证码错误");
         }
         CaUser caUser = queryUserByPhone(userVO.getPhone());
+
         if (Objects.isNull(caUser)) {
-            throw new CaException("手机号码未注册，请注册后登陆");
+            caUser = register(userVO);
         }
+        LOGGER.info("用户登陆param:userVO:{},verificatioCode:{}, result:{}", JSON.toJSONString(userVO), verificatioCode, JSON.toJSON(caUser));
+        return caUser;
     }
 
     @Override
     public User queryUserById(Integer userId){
+        User user = null;
         try {
             if (Objects.isNull(userId)) {
                 throw new CaException("参数为空");
             }
             CaUser caUser = caUserMapper.selectByPrimaryKey(userId);
             if (Objects.nonNull(caUser)) {
-                User user = convertUser(caUser);
-                return user;
+                user = convertUser(caUser);
             }
         } catch (Exception e) {
             LOGGER.error("查询用户异常, 入参:{}", userId, e);
         }
-        return null;
+        LOGGER.info("查询用户 param:{}, result:{}", userId, JSON.toJSON(user));
+        return user;
     }
 
     private User convertUser(CaUser caUser) {
@@ -89,12 +94,14 @@ public class UserServiceImpl implements UserService {
     public void submitUserInfo(UserVO userVO) throws Exception {
         CaUser caUser = new CaUser();
         BeanUtils.copyProperties(userVO, caUser);
+        caUser.setYn(1);
         caUser.setUpdateTime(new Date(System.currentTimeMillis()));
         caUser.setCreateTime(new Date(System.currentTimeMillis()));
         int count = caUserMapper.updateByPrimaryKey(caUser);
         if (count != 1) {
             throw new CaException("填写信息失败");
         }
+        LOGGER.info("更新用户信息入参:{}", JSON.toJSONString(userVO));
         caUserTagMapper.insert(convert2CaUserTag(userVO));
     }
 
@@ -129,10 +136,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PageData<UserVO> queryUserVO(UserQuery userQuery) {
+        LOGGER.info("查询用户列表 param:{}", JSON.toJSONString(userQuery));
         PageHelper.startPage(userQuery.getPage(), userQuery.getPageSize());
         List<CaUser> caUsers = caUserMapper.selectByExample(buildCaUserExample(userQuery));
         PageInfo<CaUser> pageInfo = new PageInfo<>(caUsers);
-        return new PageData<>(pageInfo.getTotal(), convertUserVOList(caUsers));
+        PageData<UserVO> userVOPageData = new PageData<>(pageInfo.getTotal(), convertUserVOList(caUsers));
+        LOGGER.info("查询用户列表 param:{}", JSON.toJSONString(userVOPageData));
+        return userVOPageData;
     }
 
     private List<UserVO> convertUserVOList(List<CaUser> caUsers) {
@@ -185,30 +195,25 @@ public class UserServiceImpl implements UserService {
         return example;
     }
 
-    @Override
-    public void register(UserVO userVO, String verificatioCode) throws Exception {
+    private CaUser register(UserVO userVO) throws Exception {
         if (Objects.isNull(userVO)) {
             throw new CaException("用户信息为空");
         }
         if (Objects.isNull(userVO.getPhone())) {
             throw new CaException("手机号码为空");
         }
-        if (!validateVerificatioCode(userVO, verificatioCode)) {
-            throw new CaException("验证码错误");
-        }
-        if (Objects.nonNull(queryUserByPhone(userVO.getPhone()))) {
-            throw new CaException("手机号已注册，请直接登陆");
-        }
         CaUser caUser = new CaUser();
         BeanUtils.copyProperties(userVO, caUser);
         caUser.setYn(0);
         int count = caUserMapper.insert(caUser);
         if (count != 1) {
-            throw new CaException("注册失败");
+            throw new CaException("登陆失败");
         }
+        return caUser;
     }
 
-    private CaUser queryUserByPhone(String phone) {
+    @Override
+    public CaUser queryUserByPhone(String phone) {
         if (StringUtils.isBlank(phone)) {
             return null;
         }

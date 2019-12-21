@@ -2,28 +2,23 @@ package com.card.alumni.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author sunxiaodong10 2019/12/9
  * @date 8:13 PM
  */
-@Slf4j
 public class VerificationCodeUtils {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(VerificationCodeUtils.class);
 
     public static String getVerificationCode(String phone) {
         String code = buildVerification(phone);
-        int retryNum = 0;
-        do {
-            if (retryNum >= 3) {
-                break;
-            }
-            retryNum ++;
-        } while (!sendMsg(phone, code));
+        sendMsg(phone, code);
         return code;
     }
 
@@ -44,10 +39,10 @@ public class VerificationCodeUtils {
         map.put("extend","123");
         JSONObject js = (JSONObject) JSONObject.toJSON(map);
         String result = HttpClientUtils.sendSmsByPost(sendUrl, js.toString());
+        LOGGER.info("短信发送结果:{}", result);
         if (StringUtils.isEmpty(result)) {
             sendMsg(phone, code);
         }
-        log.info("send msg result is {}", result);
         String isSuccess = (String) JSONObject.parseObject(result).get("code");
         Integer success = Integer.parseInt(isSuccess);
         if (success == 1) {
