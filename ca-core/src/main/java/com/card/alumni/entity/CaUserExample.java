@@ -332,6 +332,76 @@ public class CaUserExample {
             return (Criteria) this;
         }
 
+        public Criteria andNamePyIsNull() {
+            addCriterion("name_py is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamePyIsNotNull() {
+            addCriterion("name_py is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamePyEqualTo(String value) {
+            addCriterion("name_py =", value, "namePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamePyNotEqualTo(String value) {
+            addCriterion("name_py <>", value, "namePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamePyGreaterThan(String value) {
+            addCriterion("name_py >", value, "namePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamePyGreaterThanOrEqualTo(String value) {
+            addCriterion("name_py >=", value, "namePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamePyLessThan(String value) {
+            addCriterion("name_py <", value, "namePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamePyLessThanOrEqualTo(String value) {
+            addCriterion("name_py <=", value, "namePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamePyLike(String value) {
+            addCriterion("name_py like", value, "namePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamePyNotLike(String value) {
+            addCriterion("name_py not like", value, "namePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamePyIn(List<String> values) {
+            addCriterion("name_py in", values, "namePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamePyNotIn(List<String> values) {
+            addCriterion("name_py not in", values, "namePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamePyBetween(String value1, String value2) {
+            addCriterion("name_py between", value1, value2, "namePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamePyNotBetween(String value1, String value2) {
+            addCriterion("name_py not between", value1, value2, "namePy");
+            return (Criteria) this;
+        }
+
         public Criteria andIdCardIsNull() {
             addCriterion("id_card is null");
             return (Criteria) this;
@@ -2241,7 +2311,6 @@ public class CaUserExample {
             addCriterion("yn not between", value1, value2, "yn");
             return (Criteria) this;
         }
-
     }
 
     public static class Criteria extends GeneratedCriteria {

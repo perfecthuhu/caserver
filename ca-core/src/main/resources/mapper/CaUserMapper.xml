@@ -6,6 +6,7 @@
       <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="phone" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="name_py" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="id_card" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="sex" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="professional" jdbcType="VARCHAR" javaType="java.lang.String" />
@@ -96,10 +97,10 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, phone, name, id_card, sex, professional, education, accept_ance_date, graduate_date, 
-    birthday, status, second_tel, qq, wx, email, address, class_id, college_id, college_name, 
-    faculty_id, faculty_name, photo_img, work_unit, duty, alumni_id, alumni_name, signature, 
-    school_id, school_name, create_time, update_time, yn
+    id, phone, name, name_py, id_card, sex, professional, education, accept_ance_date, 
+    graduate_date, birthday, status, second_tel, qq, wx, email, address, class_id, college_id, 
+    college_name, faculty_id, faculty_name, photo_img, work_unit, duty, alumni_id, alumni_name, 
+    signature, school_id, school_name, create_time, update_time, yn
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.card.alumni.entity.CaUserExample" >
     select
@@ -134,27 +135,29 @@
   </delete>
   <insert id="insert" parameterType="com.card.alumni.entity.CaUser" >
     insert into ca_user (id, phone, name, 
-      id_card, sex, professional, 
-      education, accept_ance_date, graduate_date, 
-      birthday, status, second_tel, 
-      qq, wx, email, address, 
-      class_id, college_id, college_name, 
-      faculty_id, faculty_name, photo_img, 
-      work_unit, duty, alumni_id, 
-      alumni_name, signature, school_id, 
-      school_name, create_time, update_time, 
-      yn)
+      name_py, id_card, sex, 
+      professional, education, accept_ance_date, 
+      graduate_date, birthday, status, 
+      second_tel, qq, wx, 
+      email, address, class_id, 
+      college_id, college_name, faculty_id, 
+      faculty_name, photo_img, work_unit, 
+      duty, alumni_id, alumni_name, 
+      signature, school_id, school_name, 
+      create_time, update_time, yn
+      )
     values (#{id,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{idCard,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, #{professional,jdbcType=VARCHAR}, 
-      #{education,jdbcType=INTEGER}, #{acceptAnceDate,jdbcType=VARCHAR}, #{graduateDate,jdbcType=VARCHAR}, 
-      #{birthday,jdbcType=DATE}, #{status,jdbcType=INTEGER}, #{secondTel,jdbcType=VARCHAR}, 
-      #{qq,jdbcType=VARCHAR}, #{wx,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
-      #{classId,jdbcType=INTEGER}, #{collegeId,jdbcType=INTEGER}, #{collegeName,jdbcType=VARCHAR}, 
-      #{facultyId,jdbcType=INTEGER}, #{facultyName,jdbcType=VARCHAR}, #{photoImg,jdbcType=VARCHAR}, 
-      #{workUnit,jdbcType=VARCHAR}, #{duty,jdbcType=VARCHAR}, #{alumniId,jdbcType=INTEGER}, 
-      #{alumniName,jdbcType=VARCHAR}, #{signature,jdbcType=VARCHAR}, #{schoolId,jdbcType=INTEGER}, 
-      #{schoolName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{yn,jdbcType=INTEGER})
+      #{namePy,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, 
+      #{professional,jdbcType=VARCHAR}, #{education,jdbcType=INTEGER}, #{acceptAnceDate,jdbcType=VARCHAR}, 
+      #{graduateDate,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, #{status,jdbcType=INTEGER}, 
+      #{secondTel,jdbcType=VARCHAR}, #{qq,jdbcType=VARCHAR}, #{wx,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{classId,jdbcType=INTEGER}, 
+      #{collegeId,jdbcType=INTEGER}, #{collegeName,jdbcType=VARCHAR}, #{facultyId,jdbcType=INTEGER}, 
+      #{facultyName,jdbcType=VARCHAR}, #{photoImg,jdbcType=VARCHAR}, #{workUnit,jdbcType=VARCHAR}, 
+      #{duty,jdbcType=VARCHAR}, #{alumniId,jdbcType=INTEGER}, #{alumniName,jdbcType=VARCHAR}, 
+      #{signature,jdbcType=VARCHAR}, #{schoolId,jdbcType=INTEGER}, #{schoolName,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{yn,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.card.alumni.entity.CaUser" >
     insert into ca_user
@@ -167,6 +170,9 @@
       </if>
       <if test="name != null" >
         name,
+      </if>
+      <if test="namePy != null" >
+        name_py,
       </if>
       <if test="idCard != null" >
         id_card,
@@ -265,6 +271,9 @@
       </if>
       <if test="name != null" >
         #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="namePy != null" >
+        #{namePy,jdbcType=VARCHAR},
       </if>
       <if test="idCard != null" >
         #{idCard,jdbcType=VARCHAR},
@@ -373,6 +382,9 @@
       <if test="record.name != null" >
         name = #{record.name,jdbcType=VARCHAR},
       </if>
+      <if test="record.namePy != null" >
+        name_py = #{record.namePy,jdbcType=VARCHAR},
+      </if>
       <if test="record.idCard != null" >
         id_card = #{record.idCard,jdbcType=VARCHAR},
       </if>
@@ -470,6 +482,7 @@
     set id = #{record.id,jdbcType=INTEGER},
       phone = #{record.phone,jdbcType=VARCHAR},
       name = #{record.name,jdbcType=VARCHAR},
+      name_py = #{record.namePy,jdbcType=VARCHAR},
       id_card = #{record.idCard,jdbcType=VARCHAR},
       sex = #{record.sex,jdbcType=INTEGER},
       professional = #{record.professional,jdbcType=VARCHAR},
@@ -511,6 +524,9 @@
       </if>
       <if test="name != null" >
         name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="namePy != null" >
+        name_py = #{namePy,jdbcType=VARCHAR},
       </if>
       <if test="idCard != null" >
         id_card = #{idCard,jdbcType=VARCHAR},
@@ -606,6 +622,7 @@
     update ca_user
     set phone = #{phone,jdbcType=VARCHAR},
       name = #{name,jdbcType=VARCHAR},
+      name_py = #{namePy,jdbcType=VARCHAR},
       id_card = #{idCard,jdbcType=VARCHAR},
       sex = #{sex,jdbcType=INTEGER},
       professional = #{professional,jdbcType=VARCHAR},
@@ -637,5 +654,4 @@
       yn = #{yn,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
-
 </mapper>
