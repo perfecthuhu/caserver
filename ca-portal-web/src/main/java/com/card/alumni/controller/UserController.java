@@ -52,7 +52,7 @@ public class UserController {
         String token = AESUtil.encrypt(id.toString(), "ca_manager_aes_token_pwd");
         CookieUtils.setCookie(request, response, "token", token, 60 * 30, "utf-8");
         response.setHeader("token", token);
-        redisUtils.set(token, "", CaProtalWebConstants.TOKEN_EXPIRE_TIME);
+        redisUtils.set("user_login_" + id, token, CaProtalWebConstants.TOKEN_EXPIRE_TIME);
         return new UnifiedResponse();
     }
 

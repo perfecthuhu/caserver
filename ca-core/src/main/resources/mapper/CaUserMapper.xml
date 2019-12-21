@@ -638,12 +638,4 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="selectByPhone" resultMap="BaseResultMap" parameterType="java.lang.String">
-    select
-      <include refid="Base_Column_List" />
-    from
-      ca_user
-    where
-      phone=#{phone}
-  </select>
 </mapper>

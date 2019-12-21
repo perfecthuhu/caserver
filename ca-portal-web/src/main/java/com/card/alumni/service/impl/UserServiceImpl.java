@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void login(UserVO userVO, String verificatioCode) throws Exception  {
-        if (validateVerificatioCode(userVO, verificatioCode)) {
+        if (!validateVerificatioCode(userVO, verificatioCode)) {
             throw new CaException("验证码错误");
         }
         CaUser caUser = queryUserByPhone(userVO.getPhone());
@@ -204,6 +204,7 @@ public class UserServiceImpl implements UserService {
         }
         CaUser caUser = new CaUser();
         BeanUtils.copyProperties(userVO, caUser);
+        caUser.setYn(0);
         int count = caUserMapper.insert(caUser);
         if (count != 1) {
             throw new CaException("注册失败");
@@ -214,21 +215,26 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isBlank(phone)) {
             return null;
         }
-        CaUser caUser = caUserMapper.selectByPhone(phone);
-        return caUser;
+        CaUserExample example = new CaUserExample();
+        example.createCriteria().andPhoneEqualTo(phone);
+        List<CaUser> caUser = caUserMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(caUser)) {
+            return null;
+        }
+        return caUser.get(0);
     }
 
     @Override
     public void sendValidateCode(String phone) throws Exception {
         String code = VerificationCodeUtils.getVerificationCode(phone);
-        redisUtils.set("CA_VALIDATE_CODE_KEY_" + phone, code, 60);
+        redisUtils.set("CA_VALIDATE_CODE_KEY_" + phone, Integer.valueOf(code), 60 * 30);
     }
 
     private boolean validateVerificatioCode(UserVO userVO, String verificatioCode) {
         boolean flag = false;
         Object validateCodeCache = redisUtils.get("CA_VALIDATE_CODE_KEY_" + userVO.getPhone());
         if (Objects.nonNull(validateCodeCache)) {
-            String code = (String) validateCodeCache;
+            String code = String.valueOf(validateCodeCache);
             if (code.equals(verificatioCode)) {
                 flag = true;
             }

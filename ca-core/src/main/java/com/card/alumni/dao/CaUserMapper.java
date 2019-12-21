@@ -28,5 +28,4 @@ public interface CaUserMapper {
 
     int updateByPrimaryKey(CaUser record);
 
-    CaUser selectByPhone(String phone);
 }

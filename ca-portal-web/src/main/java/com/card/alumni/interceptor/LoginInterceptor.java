@@ -53,12 +53,11 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 return true;
             }
             if (user.getYn() == 0) {
+                userContext.setLoginStatus(SystemLoginStatusEnum.NOT_PASS);
                 redirect2AddPersonalInformation(request, response);
             }
             if (user.getYn() == 1) {
                 userContext.setLoginStatus(SystemLoginStatusEnum.PASS);
-            } else {
-                userContext.setLoginStatus(SystemLoginStatusEnum.NOT_PASS);
             }
             userContext.setUser(user);
         }
@@ -127,12 +126,12 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         if (StringUtils.isBlank(token)) {
             return null;
         }
-        boolean isExist = redisUtils.hasKey(token);
+        String tokenId = AESUtil.decrypt(token, "ca_manager_aes_token_pwd");
+        boolean isExist = redisUtils.hasKey("user_login_" + tokenId);
         if (!isExist) {
             return null;
         }
-        redisUtils.expire(token, CaProtalWebConstants.TOKEN_EXPIRE_TIME);
-        String tokenId = AESUtil.decrypt(token, "ca_manager_aes_token_pwd");
+        redisUtils.expire("user_login_" + tokenId, CaProtalWebConstants.TOKEN_EXPIRE_TIME);
         User user = userService.queryUserById(Integer.parseInt(tokenId));
         if (Objects.isNull(user)) {
             return null;
