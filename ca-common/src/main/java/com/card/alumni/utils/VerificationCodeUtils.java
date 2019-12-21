@@ -1,6 +1,8 @@
 package com.card.alumni.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
@@ -10,6 +12,7 @@ import java.util.Map;
  * @author sunxiaodong10 2019/12/9
  * @date 8:13 PM
  */
+@Slf4j
 public class VerificationCodeUtils {
 
     public static String getVerificationCode(String phone) {
@@ -26,7 +29,7 @@ public class VerificationCodeUtils {
 
     private static boolean sendMsg(String phone, String code) {
         String sendUrl = "http://smssh1.253.com/msg/send/json";
-        Map map = new HashMap();
+        Map<String, String> map = Maps.newHashMap();
         //API账号
         map.put("account","N8396454");
         //API密码
@@ -44,8 +47,9 @@ public class VerificationCodeUtils {
         if (StringUtils.isEmpty(result)) {
             sendMsg(phone, code);
         }
-        String isSussess = (String) JSONObject.parseObject(result).get("code");
-        Integer success = Integer.parseInt(isSussess);
+        log.info("send msg result is {}", result);
+        String isSuccess = (String) JSONObject.parseObject(result).get("code");
+        Integer success = Integer.parseInt(isSuccess);
         if (success == 1) {
             return true;
         }
