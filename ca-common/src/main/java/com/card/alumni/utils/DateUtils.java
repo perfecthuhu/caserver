@@ -5,6 +5,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import java.lang.management.ManagementFactory;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -130,5 +131,12 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         // 计算差多少秒//输出结果
         // long sec = diff % nd % nh % nm / ns;
         return day + "天" + hour + "小时" + min + "分钟";
+    }
+
+    public static Date addDays(Date source, int days) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(source);
+        cal.add(Calendar.DAY_OF_YEAR, days);
+        return cal.getTime();
     }
 }

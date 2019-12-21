@@ -96,17 +96,14 @@ public class UserServiceImpl implements UserService {
             throw new CaException("填写信息失败");
         }
         caUserTagMapper.insert(convert2CaUserTag(userVO));
-        if (count != 1) {
-            throw new CaException("填写信息失败");
-        }
     }
 
     private CaUserTag convert2CaUserTag(UserVO userVO) {
         CaUserTag caUserTag = new CaUserTag();
-        caUserTag.setStudentId(userVO.getId());
+        caUserTag.setUserId(userVO.getId());
         List<Integer> userTagId = userVO.getUserTagId();
         if (CollectionUtils.isNotEmpty(userTagId)) {
-            userTagId.stream().forEach(s -> {
+            userTagId.forEach(s -> {
                 UserTagEnum userTagEnum = UserTagEnum.getUserTagEnum(s);
                 switch (userTagEnum) {
                     case GIRL_FRIEND:

@@ -8,7 +8,7 @@ import java.util.Date;
 public class CaUserTag {
     private Integer id;
 
-    private Integer studentId;
+    private Integer userId;
 
     private Integer girlFriend;
 

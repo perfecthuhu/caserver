@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.card.alumni.entity.CaUserTag" >
     <constructor >
       <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="student_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="girl_friend" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="resource" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="food" jdbcType="INTEGER" javaType="java.lang.Integer" />
@@ -72,7 +72,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, student_id, girl_friend, resource, food, job, create_time, update_time
+    id, user_id, girl_friend, resource, food, job, create_time, update_time
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.card.alumni.entity.CaUserTagExample" >
     select
@@ -106,10 +106,10 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.card.alumni.entity.CaUserTag" >
-    insert into ca_user_tag (id, student_id, girl_friend, 
+    insert into ca_user_tag (id, user_id, girl_friend,
       resource, food, job, 
       create_time, update_time)
-    values (#{id,jdbcType=INTEGER}, #{studentId,jdbcType=INTEGER}, #{girlFriend,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{girlFriend,jdbcType=INTEGER},
       #{resource,jdbcType=INTEGER}, #{food,jdbcType=INTEGER}, #{job,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
@@ -119,8 +119,8 @@
       <if test="id != null" >
         id,
       </if>
-      <if test="studentId != null" >
-        student_id,
+      <if test="userId != null" >
+        user_id,
       </if>
       <if test="girlFriend != null" >
         girl_friend,
@@ -145,8 +145,8 @@
       <if test="id != null" >
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="studentId != null" >
-        #{studentId,jdbcType=INTEGER},
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
       </if>
       <if test="girlFriend != null" >
         #{girlFriend,jdbcType=INTEGER},
@@ -180,8 +180,8 @@
       <if test="record.id != null" >
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.studentId != null" >
-        student_id = #{record.studentId,jdbcType=INTEGER},
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=INTEGER},
       </if>
       <if test="record.girlFriend != null" >
         girl_friend = #{record.girlFriend,jdbcType=INTEGER},
@@ -209,7 +209,7 @@
   <update id="updateByExample" parameterType="map" >
     update ca_user_tag
     set id = #{record.id,jdbcType=INTEGER},
-      student_id = #{record.studentId,jdbcType=INTEGER},
+      user_id = #{record.userId,jdbcType=INTEGER},
       girl_friend = #{record.girlFriend,jdbcType=INTEGER},
       resource = #{record.resource,jdbcType=INTEGER},
       food = #{record.food,jdbcType=INTEGER},
@@ -223,8 +223,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.card.alumni.entity.CaUserTag" >
     update ca_user_tag
     <set >
-      <if test="studentId != null" >
-        student_id = #{studentId,jdbcType=INTEGER},
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
       </if>
       <if test="girlFriend != null" >
         girl_friend = #{girlFriend,jdbcType=INTEGER},
@@ -249,7 +249,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.card.alumni.entity.CaUserTag" >
     update ca_user_tag
-    set student_id = #{studentId,jdbcType=INTEGER},
+    set user_id = #{userId,jdbcType=INTEGER},
       girl_friend = #{girlFriend,jdbcType=INTEGER},
       resource = #{resource,jdbcType=INTEGER},
       food = #{food,jdbcType=INTEGER},

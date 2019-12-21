@@ -211,4 +211,14 @@
       recommend_time = #{recommendTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <insert id="batchInsert" parameterType="com.card.alumni.entity.CaRecommend" >
+    insert into ca_recommend (id, user_id, ref_id,
+    has_viewed, recommend_time)
+    values
+    <foreach collection="list" index="index" item="record" separator=",">
+    (#{record.id,jdbcType=INTEGER}, #{record.userId,jdbcType=INTEGER}, #{record.refId,jdbcType=INTEGER},
+    #{record.hasViewed,jdbcType=BIT}, #{record.recommendTime,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
 </mapper>

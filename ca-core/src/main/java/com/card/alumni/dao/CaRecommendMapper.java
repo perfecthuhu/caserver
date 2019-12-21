@@ -27,4 +27,6 @@ public interface CaRecommendMapper {
     int updateByPrimaryKeySelective(CaRecommend record);
 
     int updateByPrimaryKey(CaRecommend record);
+
+    int batchInsert(@Param("list") List<CaRecommend> list);
 }
