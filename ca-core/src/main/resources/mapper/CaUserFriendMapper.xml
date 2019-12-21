@@ -258,4 +258,16 @@
       is_delete = #{isDelete,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <insert id="batchInsert" parameterType="com.card.alumni.entity.CaUserFriend" >
+    insert into ca_user_friend (id, user_id, friend_id,
+    creator, create_time, updater,
+    update_time, is_delete)
+    values
+    <foreach collection="list" index="index" item="record" separator=",">
+    (#{record.id,jdbcType=INTEGER}, #{record.userId,jdbcType=INTEGER}, #{record.friendId,jdbcType=INTEGER},
+    #{record.creator,jdbcType=INTEGER}, #{record.createTime,jdbcType=TIMESTAMP}, #{record.updater,jdbcType=INTEGER},
+    #{record.updateTime,jdbcType=TIMESTAMP}, #{record.isDelete,jdbcType=BIT})
+    </foreach>
+  </insert>
 </mapper>

@@ -3,11 +3,18 @@ package com.card.alumni.service.impl;
 import com.card.alumni.dao.CaRecommendMapper;
 import com.card.alumni.entity.CaRecommend;
 import com.card.alumni.entity.CaRecommendExample;
+import com.card.alumni.entity.CaUser;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.service.RecommendService;
+import com.card.alumni.service.UserFriendService;
+import com.card.alumni.service.UserLocalService;
 import com.card.alumni.utils.DateUtils;
+import com.card.alumni.utils.RequestUtil;
+import com.card.alumni.vo.UserVO;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +25,8 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * 用户推荐服务
@@ -30,6 +39,12 @@ public class RecommendServiceImpl implements RecommendService {
 
     @Autowired
     private CaRecommendMapper caRecommendMapper;
+
+    @Autowired
+    private UserLocalService userLocalService;
+
+    @Autowired
+    private UserFriendService userFriendService;
 
     @Override
     public Integer save(CaRecommend recommend) throws CaException {
@@ -100,6 +115,67 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     @Override
+    public List<UserVO> recommend(Integer size) throws CaException {
+        Integer userId = RequestUtil.getUserId();
+
+        List<CaRecommend> recommendList = listBeforeDaysByUserId(userId, 3);
+        List<Integer> refIdList = recommendList.stream()
+                .filter(Objects::nonNull).map(CaRecommend::getRefId).collect(Collectors.toList());
+
+        List<CaUser> userList = userLocalService.listByNotIsUserId(userId);
+
+        List<CaUser> shouldRandomUserList = userList.stream().filter(user -> StringUtils.isBlank(user.getPhotoImg()))
+                .filter(Objects::nonNull).filter(user -> !refIdList.contains(user.getId())).collect(Collectors.toList());
+
+        List<CaUser> resultList = getRandom(shouldRandomUserList, size);
+        if (resultList.size() < size) {
+            int diffCount = size - resultList.size();
+            List<CaRecommend> shouldAddList = Lists.newArrayList();
+            for (int i = 0; i < diffCount; i++) {
+                shouldAddList.add(recommendList.get(i));
+            }
+            List<Integer> shouldAddUserIdList = shouldAddList.stream()
+                    .filter(Objects::nonNull).map(CaRecommend::getUserId).collect(Collectors.toList());
+            List<CaUser> shouldAddUserList = userLocalService.listByIdList(shouldAddUserIdList);
+            resultList.addAll(shouldAddUserList);
+        }
+
+        return convertUserVOList(resultList);
+    }
+
+    private List<UserVO> convertUserVOList(List<CaUser> caUsers) {
+        if (CollectionUtils.isEmpty(caUsers)) {
+            return null;
+        }
+        return caUsers.stream().filter(Objects::nonNull).map(s -> {
+            UserVO userVO = new UserVO();
+            BeanUtils.copyProperties(s, userVO);
+            return userVO;
+        }).collect(Collectors.toList());
+    }
+
+    private List<CaUser> getRandom(List<CaUser> userList, Integer size) throws CaException {
+        if (CollectionUtils.isEmpty(userList)) {
+            return Lists.newArrayList();
+        }
+
+        Integer userSize = userList.size();
+
+        if (userSize < size) {
+            size = userSize;
+        }
+
+        Random random = new Random(size);
+        List<CaUser> resultList = Lists.newArrayList();
+        for (int i = 0; i < size; i++) {
+            int index = random.nextInt();
+            resultList.add(userList.get(index));
+        }
+
+        return resultList;
+    }
+
+    @Override
     public CaRecommend findById(Integer id) throws CaException {
         return caRecommendMapper.selectByPrimaryKey(id);
     }
@@ -127,6 +203,8 @@ public class RecommendServiceImpl implements RecommendService {
         CaRecommendExample.Criteria criteria = example.createCriteria();
         criteria.andUserIdEqualTo(userId);
         criteria.andRecommendTimeGreaterThanOrEqualTo(beforeNDays);
+
+        example.setOrderByClause("create_time asc");
 
         return caRecommendMapper.selectByExample(example);
     }

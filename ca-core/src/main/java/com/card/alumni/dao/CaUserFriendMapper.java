@@ -2,8 +2,9 @@ package com.card.alumni.dao;
 
 import com.card.alumni.entity.CaUserFriend;
 import com.card.alumni.entity.CaUserFriendExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface CaUserFriendMapper {
     int countByExample(CaUserFriendExample example);
@@ -27,4 +28,6 @@ public interface CaUserFriendMapper {
     int updateByPrimaryKeySelective(CaUserFriend record);
 
     int updateByPrimaryKey(CaUserFriend record);
+
+    int batchInsert(@Param("list") List<CaUserFriend> list);
 }

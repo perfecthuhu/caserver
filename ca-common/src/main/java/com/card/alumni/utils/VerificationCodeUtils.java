@@ -30,7 +30,7 @@ public class VerificationCodeUtils {
         //API密码
         map.put("password","yvl0gmA4j");
         //短信内容
-        map.put("msg","【永鑫科技】呜呜呜呜呜呜" + code);
+        map.put("msg","【永鑫科技】您的验证码为: " + code + "，工作人员不会向您索要，请勿向任何人泄露");
         //手机号
         map.put("phone",phone);
         //是否需要状态报告

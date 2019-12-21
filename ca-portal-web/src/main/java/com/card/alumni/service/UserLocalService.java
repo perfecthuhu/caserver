@@ -23,4 +23,6 @@ public interface UserLocalService {
     List<CaUser> listByIdList(List<Integer> idList) throws CaException;
 
     Map<Integer, CaUser> mapByIdList(List<Integer> idList) throws CaException;
+
+    List<CaUser> listByNotIsUserId(Integer userId) throws CaException;
 }

@@ -5,6 +5,7 @@ import com.card.alumni.entity.CaUser;
 import com.card.alumni.entity.CaUserExample;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.service.UserLocalService;
+import com.card.alumni.vo.enums.StatusEnum;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +38,7 @@ public class UserLocalServiceImpl implements UserLocalService {
         Date now = new Date();
         user.setCreateTime(now);
         user.setUpdateTime(now);
-        user.setYn(0);
+        user.setYn(StatusEnum.NO.getCode());
 
         caUserMapper.insert(user);
 
@@ -103,6 +104,18 @@ public class UserLocalServiceImpl implements UserLocalService {
 
         return userList.stream().filter(Objects::nonNull)
                 .collect(Collectors.toMap(CaUser::getId, Function.identity(), (k1, k2) -> k2));
+    }
+
+    @Override
+    public List<CaUser> listByNotIsUserId(Integer userId) throws CaException {
+        if (Objects.isNull(userId)) {
+            throw new CaException("用户ID不能为空");
+        }
+        CaUserExample example = new CaUserExample();
+        CaUserExample.Criteria criteria = example.createCriteria();
+        criteria.andIdNotEqualTo(userId);
+
+        return caUserMapper.selectByExample(example);
     }
 
     private void checkParam(CaUser user) throws CaException {
