@@ -35,7 +35,7 @@ public class AESUtil {
             byte[] byteContent = content.getBytes("utf-8");
             cipher.init(Cipher.ENCRYPT_MODE, key);
             byte[] result = cipher.doFinal(byteContent);
-            return Base64.getEncoder().encode(result).toString();
+            return new String(Base64.getEncoder().encode(result));
         } catch (Exception e) {
             LOGGER.error("token加密失败");
         }

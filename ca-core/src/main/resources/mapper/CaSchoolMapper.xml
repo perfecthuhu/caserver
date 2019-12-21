@@ -9,7 +9,7 @@
       <arg column="email" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="tel" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="web_site" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="desc" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="description" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="photo_img" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="updater" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
@@ -77,7 +77,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, name, address, email, tel, web_site, desc, photo_img, updater, update_time, creator, 
+    id, name, address, email, tel, web_site, description, photo_img, updater, update_time, creator,
     create_time, is_delete
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.card.alumni.entity.CaSchoolExample" >
@@ -114,7 +114,7 @@
   <insert id="insert" parameterType="com.card.alumni.entity.CaSchool" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_school (id, name, address, 
       email, tel, web_site, 
-      desc, photo_img, updater, 
+      description, photo_img, updater,
       update_time, creator, create_time, 
       is_delete)
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
@@ -145,7 +145,7 @@
         web_site,
       </if>
       <if test="desc != null" >
-        desc,
+        description,
       </if>
       <if test="photoImg != null" >
         photo_img,
@@ -236,7 +236,7 @@
         web_site = #{record.webSite,jdbcType=VARCHAR},
       </if>
       <if test="record.desc != null" >
-        desc = #{record.desc,jdbcType=VARCHAR},
+        description = #{record.desc,jdbcType=VARCHAR},
       </if>
       <if test="record.photoImg != null" >
         photo_img = #{record.photoImg,jdbcType=VARCHAR},
@@ -269,7 +269,7 @@
       email = #{record.email,jdbcType=VARCHAR},
       tel = #{record.tel,jdbcType=VARCHAR},
       web_site = #{record.webSite,jdbcType=VARCHAR},
-      desc = #{record.desc,jdbcType=VARCHAR},
+      description = #{record.desc,jdbcType=VARCHAR},
       photo_img = #{record.photoImg,jdbcType=VARCHAR},
       updater = #{record.updater,jdbcType=INTEGER},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
@@ -299,7 +299,7 @@
         web_site = #{webSite,jdbcType=VARCHAR},
       </if>
       <if test="desc != null" >
-        desc = #{desc,jdbcType=VARCHAR},
+        description = #{desc,jdbcType=VARCHAR},
       </if>
       <if test="photoImg != null" >
         photo_img = #{photoImg,jdbcType=VARCHAR},
@@ -329,7 +329,7 @@
       email = #{email,jdbcType=VARCHAR},
       tel = #{tel,jdbcType=VARCHAR},
       web_site = #{webSite,jdbcType=VARCHAR},
-      desc = #{desc,jdbcType=VARCHAR},
+      description = #{desc,jdbcType=VARCHAR},
       photo_img = #{photoImg,jdbcType=VARCHAR},
       updater = #{updater,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},

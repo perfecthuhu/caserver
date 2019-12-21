@@ -62,12 +62,27 @@ public class BaseInfoServiceImpl implements BaseInfoService {
         List<SchoolVO> result = null;
         if (CollectionUtils.isNotEmpty(schoolList)) {
             result = schoolList.stream().filter(Objects::nonNull).map(s -> {
-                SchoolVO schoolVO = new SchoolVO();
-                BeanUtils.copyProperties(s, schoolList);
+                SchoolVO schoolVO = convert2SchoolVO(s);
                 return schoolVO;
             }).collect(Collectors.toList());
         }
         return result;
+    }
+
+    public static SchoolVO convert2SchoolVO(CaSchool caSchool) {
+        if (caSchool == null) {
+            return null;
+        }
+        SchoolVO schoolVO = new SchoolVO();
+        schoolVO.setId(caSchool.getId());
+        schoolVO.setName(caSchool.getName());
+        schoolVO.setAddress(caSchool.getAddress());
+        schoolVO.setEmail(caSchool.getEmail());
+        schoolVO.setTel(caSchool.getTel());
+        schoolVO.setWebSite(caSchool.getWebSite());
+        schoolVO.setDesc(caSchool.getDesc());
+        schoolVO.setPhotoImg(caSchool.getPhotoImg());
+        return schoolVO;
     }
 
     @Override

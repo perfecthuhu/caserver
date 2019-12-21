@@ -30,7 +30,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public Map<Integer, List<ArticleVO>> queryArticleService(ArticleQuery articleQuery) throws Exception {
         CaArticleExample example = new CaArticleExample();
-        List<CaArticle> caArticles = caArticleMapper.selectByExample(example);
+        List<CaArticle> caArticles = caArticleMapper.selectByExampleWithBLOBs(example);
         List<ArticleVO> articleVOList = caArticles.stream().map(s -> convertArticleVO(s)).collect(Collectors.toList());
         Map<Integer, List<ArticleVO>> resultMap = new HashMap<>();
         articleVOList.stream().forEach(s -> {
