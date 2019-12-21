@@ -51,14 +51,15 @@ public class UserServiceImpl implements UserService {
     private RedisUtils redisUtils;
 
     @Override
-    public void login(UserVO userVO, String verificatioCode) throws Exception  {
+    public CaUser login(UserVO userVO, String verificatioCode) throws Exception  {
         if (!validateVerificatioCode(userVO, verificatioCode)) {
             throw new CaException("验证码错误");
         }
         CaUser caUser = queryUserByPhone(userVO.getPhone());
         if (Objects.isNull(caUser)) {
-            throw new CaException("手机号码未注册，请注册后登陆");
+            caUser = register(userVO);
         }
+        return caUser;
     }
 
     @Override
@@ -89,6 +90,7 @@ public class UserServiceImpl implements UserService {
     public void submitUserInfo(UserVO userVO) throws Exception {
         CaUser caUser = new CaUser();
         BeanUtils.copyProperties(userVO, caUser);
+        caUser.setYn(1);
         caUser.setUpdateTime(new Date(System.currentTimeMillis()));
         caUser.setCreateTime(new Date(System.currentTimeMillis()));
         int count = caUserMapper.updateByPrimaryKey(caUser);
@@ -185,30 +187,25 @@ public class UserServiceImpl implements UserService {
         return example;
     }
 
-    @Override
-    public void register(UserVO userVO, String verificatioCode) throws Exception {
+    private CaUser register(UserVO userVO) throws Exception {
         if (Objects.isNull(userVO)) {
             throw new CaException("用户信息为空");
         }
         if (Objects.isNull(userVO.getPhone())) {
             throw new CaException("手机号码为空");
         }
-        if (!validateVerificatioCode(userVO, verificatioCode)) {
-            throw new CaException("验证码错误");
-        }
-        if (Objects.nonNull(queryUserByPhone(userVO.getPhone()))) {
-            throw new CaException("手机号已注册，请直接登陆");
-        }
         CaUser caUser = new CaUser();
         BeanUtils.copyProperties(userVO, caUser);
         caUser.setYn(0);
         int count = caUserMapper.insert(caUser);
         if (count != 1) {
-            throw new CaException("注册失败");
+            throw new CaException("登陆失败");
         }
+        return caUser;
     }
 
-    private CaUser queryUserByPhone(String phone) {
+    @Override
+    public CaUser queryUserByPhone(String phone) {
         if (StringUtils.isBlank(phone)) {
             return null;
         }

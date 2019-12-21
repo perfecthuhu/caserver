@@ -1,11 +1,11 @@
 package com.card.alumni.controller;
 
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.entity.CaUser;
 import com.card.alumni.service.UserService;
 import com.card.alumni.utils.AESUtil;
 import com.card.alumni.utils.CookieUtils;
 import com.card.alumni.utils.RedisUtils;
-import com.card.alumni.utils.RequestUtil;
 import com.card.alumni.vo.CaProtalWebConstants;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.query.UserPhoneCodeVO;
@@ -43,8 +43,8 @@ public class UserController {
     public UnifiedResponse login(@RequestBody UserPhoneCodeVO phoneCode, HttpServletRequest request, HttpServletResponse response) throws Exception {
         UserVO userVO = new UserVO();
         userVO.setPhone(phoneCode.getPhone());
-        userService.login(userVO, phoneCode.getCode());
-        Integer id = RequestUtil.getUserId();
+        CaUser caUser = userService.login(userVO, phoneCode.getCode());
+        Integer id = caUser.getId();
         String token = AESUtil.encrypt(id.toString(), "ca_manager_aes_token_pwd");
         CookieUtils.setCookie(request, response, "token", token, 60 * 30, "utf-8");
         response.setHeader("token", token);
@@ -73,20 +73,6 @@ public class UserController {
     @ApiOperation(value = "查询用户信息", notes = "查询用户信息", response = UnifiedResponse.class)
     public UnifiedResponse queryUserVO(@RequestBody UserQuery userQuery) {
         return new UnifiedResponse(userService.queryUserVO(userQuery));
-    }
-
-    /**
-     * 注册用户
-     * @param phoneCode
-     * @return
-     */
-    @PostMapping("/register")
-    @ApiOperation(value = "注册用户", notes = "注册用户", response = UnifiedResponse.class)
-    public UnifiedResponse register(@RequestBody UserPhoneCodeVO phoneCode) throws Exception {
-        UserVO userVO = new UserVO();
-        userVO.setPhone(phoneCode.getPhone());
-        userService.register(userVO, phoneCode.getCode());
-        return new UnifiedResponse();
     }
 
     /**
