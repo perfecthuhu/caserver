@@ -1,15 +1,11 @@
 package com.card.alumni.utils;
 
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Base64;
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 public class AESUtil {
@@ -39,7 +35,7 @@ public class AESUtil {
             byte[] byteContent = content.getBytes("utf-8");
             cipher.init(Cipher.ENCRYPT_MODE, key);
             byte[] result = cipher.doFinal(byteContent);
-            return Base64.encode(result);
+            return Base64.getEncoder().encode(result).toString();
         } catch (Exception e) {
             LOGGER.error("token加密失败");
         }
@@ -67,7 +63,7 @@ public class AESUtil {
             Cipher cipher = Cipher.getInstance("AES");
             // 初始化
             cipher.init(Cipher.DECRYPT_MODE, key);
-            byte[] decode = Base64.decode(content);
+            byte[] decode = Base64.getDecoder().decode(content);
             byte[] result = cipher.doFinal(decode);
             return new String(result);
         } catch (Exception e) {
