@@ -38,7 +38,7 @@ public class ArticleController {
      */
     @GetMapping("/detail")
     @ApiOperation(value = "查询新闻详情", notes = "查询新闻详情", response = UnifiedResponse.class)
-    public UnifiedResponse queryArticleDetail(Integer id) throws Exception {
+    public UnifiedResponse queryArticleDetail(@RequestBody Integer id) throws Exception {
         return new UnifiedResponse(articleService.queryArticleDetail(id));
     }
 }

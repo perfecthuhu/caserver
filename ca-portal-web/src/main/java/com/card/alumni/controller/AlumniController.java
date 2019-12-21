@@ -5,6 +5,7 @@ import com.card.alumni.exception.CaException;
 import com.card.alumni.service.AlumniService;
 import com.card.alumni.vo.AlumniVO;
 import com.card.alumni.vo.enums.AlumniAuditStatusEnum;
+import com.card.alumni.vo.query.AlumniAppointAdminParam;
 import com.card.alumni.vo.query.AlumniQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -42,7 +43,7 @@ public class AlumniController {
      */
     @GetMapping("/detail")
     @ApiOperation(value = "查询单个协会", notes = "查询单个协会", response = UnifiedResponse.class)
-    public UnifiedResponse queryAlumniDetail(Integer id) throws Exception {
+    public UnifiedResponse queryAlumniDetail(@RequestBody Integer id) throws Exception {
         return new UnifiedResponse(alumniService.queryAlumniDetail(id));
     }
 
@@ -53,7 +54,7 @@ public class AlumniController {
      */
     @GetMapping("/audit/list")
     @ApiOperation(value = "查询协会待审核记录", notes = "查询协会待审核记录", response = UnifiedResponse.class)
-    public UnifiedResponse queryAlumniAudit(Integer id) {
+    public UnifiedResponse queryAlumniAudit(@RequestBody Integer id) {
         return new UnifiedResponse(alumniService.queryAlumniAudit(id));
     }
 
@@ -64,7 +65,7 @@ public class AlumniController {
      */
     @PostMapping("/audit/pass")
     @ApiOperation(value = "审核通过加入协会申请", notes = "审核通过加入协会申请", response = UnifiedResponse.class)
-    public UnifiedResponse auidtAlumniRecordPass(Integer id) throws Exception {
+    public UnifiedResponse auidtAlumniRecordPass(@RequestBody Integer id) throws Exception {
         return new UnifiedResponse(alumniService.auidtAlumniRecord(id, AlumniAuditStatusEnum.PASS));
     }
 
@@ -75,7 +76,7 @@ public class AlumniController {
      */
     @PostMapping("/audit/reject")
     @ApiOperation(value = "审核通过驳回协会申请", notes = "审核通过驳回协会申请", response = UnifiedResponse.class)
-    public UnifiedResponse auidtAlumniRecordReject(Integer id) throws Exception {
+    public UnifiedResponse auidtAlumniRecordReject(@RequestBody Integer id) throws Exception {
         return new UnifiedResponse(alumniService.auidtAlumniRecord(id, AlumniAuditStatusEnum.REJECT));
     }
 
@@ -86,20 +87,19 @@ public class AlumniController {
      */
     @PostMapping("/audit/exit")
     @ApiOperation(value = "退出协会", notes = "退出协会", response = UnifiedResponse.class)
-    public UnifiedResponse exitAlumn(Integer id) throws Exception {
+    public UnifiedResponse exitAlumn(@RequestBody Integer id) throws Exception {
         return new UnifiedResponse(alumniService.auidtAlumniRecord(id, AlumniAuditStatusEnum.EXIT));
     }
 
     /**
      * 分配管理员
-     * @param alumniId
-     * @param userId
+     * @param alumniAppointAdminParam
      * @return
      */
     @PostMapping("/appoint/admin")
     @ApiOperation(value = "分配管理员", notes = "分配管理员", response = UnifiedResponse.class)
-    public UnifiedResponse appointAdmin(Integer alumniId, Integer userId) throws Exception {
-        return new UnifiedResponse(alumniService.appointAdmin(alumniId, userId));
+    public UnifiedResponse appointAdmin(@RequestBody AlumniAppointAdminParam alumniAppointAdminParam) throws Exception {
+        return new UnifiedResponse(alumniService.appointAdmin(alumniAppointAdminParam.getAlumniId(), alumniAppointAdminParam.getUserId()));
     }
 
     /**
@@ -110,7 +110,7 @@ public class AlumniController {
      */
     @PostMapping("/apply")
     @ApiOperation(value = "申请加入协会", notes = "申请加入协会", response = UnifiedResponse.class)
-    public UnifiedResponse applyAlumni(Integer alumniId) throws Exception {
+    public UnifiedResponse applyAlumni(@RequestBody Integer alumniId) throws Exception {
         return new UnifiedResponse(alumniService.applyAlumni(alumniId));
     }
 
@@ -122,7 +122,7 @@ public class AlumniController {
      */
     @PostMapping("/create")
     @ApiOperation(value = "申请创建协会", notes = "申请创建协会", response = UnifiedResponse.class)
-    UnifiedResponse createAlumni(AlumniVO alumniVO) throws CaException {
+    UnifiedResponse createAlumni(@RequestBody AlumniVO alumniVO) throws CaException {
         return new UnifiedResponse(alumniService.createAlumni(alumniVO));
     }
 
@@ -134,7 +134,7 @@ public class AlumniController {
      */
     @PostMapping("/update")
     @ApiOperation(value = "更新协会信息", notes = "更新协会信息", response = UnifiedResponse.class)
-    UnifiedResponse updateAlimni(AlumniVO alumniVO) throws CaException {
+    UnifiedResponse updateAlimni(@RequestBody AlumniVO alumniVO) throws CaException {
         return new UnifiedResponse(alumniService.updateAlimni(alumniVO));
     }
 }

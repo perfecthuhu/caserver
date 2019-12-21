@@ -1,5 +1,10 @@
 package com.card.alumni.utils;
 
+import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
@@ -9,6 +14,8 @@ import java.security.SecureRandom;
 
 public class AESUtil {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AESUtil.class);
+
     /**
      * 加密
      *
@@ -17,9 +24,13 @@ public class AESUtil {
      * @return
      */
     public static String encrypt(String content, String password) {
+
         try {
+            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+            random.setSeed(password.getBytes());
+
             KeyGenerator kgen = KeyGenerator.getInstance("AES");
-            kgen.init(128, new SecureRandom(password.getBytes()));
+            kgen.init(128, random);
             SecretKey secretKey = kgen.generateKey();
             byte[] enCodeFormat = secretKey.getEncoded();
             SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
@@ -28,19 +39,9 @@ public class AESUtil {
             byte[] byteContent = content.getBytes("utf-8");
             cipher.init(Cipher.ENCRYPT_MODE, key);
             byte[] result = cipher.doFinal(byteContent);
-            return new String(result);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
+            return Base64.encode(result);
+        } catch (Exception e) {
+            LOGGER.error("token加密失败");
         }
         return null;
     }
@@ -64,18 +65,11 @@ public class AESUtil {
             Cipher cipher = Cipher.getInstance("AES");
             // 初始化
             cipher.init(Cipher.DECRYPT_MODE, key);
-            byte[] result = cipher.doFinal(content.getBytes());
+            byte[] decode = Base64.decode(content);
+            byte[] result = cipher.doFinal(decode);
             return new String(result);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            LOGGER.error("token解密失败", e);
         }
         return null;
     }
