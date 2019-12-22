@@ -7,7 +7,7 @@ import com.card.alumni.service.UserService;
 import com.card.alumni.utils.AESUtil;
 import com.card.alumni.utils.CookieUtils;
 import com.card.alumni.utils.RedisUtils;
-import com.card.alumni.vo.CaProtalWebConstants;
+import com.card.alumni.vo.CaPortalWebConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Objects;
 
 
@@ -31,7 +30,7 @@ import java.util.Objects;
 @Component
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
-    private Logger LOGGER = LoggerFactory.getLogger(LoginInterceptor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoginInterceptor.class);
 
     @Resource
     private UserService userService;
@@ -45,10 +44,11 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             response.setStatus(HttpStatus.NO_CONTENT.value());
             return true;
         }
+        response.setCharacterEncoding("utf-8");
         UserContext userContext = UserContext.getCurrentUser();
         String path = request.getRequestURI();
         LOGGER.info(path);
-        if(Objects.isNull(userContext)) {
+        if (Objects.isNull(userContext)) {
             userContext = new UserContext();
             UserContext.setCurrentUser(userContext);
         }
@@ -56,11 +56,12 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             User user = getUser(request);
             if (Objects.isNull(user)) {
                 redirect2LoginPage(request, response);
-                return true;
+                return false;
             }
             if (user.getYn() == 0) {
                 userContext.setLoginStatus(SystemLoginStatusEnum.NOT_PASS);
                 redirect2AddPersonalInformation(request, response);
+                return false;
             }
             if (user.getYn() == 1) {
                 userContext.setLoginStatus(SystemLoginStatusEnum.PASS);
@@ -73,11 +74,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     private void redirect2AddPersonalInformation(HttpServletRequest request, HttpServletResponse response) {
         try {
             if (isAjaxRequest(request)) {
-                PrintWriter writer = response.getWriter();
-                writer.write("{\"status\":0,\"message\":\"未登陆\",\"data\":{\"loginStatus\":0}}");
-                return;
+                response.sendError(HttpStatus.FORBIDDEN.value());
             }
-            response.sendError(404);
         } catch (IOException e) {
             LOGGER.error("已登陆，未认证重定向失败", e);
         }
@@ -86,11 +84,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     private void redirect2LoginPage(HttpServletRequest request, HttpServletResponse response) {
         try {
             if (isAjaxRequest(request)) {
-                PrintWriter writer = response.getWriter();
-                writer.write("{\"status\":0,\"message\":\"未登陆\",\"data\":{\"loginStatus\":-1}}");
-                return;
+                response.sendError(HttpStatus.UNAUTHORIZED.value());
             }
-            response.sendError(404);
         } catch (IOException e) {
             LOGGER.error("跳转登陆页失败", e);
         }
@@ -98,11 +93,11 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     private boolean isAjaxRequest(HttpServletRequest request) {
         boolean isAjaxReuest = false;
-        if(request.getHeader("x-requested-with") != null
+        if (request.getHeader("x-requested-with") != null
                 && request.getHeader("x-requested-with").equalsIgnoreCase("XMLHttpRequest")) {
-            isAjaxReuest =true;
+            isAjaxReuest = true;
         }
-        return  isAjaxReuest;
+        return isAjaxReuest;
     }
 
     private boolean needLogin(String path) {
@@ -137,7 +132,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         if (!isExist) {
             return null;
         }
-        redisUtils.expire("user_login_" + tokenId, CaProtalWebConstants.TOKEN_EXPIRE_TIME);
+        redisUtils.expire("user_login_" + tokenId, CaPortalWebConstants.TOKEN_EXPIRE_TIME);
         User user = userService.queryUserById(Integer.parseInt(tokenId));
         if (Objects.isNull(user)) {
             return null;

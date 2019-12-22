@@ -204,7 +204,7 @@ public class RecommendServiceImpl implements RecommendService {
         criteria.andUserIdEqualTo(userId);
         criteria.andRecommendTimeGreaterThanOrEqualTo(beforeNDays);
 
-        example.setOrderByClause("create_time asc");
+        example.setOrderByClause("recommend_time asc");
 
         return caRecommendMapper.selectByExample(example);
     }

@@ -6,7 +6,7 @@ import com.card.alumni.service.UserService;
 import com.card.alumni.utils.AESUtil;
 import com.card.alumni.utils.CookieUtils;
 import com.card.alumni.utils.RedisUtils;
-import com.card.alumni.vo.CaProtalWebConstants;
+import com.card.alumni.vo.CaPortalWebConstants;
 import com.card.alumni.vo.UserLoginVO;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.query.UserPhoneCodeVO;
@@ -49,7 +49,7 @@ public class UserController {
         String token = AESUtil.encrypt(id.toString(), "ca_manager_aes_token_pwd");
         CookieUtils.setCookie(request, response, "token", token, 60 * 30, "utf-8");
         response.setHeader("token", token);
-        redisUtils.set("user_login_" + id, token, CaProtalWebConstants.TOKEN_EXPIRE_TIME);
+        redisUtils.set("user_login_" + id, token, CaPortalWebConstants.TOKEN_EXPIRE_TIME);
 
         return new UnifiedResponse(new UserLoginVO(caUser.getYn(), token));
     }
