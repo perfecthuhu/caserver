@@ -22,7 +22,7 @@ public class CoresConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("*")
                 .allowCredentials(Boolean.TRUE)
-                .allowedMethods("OPTION", "GET", "POST", "DELETE", "PUT", "PATCH")
+                .allowedMethods("OPTIONS", "GET", "POST", "DELETE", "PUT", "PATCH")
                 .maxAge(3600);
     }
 
