@@ -19,6 +19,7 @@ import com.card.alumni.vo.enums.UserTagEnum;
 import com.card.alumni.vo.query.UserQuery;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -147,7 +148,7 @@ public class UserServiceImpl implements UserService {
 
     private List<UserVO> convertUserVOList(List<CaUser> caUsers) {
         if (CollectionUtils.isEmpty(caUsers)) {
-            return null;
+            return Lists.newArrayList();
         }
         return caUsers.stream().filter(Objects::nonNull).map(s -> {
             UserVO userVO = new UserVO();

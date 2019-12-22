@@ -116,6 +116,9 @@ public class RecommendServiceImpl implements RecommendService {
 
     @Override
     public List<UserVO> recommend(Integer size) throws CaException {
+        if (size <= 0) {
+            throw new CaException("错误的推荐数量");
+        }
         Integer userId = RequestUtil.getUserId();
 
         List<CaRecommend> recommendList = listBeforeDaysByUserId(userId, 3);
@@ -124,15 +127,23 @@ public class RecommendServiceImpl implements RecommendService {
 
         List<CaUser> userList = userLocalService.listByNotIsUserId(userId);
 
-        List<CaUser> shouldRandomUserList = userList.stream().filter(user -> StringUtils.isBlank(user.getPhotoImg()))
+        List<CaUser> shouldRandomUserList = userList.stream().filter(user -> StringUtils.isNotBlank(user.getPhotoImg()))
                 .filter(Objects::nonNull).filter(user -> !refIdList.contains(user.getId())).collect(Collectors.toList());
 
         List<CaUser> resultList = getRandom(shouldRandomUserList, size);
-        if (resultList.size() < size) {
+        if (resultList.size() < size && CollectionUtils.isNotEmpty(recommendList)) {
             int diffCount = size - resultList.size();
             List<CaRecommend> shouldAddList = Lists.newArrayList();
+
+            Random random = new Random();
             for (int i = 0; i < diffCount; i++) {
-                shouldAddList.add(recommendList.get(i));
+                int recommendSize = recommendList.size();
+                if (recommendSize <= 0) {
+                    break;
+                }
+                int index = random.nextInt(recommendSize);
+                shouldAddList.add(recommendList.get(index));
+                recommendList.remove(index);
             }
             List<Integer> shouldAddUserIdList = shouldAddList.stream()
                     .filter(Objects::nonNull).map(CaRecommend::getUserId).collect(Collectors.toList());
@@ -145,7 +156,7 @@ public class RecommendServiceImpl implements RecommendService {
 
     private List<UserVO> convertUserVOList(List<CaUser> caUsers) {
         if (CollectionUtils.isEmpty(caUsers)) {
-            return null;
+            return Lists.newArrayList();
         }
         return caUsers.stream().filter(Objects::nonNull).map(s -> {
             UserVO userVO = new UserVO();
@@ -165,11 +176,20 @@ public class RecommendServiceImpl implements RecommendService {
             size = userSize;
         }
 
-        Random random = new Random(size);
+        Random random = new Random();
         List<CaUser> resultList = Lists.newArrayList();
         for (int i = 0; i < size; i++) {
-            int index = random.nextInt();
+            userSize = userList.size();
+            if (userSize <= 0) {
+                break;
+            }
+            if (userSize < size) {
+                size = userSize;
+            }
+
+            int index = random.nextInt(size);
             resultList.add(userList.get(index));
+            userList.remove(index);
         }
 
         return resultList;
