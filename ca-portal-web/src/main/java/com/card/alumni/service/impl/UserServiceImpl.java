@@ -11,6 +11,7 @@ import com.card.alumni.entity.*;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.exception.ResultCodeEnum;
 import com.card.alumni.service.UserService;
+import com.card.alumni.utils.PinyinUtils;
 import com.card.alumni.utils.RedisUtils;
 import com.card.alumni.utils.VerificationCodeUtils;
 import com.card.alumni.vo.UserVO;
@@ -93,17 +94,23 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void submitUserInfo(UserVO userVO) throws Exception {
-        CaUser caUser = new CaUser();
-        BeanUtils.copyProperties(userVO, caUser);
-        caUser.setYn(1);
-        caUser.setUpdateTime(new Date(System.currentTimeMillis()));
-        caUser.setCreateTime(new Date(System.currentTimeMillis()));
+        CaUser caUser = convert2CaUser(userVO);
         int count = caUserMapper.updateByPrimaryKey(caUser);
         if (count != 1) {
             throw new CaException("填写信息失败");
         }
         LOGGER.info("更新用户信息入参:{}", JSON.toJSONString(userVO));
         caUserTagMapper.insert(convert2CaUserTag(userVO));
+    }
+
+    private CaUser convert2CaUser(UserVO userVO) {
+        CaUser caUser = new CaUser();
+        BeanUtils.copyProperties(userVO, caUser);
+        caUser.setNamePy(PinyinUtils.getFirstLetter(userVO.getName()));
+        caUser.setYn(1);
+        caUser.setUpdateTime(new Date(System.currentTimeMillis()));
+        caUser.setCreateTime(new Date(System.currentTimeMillis()));
+        return caUser;
     }
 
     private CaUserTag convert2CaUserTag(UserVO userVO) {
