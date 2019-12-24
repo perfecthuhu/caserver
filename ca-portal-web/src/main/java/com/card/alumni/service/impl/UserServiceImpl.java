@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
             throw new CaException("用户ID为空");
         }
         CaUser caUser = convert2CaUser(userVO);
-        int count = caUserMapper.updateByPrimaryKey(caUser);
+        int count = caUserMapper.updateByPrimaryKeySelective(caUser);
         if (count != 1) {
             throw new CaException("填写信息失败");
         }
