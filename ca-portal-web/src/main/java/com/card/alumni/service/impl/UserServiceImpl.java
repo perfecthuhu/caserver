@@ -94,6 +94,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void submitUserInfo(UserVO userVO) throws Exception {
+        if (Objects.isNull(userVO) || Objects.isNull(userVO.getId())) {
+            throw new CaException("用户ID为空");
+        }
         CaUser caUser = convert2CaUser(userVO);
         int count = caUserMapper.updateByPrimaryKey(caUser);
         if (count != 1) {
