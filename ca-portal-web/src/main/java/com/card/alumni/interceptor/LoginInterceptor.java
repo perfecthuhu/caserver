@@ -59,6 +59,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 return false;
             }
             if (user.getYn() == 0) {
+                if (path.startsWith("/user/submit")) {
+                    return false;
+                }
                 userContext.setLoginStatus(SystemLoginStatusEnum.NOT_PASS);
                 redirect2AddPersonalInformation(request, response);
                 return false;
@@ -117,9 +120,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             return false;
         }
         if (path.startsWith("/alumni/page")) {
-            return false;
-        }
-        if (path.startsWith("/user/submit")) {
             return false;
         }
         return true;

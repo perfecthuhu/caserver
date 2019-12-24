@@ -71,4 +71,9 @@ public class AESUtil {
         }
         return null;
     }
+
+    public static void main(String[] args) {
+        String a = "lWpaYVtv6WykiMJTNeU8Mw==";
+        System.out.println(decrypt(a, "ca_manager_aes_token_pwd"));
+    }
 }
