@@ -50,7 +50,7 @@ public class UserController {
         CookieUtils.setCookie(request, response, "token", token, 60 * 30, "utf-8");
         response.setHeader("token", token);
         redisUtils.set("user_login_" + id, token, CaPortalWebConstants.TOKEN_EXPIRE_TIME);
-        return new UnifiedResponse(new UserLoginVO(caUser.getYn(), token));
+        return new UnifiedResponse(new UserLoginVO(caUser.getId(), caUser.getYn(), token));
     }
 
     /**

@@ -17,6 +17,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class UserLoginVO implements Serializable {
 
+    private Integer id;
+
     private Integer userStatus;
 
     private String token;
