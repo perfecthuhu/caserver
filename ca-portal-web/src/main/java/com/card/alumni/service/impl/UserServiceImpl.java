@@ -13,6 +13,7 @@ import com.card.alumni.exception.ResultCodeEnum;
 import com.card.alumni.service.UserService;
 import com.card.alumni.utils.PinyinUtils;
 import com.card.alumni.utils.RedisUtils;
+import com.card.alumni.utils.RequestUtil;
 import com.card.alumni.utils.VerificationCodeUtils;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.enums.StatusEnum;
@@ -95,7 +96,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     public void submitUserInfo(UserVO userVO) throws Exception {
         if (Objects.isNull(userVO) || Objects.isNull(userVO.getId())) {
-            throw new CaException("用户ID为空");
+            userVO.setId(RequestUtil.getUserId());
         }
         CaUser caUser = convert2CaUser(userVO);
         int count = caUserMapper.updateByPrimaryKeySelective(caUser);
