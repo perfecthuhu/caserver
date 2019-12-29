@@ -31,6 +31,8 @@ public interface RecommendService {
      */
     List<UserVO> recommend(Integer size) throws CaException;
 
+    List<UserVO> recommendByRandom(Integer size) throws CaException;
+
     CaRecommend findById(Integer id) throws CaException;
 
     List<CaRecommend> listTodayByUserId(Integer userId) throws CaException;

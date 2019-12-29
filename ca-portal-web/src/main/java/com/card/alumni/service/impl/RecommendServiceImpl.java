@@ -154,6 +154,39 @@ public class RecommendServiceImpl implements RecommendService {
         return convertUserVOList(resultList);
     }
 
+    @Override
+    public List<UserVO> recommendByRandom(Integer size) throws CaException {
+        if (Objects.isNull(size) || size <= 0) {
+            throw new CaException("错误的推荐数量");
+        }
+        Integer userId = RequestUtil.getUserId();
+
+        List<CaUser> userList = userLocalService.listByNotIsUserId(userId);
+
+        int userSize = userList.size();
+        if (userSize < size) {
+            size = userSize;
+        }
+
+        int count = 1;
+        Random random = new Random();
+        List<CaUser> resultList = Lists.newArrayList();
+        List<Integer> usedIndexList = Lists.newArrayListWithCapacity(size);
+        for (; ; ) {
+            if (count > size) {
+                break;
+            }
+            int index = random.nextInt(userSize);
+            if (!usedIndexList.add(index)) {
+                continue;
+            }
+            resultList.add(userList.get(index));
+            count++;
+        }
+
+        return convertUserVOList(resultList);
+    }
+
     private List<UserVO> convertUserVOList(List<CaUser> caUsers) {
         if (CollectionUtils.isEmpty(caUsers)) {
             return Lists.newArrayList();

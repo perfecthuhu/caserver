@@ -18,6 +18,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -132,17 +133,29 @@ public class UserFriendServiceImpl implements UserFriendService {
     }
 
     @Override
+    @Transactional(rollbackFor = {CaException.class, Exception.class})
     public void deleteByUserIdAndFriendId(Integer userId, Integer friendId) throws CaException {
-        CaUserFriend friend = findByUserIdAndFriendId(userId, friendId);
-        if (Objects.isNull(friend) || friend.getIsDelete()) {
+        CaUserFriend userFriend = findByUserIdAndFriendId(userId, friendId);
+        if (Objects.isNull(userFriend) || userFriend.getIsDelete()) {
             return;
         }
 
-        friend.setIsDelete(Boolean.TRUE);
-        friend.setUpdateTime(new Date());
-        friend.setUpdater(RequestUtil.getUserId());
+        userFriend.setIsDelete(Boolean.TRUE);
+        userFriend.setUpdateTime(new Date());
+        userFriend.setUpdater(RequestUtil.getUserId());
 
-        caUserFriendMapper.updateByPrimaryKeySelective(friend);
+        caUserFriendMapper.updateByPrimaryKeySelective(userFriend);
+
+        CaUserFriend friendFriend = findByUserIdAndFriendId(friendId, userId);
+        if (Objects.isNull(friendFriend) || friendFriend.getIsDelete()) {
+            return;
+        }
+
+        friendFriend.setIsDelete(Boolean.TRUE);
+        friendFriend.setUpdateTime(new Date());
+        friendFriend.setUpdater(RequestUtil.getUserId());
+
+        caUserFriendMapper.updateByPrimaryKeySelective(friendFriend);
     }
 
     @Override
@@ -206,6 +219,7 @@ public class UserFriendServiceImpl implements UserFriendService {
 
     @Override
     public PageData<UserFriendModel> pageByRequest(UserFriendQueryRequest request) throws CaException {
+        Integer userId = Objects.isNull(request.getUserId()) ? RequestUtil.getUserId() : request.getUserId();
         int page = Objects.isNull(request.getPage()) ? 1 : request.getPage();
         int size = Objects.isNull(request.getSize()) ? 20 : request.getSize();
         String orderField = StringUtils.isBlank(request.getOrderField()) ? "create_time" : request.getOrderField();
@@ -215,7 +229,7 @@ public class UserFriendServiceImpl implements UserFriendService {
 
         CaUserFriendExample example = new CaUserFriendExample();
         CaUserFriendExample.Criteria criteria = example.createCriteria();
-        criteria.andUserIdEqualTo(request.getUserId());
+        criteria.andUserIdEqualTo(userId);
         criteria.andIsDeleteEqualTo(Boolean.FALSE);
         example.setOrderByClause(orderField + CaConstants.BLANK + orderType);
         List<CaUserFriend> friendList = caUserFriendMapper.selectByExample(example);

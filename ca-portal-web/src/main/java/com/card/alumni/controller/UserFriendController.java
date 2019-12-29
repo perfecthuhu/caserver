@@ -3,7 +3,6 @@ package com.card.alumni.controller;
 import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.request.UserFriendQueryRequest;
-import com.card.alumni.request.UserFriendRequest;
 import com.card.alumni.service.UserFriendService;
 import com.card.alumni.utils.RequestUtil;
 import io.swagger.annotations.Api;
@@ -33,19 +32,6 @@ public class UserFriendController {
 
     @Autowired
     private UserFriendService userFriendService;
-
-    @PostMapping
-    @ApiOperation(value = "添加好友", notes = "添加好友", response = UnifiedResponse.class)
-    public UnifiedResponse save(@RequestBody UserFriendRequest request) throws Exception {
-
-        LOGGER.info("{} add user friend. request = {}, operator = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
-        try {
-            return new UnifiedResponse(userFriendService.save(request));
-        } catch (CaException e) {
-            LOGGER.error("{} add user friend error. request = {}", LOGGER_PREFIX, request, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
-        }
-    }
 
     @DeleteMapping("/{friendId}")
     @ApiOperation(value = "删除我的好友", notes = "删除我的好友", response = UnifiedResponse.class)

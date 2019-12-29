@@ -36,7 +36,7 @@ public class RecommendController {
 
         LOGGER.info("{} recommend users. size = {}, operator = {}", LOGGER_PREFIX, size, RequestUtil.getUserId().toString());
         try {
-            return new UnifiedResponse(recommendService.recommend(size));
+            return new UnifiedResponse(recommendService.recommendByRandom(size));
         } catch (CaException e) {
             LOGGER.error("{} recommend users error. size = {}", LOGGER_PREFIX, size, e);
             return new UnifiedResponse(e.getCode(), e.getMessage());

@@ -16,4 +16,19 @@ public class UserFriendRequest implements Serializable {
     private Integer userId;
 
     private Integer friendId;
+
+    public UserFriendRequest() {
+
+    }
+
+    public UserFriendRequest(Integer userId, Integer friendId) {
+        this.userId = userId;
+        this.friendId = friendId;
+    }
+
+    public UserFriendRequest(Integer id, Integer userId, Integer friendId) {
+        this.id = id;
+        this.userId = userId;
+        this.friendId = friendId;
+    }
 }
