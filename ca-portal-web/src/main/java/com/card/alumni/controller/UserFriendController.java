@@ -1,6 +1,7 @@
 package com.card.alumni.controller;
 
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.entity.CaUserFriend;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.request.UserFriendQueryRequest;
 import com.card.alumni.service.UserFriendService;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Objects;
 
 /**
  * @author liumingyu
@@ -55,5 +58,15 @@ public class UserFriendController {
         LOGGER.info("{} page my friends by request. request = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
         return new UnifiedResponse(userFriendService.pageByRequest(request));
     }
+
+    @PostMapping("/{friendId}/check")
+    @ApiOperation(value = "校验当前操作人与该用户是否是好友", notes = "校验当前操作人与该用户是否是好友", response = UnifiedResponse.class)
+    public UnifiedResponse checkFriendShip(@PathVariable("friendId") Integer friendId) throws Exception {
+        Integer currentUserId = RequestUtil.getUserId();
+        LOGGER.info("{} check is my friend ?. friendId = {}, operatorId = {}", LOGGER_PREFIX, friendId, currentUserId);
+        CaUserFriend friend = userFriendService.findByUserIdAndFriendId(currentUserId, friendId);
+        return new UnifiedResponse(Objects.nonNull(friend));
+    }
+
 
 }
