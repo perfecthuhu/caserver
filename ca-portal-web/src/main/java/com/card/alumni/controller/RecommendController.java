@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,6 +41,20 @@ public class RecommendController {
             return new UnifiedResponse(recommendService.recommendByRandom(size));
         } catch (CaException e) {
             LOGGER.error("{} recommend users error. size = {}", LOGGER_PREFIX, size, e);
+            return new UnifiedResponse(e.getCode(), e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    @ApiOperation(value = "看过该推荐", notes = "看过该推荐", response = UnifiedResponse.class)
+    public UnifiedResponse browse(@PathVariable(value = "id") Integer id) throws Exception {
+
+        LOGGER.info("{} browse recommend. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
+        try {
+            recommendService.browse(id);
+            return new UnifiedResponse();
+        } catch (CaException e) {
+            LOGGER.error("{} browse recommend error. id = {}", LOGGER_PREFIX, id, e);
             return new UnifiedResponse(e.getCode(), e.getMessage());
         }
     }

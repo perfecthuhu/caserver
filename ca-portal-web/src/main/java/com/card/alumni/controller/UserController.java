@@ -6,6 +6,7 @@ import com.card.alumni.service.UserService;
 import com.card.alumni.utils.AESUtil;
 import com.card.alumni.utils.CookieUtils;
 import com.card.alumni.utils.RedisUtils;
+import com.card.alumni.utils.RequestUtil;
 import com.card.alumni.vo.CaPortalWebConstants;
 import com.card.alumni.vo.UserLoginVO;
 import com.card.alumni.vo.UserVO;
@@ -13,7 +14,11 @@ import com.card.alumni.vo.query.UserPhoneCodeVO;
 import com.card.alumni.vo.query.UserQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +41,7 @@ public class UserController {
 
     /**
      * 登陆
+     *
      * @return
      * @throws Exception
      */
@@ -55,6 +61,7 @@ public class UserController {
 
     /**
      * 填写用户信息
+     *
      * @param userVO
      * @return
      */
@@ -67,6 +74,7 @@ public class UserController {
 
     /**
      * 查询用户信息
+     *
      * @param userQuery
      * @return
      */
@@ -78,6 +86,7 @@ public class UserController {
 
     /**
      * 发送验证码
+     *
      * @param phone
      * @return
      * @throws Exception
@@ -87,5 +96,12 @@ public class UserController {
     public UnifiedResponse sendCode(@RequestBody UserPhoneCodeVO phone) throws Exception {
         userService.sendValidateCode(phone.getPhone());
         return new UnifiedResponse();
+    }
+
+    @GetMapping("/my")
+    @ApiOperation(value = "我的信息", notes = "我的信息", response = UnifiedResponse.class)
+    public UnifiedResponse findMyUserInfo() throws Exception {
+        Integer userId = RequestUtil.getUserId();
+        return new UnifiedResponse(userService.findUserById(userId));
     }
 }

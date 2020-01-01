@@ -2,7 +2,7 @@ package com.card.alumni.service;
 
 import com.card.alumni.entity.CaRecommend;
 import com.card.alumni.exception.CaException;
-import com.card.alumni.vo.UserVO;
+import com.card.alumni.model.RecommendModel;
 
 import java.util.List;
 
@@ -22,16 +22,7 @@ public interface RecommendService {
 
     void browse(Integer id) throws CaException;
 
-    /**
-     * 推荐N个用户
-     *
-     * @param size 推荐数量
-     * @return 用户列表
-     * @throws CaException e
-     */
-    List<UserVO> recommend(Integer size) throws CaException;
-
-    List<UserVO> recommendByRandom(Integer size) throws CaException;
+    List<RecommendModel> recommendByRandom(Integer size) throws CaException;
 
     CaRecommend findById(Integer id) throws CaException;
 

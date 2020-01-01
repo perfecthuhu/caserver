@@ -205,6 +205,17 @@ public class UserFriendServiceImpl implements UserFriendService {
     }
 
     @Override
+    public List<Integer> listFriendIdsByUserId(Integer userId) throws CaException {
+        List<CaUserFriend> friendList = listByUserId(userId);
+        if (CollectionUtils.isEmpty(friendList)) {
+            return Lists.newArrayList();
+        }
+
+        return friendList.stream().filter(Objects::nonNull)
+                .map(CaUserFriend::getFriendId).collect(Collectors.toList());
+    }
+
+    @Override
     public List<CaUserFriend> listByUserIdAndFriendIdList(Integer userId, List<Integer> friendIdList) throws CaException {
 
         CaUserFriendExample example = new CaUserFriendExample();

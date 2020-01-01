@@ -3,6 +3,8 @@ package com.card.alumni.service;
 import com.card.alumni.common.PageData;
 import com.card.alumni.context.User;
 import com.card.alumni.entity.CaUser;
+import com.card.alumni.exception.CaException;
+import com.card.alumni.model.SimpleUserModel;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.query.UserQuery;
 
@@ -62,4 +64,12 @@ public interface UserService {
      */
     void sendValidateCode(String phone) throws Exception;
 
+    /**
+     * 根据用户ID查询用户信息
+     *
+     * @param userId 用户ID
+     * @return 用户信息
+     * @throws CaException e
+     */
+    SimpleUserModel findUserById(Integer userId) throws CaException;
 }

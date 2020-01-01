@@ -5,15 +5,17 @@ import com.card.alumni.entity.CaRecommend;
 import com.card.alumni.entity.CaRecommendExample;
 import com.card.alumni.entity.CaUser;
 import com.card.alumni.exception.CaException;
+import com.card.alumni.model.RecommendModel;
+import com.card.alumni.model.SimpleUserModel;
 import com.card.alumni.service.RecommendService;
 import com.card.alumni.service.UserFriendService;
 import com.card.alumni.service.UserLocalService;
 import com.card.alumni.utils.DateUtils;
 import com.card.alumni.utils.RequestUtil;
-import com.card.alumni.vo.UserVO;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -115,47 +118,7 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     @Override
-    public List<UserVO> recommend(Integer size) throws CaException {
-        if (size <= 0) {
-            throw new CaException("错误的推荐数量");
-        }
-        Integer userId = RequestUtil.getUserId();
-
-        List<CaRecommend> recommendList = listBeforeDaysByUserId(userId, 3);
-        List<Integer> refIdList = recommendList.stream()
-                .filter(Objects::nonNull).map(CaRecommend::getRefId).collect(Collectors.toList());
-
-        List<CaUser> userList = userLocalService.listByNotIsUserId(userId);
-
-        List<CaUser> shouldRandomUserList = userList.stream().filter(user -> StringUtils.isNotBlank(user.getPhotoImg()))
-                .filter(Objects::nonNull).filter(user -> !refIdList.contains(user.getId())).collect(Collectors.toList());
-
-        List<CaUser> resultList = getRandom(shouldRandomUserList, size);
-        if (resultList.size() < size && CollectionUtils.isNotEmpty(recommendList)) {
-            int diffCount = size - resultList.size();
-            List<CaRecommend> shouldAddList = Lists.newArrayList();
-
-            Random random = new Random();
-            for (int i = 0; i < diffCount; i++) {
-                int recommendSize = recommendList.size();
-                if (recommendSize <= 0) {
-                    break;
-                }
-                int index = random.nextInt(recommendSize);
-                shouldAddList.add(recommendList.get(index));
-                recommendList.remove(index);
-            }
-            List<Integer> shouldAddUserIdList = shouldAddList.stream()
-                    .filter(Objects::nonNull).map(CaRecommend::getUserId).collect(Collectors.toList());
-            List<CaUser> shouldAddUserList = userLocalService.listByIdList(shouldAddUserIdList);
-            resultList.addAll(shouldAddUserList);
-        }
-
-        return convertUserVOList(resultList);
-    }
-
-    @Override
-    public List<UserVO> recommendByRandom(Integer size) throws CaException {
+    public List<RecommendModel> recommendByRandom(Integer size) throws CaException {
         if (Objects.isNull(size) || size <= 0) {
             throw new CaException("错误的推荐数量");
         }
@@ -163,14 +126,22 @@ public class RecommendServiceImpl implements RecommendService {
 
         List<CaUser> userList = userLocalService.listByNotIsUserId(userId);
 
-        int userSize = userList.size();
+        List<Integer> friendIds = userFriendService.listFriendIdsByUserId(userId);
+
+        List<CaUser> filterUserList = userList.stream().filter(Objects::nonNull)
+                .filter(user -> !friendIds.contains(user.getId())).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(filterUserList) || filterUserList.size() < size) {
+            filterUserList = userList;
+        }
+
+        int userSize = filterUserList.size();
         if (userSize < size) {
             size = userSize;
         }
 
         int count = 1;
         Random random = new Random();
-        List<CaUser> resultList = Lists.newArrayList();
+        Map<Integer, CaUser> recommendUserMapping = Maps.newLinkedHashMap();
         List<Integer> usedIndexList = Lists.newArrayListWithCapacity(size);
         for (; ; ) {
             if (count > size) {
@@ -180,52 +151,43 @@ public class RecommendServiceImpl implements RecommendService {
             if (!usedIndexList.add(index)) {
                 continue;
             }
-            resultList.add(userList.get(index));
+            CaUser recommendUser = filterUserList.get(index);
+
+            CaRecommend recommend = new CaRecommend();
+            recommend.setUserId(userId);
+            recommend.setRefId(recommendUser.getId());
+
+            Integer recommendId = save(recommend);
+            recommendUserMapping.put(recommendId, recommendUser);
+
             count++;
         }
 
-        return convertUserVOList(resultList);
+        return convertRecommendModelList(recommendUserMapping);
     }
 
-    private List<UserVO> convertUserVOList(List<CaUser> caUsers) {
-        if (CollectionUtils.isEmpty(caUsers)) {
-            return Lists.newArrayList();
-        }
-        return caUsers.stream().filter(Objects::nonNull).map(s -> {
-            UserVO userVO = new UserVO();
-            BeanUtils.copyProperties(s, userVO);
-            return userVO;
-        }).collect(Collectors.toList());
-    }
-
-    private List<CaUser> getRandom(List<CaUser> userList, Integer size) throws CaException {
-        if (CollectionUtils.isEmpty(userList)) {
+    private List<RecommendModel> convertRecommendModelList(Map<Integer, CaUser> recommendUserMapping) {
+        if (MapUtils.isEmpty(recommendUserMapping)) {
             return Lists.newArrayList();
         }
 
-        Integer userSize = userList.size();
-
-        if (userSize < size) {
-            size = userSize;
+        List<RecommendModel> modelList = Lists.newLinkedList();
+        for (Map.Entry<Integer, CaUser> entry : recommendUserMapping.entrySet()) {
+            RecommendModel model = new RecommendModel();
+            model.setRecommendId(entry.getKey());
+            model.setUser(convertUserModel(entry.getValue()));
+            modelList.add(model);
         }
+        return modelList;
+    }
 
-        Random random = new Random();
-        List<CaUser> resultList = Lists.newArrayList();
-        for (int i = 0; i < size; i++) {
-            userSize = userList.size();
-            if (userSize <= 0) {
-                break;
-            }
-            if (userSize < size) {
-                size = userSize;
-            }
-
-            int index = random.nextInt(size);
-            resultList.add(userList.get(index));
-            userList.remove(index);
+    private SimpleUserModel convertUserModel(CaUser user) {
+        if (Objects.isNull(user)) {
+            return null;
         }
-
-        return resultList;
+        SimpleUserModel model = new SimpleUserModel();
+        BeanUtils.copyProperties(user, model);
+        return model;
     }
 
     @Override

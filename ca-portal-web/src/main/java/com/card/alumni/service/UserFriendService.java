@@ -33,6 +33,8 @@ public interface UserFriendService {
 
     List<CaUserFriend> listByUserId(Integer userId) throws CaException;
 
+    List<Integer> listFriendIdsByUserId(Integer userId) throws CaException;
+
     List<CaUserFriend> listByUserIdAndFriendIdList(Integer userId, List<Integer> friendIdList) throws CaException;
 
     PageData<UserFriendModel> pageByRequest(UserFriendQueryRequest request) throws CaException;

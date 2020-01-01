@@ -10,6 +10,7 @@ import com.card.alumni.dao.CaUserTagMapper;
 import com.card.alumni.entity.*;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.exception.ResultCodeEnum;
+import com.card.alumni.model.SimpleUserModel;
 import com.card.alumni.service.UserService;
 import com.card.alumni.utils.PinyinUtils;
 import com.card.alumni.utils.RedisUtils;
@@ -242,6 +243,19 @@ public class UserServiceImpl implements UserService {
     public void sendValidateCode(String phone) throws Exception {
         String code = VerificationCodeUtils.getVerificationCode(phone);
         redisUtils.set("CA_VALIDATE_CODE_KEY_" + phone, Integer.valueOf(code), 60 * 30);
+    }
+
+    @Override
+    public SimpleUserModel findUserById(Integer userId) throws CaException {
+        if (Objects.isNull(userId)) {
+            throw new CaException("用户ID不能为空");
+        }
+
+        CaUser user = caUserMapper.selectByPrimaryKey(userId);
+        SimpleUserModel userModel = new SimpleUserModel();
+        BeanUtils.copyProperties(user, userModel);
+
+        return userModel;
     }
 
     private boolean validateVerificatioCode(UserVO userVO, String verificatioCode) {
