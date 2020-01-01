@@ -53,10 +53,10 @@ public class UserFriendController {
 
     @PostMapping("/page")
     @ApiOperation(value = "分页查询我的好友列表", notes = "分页查询我的好友列表", response = UnifiedResponse.class)
-    public UnifiedResponse pageByRequest(@RequestBody UserFriendQueryRequest request) throws Exception {
+    public UnifiedResponse pageFriendsByRequest(@RequestBody UserFriendQueryRequest request) throws Exception {
 
         LOGGER.info("{} page my friends by request. request = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
-        return new UnifiedResponse(userFriendService.pageByRequest(request));
+        return new UnifiedResponse(userFriendService.pageFriendsByRequest(request));
     }
 
     @PostMapping("/{friendId}/check")

@@ -3,19 +3,22 @@ package com.card.alumni.service.impl;
 import com.card.alumni.common.PageData;
 import com.card.alumni.constant.CaConstants;
 import com.card.alumni.dao.CaUserFriendMapper;
+import com.card.alumni.entity.CaUser;
 import com.card.alumni.entity.CaUserFriend;
 import com.card.alumni.entity.CaUserFriendExample;
 import com.card.alumni.exception.CaException;
-import com.card.alumni.model.UserFriendModel;
+import com.card.alumni.model.SimpleUserModel;
 import com.card.alumni.request.UserFriendQueryRequest;
 import com.card.alumni.request.UserFriendRequest;
 import com.card.alumni.service.UserFriendService;
+import com.card.alumni.service.UserLocalService;
 import com.card.alumni.utils.RequestUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +41,9 @@ public class UserFriendServiceImpl implements UserFriendService {
 
     @Autowired
     private CaUserFriendMapper caUserFriendMapper;
+
+    @Autowired
+    private UserLocalService userLocalService;
 
     @Override
     public Integer save(UserFriendRequest request) throws CaException {
@@ -183,14 +189,6 @@ public class UserFriendServiceImpl implements UserFriendService {
     }
 
     @Override
-    public UserFriendModel findModelById(Integer id) throws CaException {
-
-        CaUserFriend friend = findById(id);
-
-        return convert2Model(friend);
-    }
-
-    @Override
     public List<CaUserFriend> listByUserId(Integer userId) throws CaException {
         if (Objects.isNull(userId)) {
             throw new CaException("用户ID不能为空");
@@ -229,7 +227,7 @@ public class UserFriendServiceImpl implements UserFriendService {
     }
 
     @Override
-    public PageData<UserFriendModel> pageByRequest(UserFriendQueryRequest request) throws CaException {
+    public PageData<SimpleUserModel> pageFriendsByRequest(UserFriendQueryRequest request) throws CaException {
         Integer userId = Objects.isNull(request.getUserId()) ? RequestUtil.getUserId() : request.getUserId();
         int page = Objects.isNull(request.getPage()) ? 1 : request.getPage();
         int size = Objects.isNull(request.getSize()) ? 20 : request.getSize();
@@ -246,7 +244,7 @@ public class UserFriendServiceImpl implements UserFriendService {
         List<CaUserFriend> friendList = caUserFriendMapper.selectByExample(example);
         PageInfo<CaUserFriend> pageInfo = new PageInfo<>(friendList);
 
-        return new PageData<>(pageInfo.getTotal(), convert2ModelList(friendList));
+        return new PageData<>(pageInfo.getTotal(), convert2UserModelList(friendList));
     }
 
     private void checkParam(UserFriendRequest request) throws CaException {
@@ -269,27 +267,25 @@ public class UserFriendServiceImpl implements UserFriendService {
         return entity;
     }
 
-    private List<UserFriendModel> convert2ModelList(List<CaUserFriend> entries) {
+    private List<SimpleUserModel> convert2UserModelList(List<CaUserFriend> entries) throws CaException {
         if (CollectionUtils.isEmpty(entries)) {
             return Lists.newArrayList();
         }
 
-        return entries.stream().filter(Objects::nonNull)
-                .map(this::convert2Model).collect(Collectors.toList());
-    }
+        List<Integer> friendIdList = entries.stream().filter(Objects::nonNull).map(CaUserFriend::getFriendId).collect(Collectors.toList());
 
-    private UserFriendModel convert2Model(CaUserFriend entity) {
-        if (Objects.isNull(entity)) {
-            return null;
-        }
-        UserFriendModel model = new UserFriendModel();
-        model.setId(entity.getId());
-        model.setUserId(entity.getUserId());
-        model.setFriendId(entity.getFriendId());
-        model.setCreator(entity.getCreator());
-        model.setCreateTime(entity.getCreateTime());
-        model.setUpdater(entity.getUpdater());
-        model.setUpdateTime(entity.getUpdateTime());
-        return model;
+        Map<Integer, CaUser> userMap = userLocalService.mapByIdList(friendIdList);
+
+        List<SimpleUserModel> userModels = Lists.newLinkedList();
+        entries.forEach(entry -> {
+            CaUser user = userMap.get(entry.getFriendId());
+            if (Objects.nonNull(user)) {
+                SimpleUserModel model = new SimpleUserModel();
+                BeanUtils.copyProperties(user, model);
+                userModels.add(model);
+            }
+        });
+
+        return userModels;
     }
 }

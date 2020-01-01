@@ -1,7 +1,7 @@
 package com.card.alumni.service;
 
 import com.card.alumni.entity.CaUserTag;
-import com.card.alumni.exception.CaException;
+import com.card.alumni.exception.CaConfigException;
 
 /**
  * @author liumingyu
@@ -9,5 +9,9 @@ import com.card.alumni.exception.CaException;
  */
 public interface UserTagService {
 
-    CaUserTag findByUserId(Integer userId) throws CaException;
+    Integer save(CaUserTag userTag) throws CaConfigException;
+
+    void update(CaUserTag userTag) throws CaConfigException;
+
+    CaUserTag findByUserId(Integer userId) throws CaConfigException;
 }

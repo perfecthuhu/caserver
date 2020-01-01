@@ -30,4 +30,6 @@ public interface CaUserFriendMapper {
     int updateByPrimaryKey(CaUserFriend record);
 
     int batchInsert(@Param("list") List<CaUserFriend> list);
+
+    int batchUpdate(List<CaUserFriend> list);
 }

@@ -15,7 +15,43 @@ public class SimpleUserModel implements Serializable {
 
     private String name;
 
+    private String namePy;
+
     private Integer sex;
 
     private String photoImg;
+
+    private String professional;
+
+    private Integer education;
+
+    private String acceptAnceDate;
+
+    private String graduateDate;
+
+    private String address;
+
+    private Integer classId;
+
+    private Integer collegeId;
+
+    private String collegeName;
+
+    private Integer facultyId;
+
+    private String facultyName;
+
+    private String workUnit;
+
+    private String duty;
+
+    private Integer alumniId;
+
+    private String alumniName;
+
+    private String signature;
+
+    private Integer schoolId;
+
+    private String schoolName;
 }

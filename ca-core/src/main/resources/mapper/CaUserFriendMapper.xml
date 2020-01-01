@@ -90,7 +90,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from ca_user_friend
     where id = #{id,jdbcType=INTEGER}
@@ -270,4 +270,34 @@
     #{record.updateTime,jdbcType=TIMESTAMP}, #{record.isDelete,jdbcType=BIT})
     </foreach>
   </insert>
+
+  <update id="batchUpdate" parameterType="com.card.alumni.entity.CaUserFriend" >
+    <foreach collection="list" separator=";" item="record">
+      update ca_user_friend
+      <set >
+        <if test="record.userId != null" >
+          user_id = #{userId,jdbcType=INTEGER},
+        </if>
+        <if test="record.friendId != null" >
+          friend_id = #{record.friendId,jdbcType=INTEGER},
+        </if>
+        <if test="record.creator != null" >
+          creator = #{record.creator,jdbcType=INTEGER},
+        </if>
+        <if test="record.createTime != null" >
+          create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="record.updater != null" >
+          updater = #{record.updater,jdbcType=INTEGER},
+        </if>
+        <if test="record.updateTime != null" >
+          update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="record.isDelete != null" >
+          is_delete = #{record.isDelete,jdbcType=BIT},
+        </if>
+      </set>
+      where id = #{record.id,jdbcType=INTEGER}
+    </foreach>
+  </update>
 </mapper>

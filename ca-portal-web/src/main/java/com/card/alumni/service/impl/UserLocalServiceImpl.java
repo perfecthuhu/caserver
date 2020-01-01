@@ -5,7 +5,7 @@ import com.card.alumni.entity.CaUser;
 import com.card.alumni.entity.CaUserExample;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.service.UserLocalService;
-import com.card.alumni.vo.enums.StatusEnum;
+import com.card.alumni.enums.StatusEnum;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;

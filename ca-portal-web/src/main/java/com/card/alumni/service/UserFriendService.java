@@ -3,7 +3,7 @@ package com.card.alumni.service;
 import com.card.alumni.common.PageData;
 import com.card.alumni.entity.CaUserFriend;
 import com.card.alumni.exception.CaException;
-import com.card.alumni.model.UserFriendModel;
+import com.card.alumni.model.SimpleUserModel;
 import com.card.alumni.request.UserFriendQueryRequest;
 import com.card.alumni.request.UserFriendRequest;
 
@@ -29,13 +29,11 @@ public interface UserFriendService {
 
     CaUserFriend findByUserIdAndFriendId(Integer userId, Integer friendId) throws CaException;
 
-    UserFriendModel findModelById(Integer id) throws CaException;
-
     List<CaUserFriend> listByUserId(Integer userId) throws CaException;
 
     List<Integer> listFriendIdsByUserId(Integer userId) throws CaException;
 
     List<CaUserFriend> listByUserIdAndFriendIdList(Integer userId, List<Integer> friendIdList) throws CaException;
 
-    PageData<UserFriendModel> pageByRequest(UserFriendQueryRequest request) throws CaException;
+    PageData<SimpleUserModel> pageFriendsByRequest(UserFriendQueryRequest request) throws CaException;
 }

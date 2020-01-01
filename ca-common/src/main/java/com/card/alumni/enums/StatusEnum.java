@@ -1,4 +1,4 @@
-package com.card.alumni.vo.enums;
+package com.card.alumni.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

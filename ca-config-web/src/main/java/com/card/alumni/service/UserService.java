@@ -2,6 +2,7 @@ package com.card.alumni.service;
 
 import com.card.alumni.common.PageData;
 import com.card.alumni.entity.CaUser;
+import com.card.alumni.entity.CaUserRoleRelation;
 import com.card.alumni.exception.CaConfigException;
 import com.card.alumni.model.UserModel;
 import com.card.alumni.request.UserQueryRequest;
@@ -22,12 +23,22 @@ public interface UserService {
 
     void deleteById(Integer id) throws CaConfigException;
 
+    CaUser findById(Integer id) throws CaConfigException;
+
+    CaUser findByPhone(String phone) throws CaConfigException;
+
+    UserModel findModelById(Integer id) throws CaConfigException;
+
+    List<CaUser> listByIdList(List<Integer> idList) throws CaConfigException;
+
     Map<Integer, CaUser> mapByIdList(List<Integer> idList) throws CaConfigException;
 
     PageData<UserModel> pageByRequest(UserQueryRequest request) throws CaConfigException;
 
 
     void deleteUserRoleRelByUserId(Integer userId) throws CaConfigException;
+
+    List<CaUserRoleRelation> listUserRoleRelByUserId(Integer userId) throws CaConfigException;
 
     List<Integer> listRoleIdsByUserId(Integer userId) throws CaConfigException;
 }

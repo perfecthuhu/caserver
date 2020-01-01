@@ -95,6 +95,9 @@ public class UserFriendApplyServiceImpl implements UserFriendApplyService {
         if (Objects.isNull(apply)) {
             throw new CaException("当前申请不存在或已删除");
         }
+        if (FriendApplyStatusEnum.WAITING.getCode() != apply.getStatus()) {
+            throw new CaException("当前申请已经处理过");
+        }
 
         Integer userId = RequestUtil.getUserId();
         if (!userId.equals(apply.getTargetId())) {
