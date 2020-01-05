@@ -1,6 +1,5 @@
 package com.card.alumni.service.impl;
 
-import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.dao.CaArticleMapper;
 import com.card.alumni.entity.CaArticle;
 import com.card.alumni.entity.CaArticleExample;
