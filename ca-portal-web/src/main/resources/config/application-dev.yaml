@@ -64,6 +64,10 @@ spring:
         min-idle: 0
         max-wait: -1ms
     timeout: 3000ms
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
 
 mybatis:
   configuration:

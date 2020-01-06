@@ -374,4 +374,5 @@ public class CaUser {
     public void setYn(Integer yn) {
         this.yn = yn;
     }
+
 }

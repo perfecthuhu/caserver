@@ -74,4 +74,6 @@ public class UserVO implements Serializable {
     private String schoolName;
 
     private List<Integer> userTagId;
+
+    private String otherDesc;
 }
