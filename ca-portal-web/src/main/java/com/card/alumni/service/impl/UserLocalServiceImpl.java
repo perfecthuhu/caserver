@@ -6,6 +6,7 @@ import com.card.alumni.entity.CaUserExample;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.service.UserLocalService;
 import com.card.alumni.enums.StatusEnum;
+import com.card.alumni.utils.EncryptUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +40,9 @@ public class UserLocalServiceImpl implements UserLocalService {
         user.setCreateTime(now);
         user.setUpdateTime(now);
         user.setYn(StatusEnum.NO.getCode());
+        user.setPwdLastResetTime(now);
+        user.setPwd(StringUtils.isBlank(user.getPwd()) ?
+                EncryptUtils.encryptPassword(user.getPhone()) : EncryptUtils.encryptPassword(user.getPwd()));
 
         caUserMapper.insert(user);
 

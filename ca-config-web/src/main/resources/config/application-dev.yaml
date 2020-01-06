@@ -80,6 +80,17 @@ pagehelper:
   rowBoundsWithCount: true
   offsetAsPageNum: true #pageNum=offset pageSize=limit
 
+#jwt
+jwt:
+  header: Authorization
+  secret: mySecret
+  # token 过期时间/毫秒，6小时  1小时 = 3600000 毫秒
+  expiration: 21600000
+  # 在线用户key
+  online: config-web-online-token
+  # 验证码
+  codeKey: code-key
+
 swagger:
   enable: true
   title: ca-config-web

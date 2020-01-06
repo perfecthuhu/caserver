@@ -197,6 +197,23 @@ public class RoleServiceImpl implements RoleService {
                 .map(CaRoleMenuRelation::getMenuId).collect(Collectors.toList());
     }
 
+    @Override
+    public List<Integer> listMenuIdsByRoleIdList(List<Integer> roleIdList) throws CaConfigException {
+        if (CollectionUtils.isEmpty(roleIdList)) {
+            return Lists.newArrayList();
+        }
+
+        CaRoleMenuRelationExample example = new CaRoleMenuRelationExample();
+        CaRoleMenuRelationExample.Criteria criteria = example.createCriteria();
+        criteria.andRoleIdIn(roleIdList);
+        criteria.andIsDeleteEqualTo(Boolean.FALSE);
+
+        List<CaRoleMenuRelation> relationList = caRoleMenuRelationMapper.selectByExample(example);
+
+        return relationList.stream().filter(Objects::nonNull)
+                .map(CaRoleMenuRelation::getMenuId).collect(Collectors.toList());
+    }
+
 
     @Override
     public void deleteUserRoleRelByRoleId(Integer roleId) throws CaConfigException {

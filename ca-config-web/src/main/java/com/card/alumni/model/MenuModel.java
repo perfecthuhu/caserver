@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author liumingyu
@@ -39,4 +40,6 @@ public class MenuModel implements Serializable {
     private Integer updater;
 
     private Date updateTime;
+
+    private List<MenuModel> children;
 }

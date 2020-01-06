@@ -33,9 +33,17 @@ public interface MenuService {
 
     List<CaMenu> listRankByParentId(Integer parentId) throws CaConfigException;
 
+    List<CaMenu> listRankByIdList(List<Integer> idList) throws CaConfigException;
+
+    List<MenuModel> listRankModelByIdList(List<Integer> idList) throws CaConfigException;
+
     List<MenuModel> listRankModelByParentId(Integer parentId) throws CaConfigException;
 
     List<MenuModel> listRankModelByRequest(MenuQueryRequest request) throws CaConfigException;
+
+    List<MenuModel> buildMenuTree(List<MenuModel> menuList) throws CaConfigException;
+
+    List<MenuModel> listAll() throws CaConfigException;
 
 
     void deleteRoleMenuRelByMenuId(Integer menuId) throws CaConfigException;

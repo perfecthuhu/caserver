@@ -81,4 +81,7 @@ public class User implements Serializable {
 
     private Integer yn;
 
+    private String pwd;
+
+    private Date pwdLastResetTime;
 }

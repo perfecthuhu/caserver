@@ -20,7 +20,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -224,6 +226,30 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    public List<CaMenu> listRankByIdList(List<Integer> idList) throws CaConfigException {
+        if (CollectionUtils.isEmpty(idList)) {
+            return Lists.newArrayList();
+        }
+
+        CaMenuExample example = new CaMenuExample();
+        CaMenuExample.Criteria criteria = example.createCriteria();
+        criteria.andIdIn(idList);
+        criteria.andIsDeleteEqualTo(Boolean.FALSE);
+
+        example.setOrderByClause("rank asc");
+
+        return caMenuMapper.selectByExample(example);
+    }
+
+    @Override
+    public List<MenuModel> listRankModelByIdList(List<Integer> idList) throws CaConfigException {
+
+        List<CaMenu> menuList = listRankByIdList(idList);
+
+        return convert2ModelList(menuList);
+    }
+
+    @Override
     public List<MenuModel> listRankModelByParentId(Integer parentId) throws CaConfigException {
 
         List<CaMenu> menuList = listRankByParentId(parentId);
@@ -246,6 +272,36 @@ public class MenuServiceImpl implements MenuService {
         criteria.andIsDeleteEqualTo(Boolean.FALSE);
 
         example.setOrderByClause("rank asc");
+
+        List<CaMenu> menuList = caMenuMapper.selectByExample(example);
+
+        return convert2ModelList(menuList);
+    }
+
+    @Override
+    public List<MenuModel> buildMenuTree(List<MenuModel> menuList) throws CaConfigException {
+        List<MenuModel> trees = new LinkedList<>();
+        for (MenuModel menu : menuList) {
+            if (menu.getPid() == 0) {
+                trees.add(menu);
+            }
+            for (MenuModel it : menuList) {
+                if (it.getPid().equals(menu.getId())) {
+                    if (menu.getChildren() == null) {
+                        menu.setChildren(new LinkedList<>());
+                    }
+                    menu.getChildren().add(it);
+                }
+            }
+        }
+        return trees;
+    }
+
+    @Override
+    public List<MenuModel> listAll() throws CaConfigException {
+        CaMenuExample example = new CaMenuExample();
+        CaMenuExample.Criteria criteria = example.createCriteria();
+        criteria.andIsDeleteEqualTo(Boolean.FALSE);
 
         List<CaMenu> menuList = caMenuMapper.selectByExample(example);
 

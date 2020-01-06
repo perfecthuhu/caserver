@@ -36,6 +36,8 @@
       <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="yn" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="pwd" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="pwd_last_reset_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
     </constructor>
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -100,7 +102,7 @@
     id, phone, name, name_py, id_card, sex, professional, education, accept_ance_date, 
     graduate_date, birthday, status, second_tel, qq, wx, email, address, class_id, college_id, 
     college_name, faculty_id, faculty_name, photo_img, work_unit, duty, alumni_id, alumni_name, 
-    signature, school_id, school_name, create_time, update_time, yn
+    signature, school_id, school_name, create_time, update_time, yn, pwd, pwd_last_reset_time
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.card.alumni.entity.CaUserExample" >
     select
@@ -133,7 +135,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.card.alumni.entity.CaUser" >
+  <insert id="insert" parameterType="com.card.alumni.entity.CaUser" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_user (id, phone, name, 
       name_py, id_card, sex, 
       professional, education, accept_ance_date, 
@@ -144,8 +146,8 @@
       faculty_name, photo_img, work_unit, 
       duty, alumni_id, alumni_name, 
       signature, school_id, school_name, 
-      create_time, update_time, yn
-      )
+      create_time, update_time, yn, 
+      pwd, pwd_last_reset_time)
     values (#{id,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{namePy,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, 
       #{professional,jdbcType=VARCHAR}, #{education,jdbcType=INTEGER}, #{acceptAnceDate,jdbcType=VARCHAR}, 
@@ -156,10 +158,10 @@
       #{facultyName,jdbcType=VARCHAR}, #{photoImg,jdbcType=VARCHAR}, #{workUnit,jdbcType=VARCHAR}, 
       #{duty,jdbcType=VARCHAR}, #{alumniId,jdbcType=INTEGER}, #{alumniName,jdbcType=VARCHAR}, 
       #{signature,jdbcType=VARCHAR}, #{schoolId,jdbcType=INTEGER}, #{schoolName,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{yn,jdbcType=INTEGER}
-      )
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{yn,jdbcType=INTEGER}, 
+      #{pwd,jdbcType=VARCHAR}, #{pwdLastResetTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.card.alumni.entity.CaUser" >
+  <insert id="insertSelective" parameterType="com.card.alumni.entity.CaUser" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -261,6 +263,12 @@
       <if test="yn != null" >
         yn,
       </if>
+      <if test="pwd != null" >
+        pwd,
+      </if>
+      <if test="pwdLastResetTime != null" >
+        pwd_last_reset_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -361,6 +369,12 @@
       </if>
       <if test="yn != null" >
         #{yn,jdbcType=INTEGER},
+      </if>
+      <if test="pwd != null" >
+        #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="pwdLastResetTime != null" >
+        #{pwdLastResetTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -472,6 +486,12 @@
       <if test="record.yn != null" >
         yn = #{record.yn,jdbcType=INTEGER},
       </if>
+      <if test="record.pwd != null" >
+        pwd = #{record.pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pwdLastResetTime != null" >
+        pwd_last_reset_time = #{record.pwdLastResetTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -511,7 +531,9 @@
       school_name = #{record.schoolName,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      yn = #{record.yn,jdbcType=INTEGER}
+      yn = #{record.yn,jdbcType=INTEGER},
+      pwd = #{record.pwd,jdbcType=VARCHAR},
+      pwd_last_reset_time = #{record.pwdLastResetTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -615,6 +637,12 @@
       <if test="yn != null" >
         yn = #{yn,jdbcType=INTEGER},
       </if>
+      <if test="pwd != null" >
+        pwd = #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="pwdLastResetTime != null" >
+        pwd_last_reset_time = #{pwdLastResetTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -651,7 +679,9 @@
       school_name = #{schoolName,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      yn = #{yn,jdbcType=INTEGER}
+      yn = #{yn,jdbcType=INTEGER},
+      pwd = #{pwd,jdbcType=VARCHAR},
+      pwd_last_reset_time = #{pwdLastResetTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

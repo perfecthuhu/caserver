@@ -2,14 +2,19 @@ package com.card.alumni.controller;
 
 import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.exception.CaConfigException;
+import com.card.alumni.model.MenuModel;
 import com.card.alumni.request.MenuRequest;
+import com.card.alumni.security.utils.SecurityUtils;
 import com.card.alumni.service.MenuService;
+import com.card.alumni.service.RoleService;
+import com.card.alumni.service.UserService;
 import com.card.alumni.utils.RequestUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +41,12 @@ public class MenuController {
 
     @Autowired
     private MenuService menuService;
+
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private UserService userService;
 
     @PostMapping
     @ApiOperation(value = "保存菜单", notes = "保存菜单", response = UnifiedResponse.class)
@@ -108,5 +119,23 @@ public class MenuController {
         LOGGER.info("{} list rank menus by parentId. parentId = {}", LOGGER_PREFIX, parentId, RequestUtil.getUserId().toString());
 
         return new UnifiedResponse(menuService.listRankModelByParentId(parentId));
+    }
+
+    @GetMapping("/all")
+    @PreAuthorize("@ca.check('menu:list')")
+    @ApiOperation(value = "查询全部菜单树", notes = "查询全部菜单树", response = UnifiedResponse.class)
+    public UnifiedResponse listAll() throws Exception {
+        List<MenuModel> modelList = menuService.listAll();
+        return new UnifiedResponse(menuService.buildMenuTree(modelList));
+    }
+
+    @GetMapping("/tree")
+    @PreAuthorize("@ca.check('menu:list','roles:list')")
+    @ApiOperation(value = "查询当前用户能查看的菜单树", notes = "查询当前用户能查看的菜单树", response = UnifiedResponse.class)
+    public UnifiedResponse tree() throws Exception {
+        List<Integer> roleIdList = userService.listRoleIdsByUserId(SecurityUtils.getUserId());
+        List<Integer> menuIdList = roleService.listMenuIdsByRoleIdList(roleIdList);
+        List<MenuModel> modelList = menuService.listRankModelByIdList(menuIdList);
+        return new UnifiedResponse(menuService.buildMenuTree(modelList));
     }
 }

@@ -9,6 +9,7 @@ import com.card.alumni.entity.*;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.model.SimpleUserModel;
 import com.card.alumni.service.UserService;
+import com.card.alumni.utils.EncryptUtils;
 import com.card.alumni.utils.PinyinUtils;
 import com.card.alumni.utils.RedisUtils;
 import com.card.alumni.utils.RequestUtil;
@@ -162,6 +163,7 @@ public class UserServiceImpl implements UserService {
         return caUsers.stream().filter(Objects::nonNull).map(s -> {
             UserVO userVO = new UserVO();
             BeanUtils.copyProperties(s, userVO);
+            userVO.setPwd(null);
             return userVO;
         }).collect(Collectors.toList());
     }
@@ -215,6 +217,9 @@ public class UserServiceImpl implements UserService {
         CaUser caUser = new CaUser();
         BeanUtils.copyProperties(userVO, caUser);
         caUser.setYn(0);
+        caUser.setPwd(StringUtils.isBlank(userVO.getPwd()) ?
+                EncryptUtils.encryptPassword(userVO.getPhone()) : EncryptUtils.encryptPassword(userVO.getPwd()));
+        caUser.setPwdLastResetTime(new Date());
         int count = caUserMapper.insert(caUser);
         if (count != 1) {
             throw new CaException("登陆失败");
@@ -233,7 +238,9 @@ public class UserServiceImpl implements UserService {
         if (CollectionUtils.isEmpty(caUser)) {
             return null;
         }
-        return caUser.get(0);
+        CaUser user = caUser.get(0);
+        user.setPwd(null);
+        return user;
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.card.alumni.request.UserQueryRequest;
 import com.card.alumni.request.UserRequest;
 import com.card.alumni.service.UserFriendService;
 import com.card.alumni.service.UserService;
+import com.card.alumni.utils.EncryptUtils;
 import com.card.alumni.utils.RequestUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -60,9 +61,14 @@ public class UserServiceImpl implements UserService {
         }
 
         CaUser user = convert(request);
+
+        user.setPwd(StringUtils.isBlank(request.getPwd()) ?
+                EncryptUtils.encryptPassword(request.getPhone()) : EncryptUtils.encryptPassword(request.getPwd()));
+
         Date now = new Date();
         user.setCreateTime(now);
         user.setUpdateTime(now);
+        user.setPwdLastResetTime(now);
         user.setYn(StatusEnum.YES.getCode());
 
         caUserMapper.insert(user);
@@ -78,6 +84,20 @@ public class UserServiceImpl implements UserService {
             throw new CaConfigException("用户ID不能为空");
         }
         CaUser user = convert(request);
+        user.setUpdateTime(new Date());
+
+        caUserMapper.updateByPrimaryKeySelective(user);
+    }
+
+    @Override
+    public void updatePwd(Integer id, String password) throws CaConfigException {
+        CaUser user = findById(id);
+        if (Objects.isNull(user)) {
+            throw new CaConfigException("用户不存在");
+        }
+
+        user.setPwd(EncryptUtils.encryptPassword(password));
+        user.setPwdLastResetTime(new Date());
         user.setUpdateTime(new Date());
 
         caUserMapper.updateByPrimaryKeySelective(user);

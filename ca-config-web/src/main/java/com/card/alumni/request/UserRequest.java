@@ -17,6 +17,8 @@ public class UserRequest implements Serializable {
 
     private String phone;
 
+    private String pwd;
+
     private String name;
 
     private String idCard;
@@ -72,4 +74,5 @@ public class UserRequest implements Serializable {
     private String schoolName;
 
     private List<Integer> userTagId;
+
 }

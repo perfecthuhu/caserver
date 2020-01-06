@@ -34,6 +34,8 @@ public interface RoleService {
 
     List<Integer> listMenuIdsByRoleId(Integer roleId) throws CaConfigException;
 
+    List<Integer> listMenuIdsByRoleIdList(List<Integer> roleIdList) throws CaConfigException;
+
 
     void deleteUserRoleRelByRoleId(Integer roleId) throws CaConfigException;
 

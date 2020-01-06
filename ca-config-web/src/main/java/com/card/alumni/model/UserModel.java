@@ -74,4 +74,8 @@ public class UserModel implements Serializable {
     private String schoolName;
 
     private List<Integer> userTagId;
+
+    private String pwd;
+
+    private Date pwdLastResetTime;
 }

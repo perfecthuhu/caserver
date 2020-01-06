@@ -1,7 +1,5 @@
 package com.card.alumni.entity;
 
-import lombok.Data;
-
 import java.util.Date;
 
 public class CaUser {
@@ -71,7 +69,11 @@ public class CaUser {
 
     private Integer yn;
 
-    public CaUser(Integer id, String phone, String name, String namePy, String idCard, Integer sex, String professional, Integer education, String acceptAnceDate, String graduateDate, Date birthday, Integer status, String secondTel, String qq, String wx, String email, String address, Integer classId, Integer collegeId, String collegeName, Integer facultyId, String facultyName, String photoImg, String workUnit, String duty, Integer alumniId, String alumniName, String signature, Integer schoolId, String schoolName, Date createTime, Date updateTime, Integer yn) {
+    private String pwd;
+
+    private Date pwdLastResetTime;
+
+    public CaUser(Integer id, String phone, String name, String namePy, String idCard, Integer sex, String professional, Integer education, String acceptAnceDate, String graduateDate, Date birthday, Integer status, String secondTel, String qq, String wx, String email, String address, Integer classId, Integer collegeId, String collegeName, Integer facultyId, String facultyName, String photoImg, String workUnit, String duty, Integer alumniId, String alumniName, String signature, Integer schoolId, String schoolName, Date createTime, Date updateTime, Integer yn, String pwd, Date pwdLastResetTime) {
         this.id = id;
         this.phone = phone;
         this.name = name;
@@ -105,6 +107,8 @@ public class CaUser {
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.yn = yn;
+        this.pwd = pwd;
+        this.pwdLastResetTime = pwdLastResetTime;
     }
 
     public CaUser() {
@@ -373,5 +377,21 @@ public class CaUser {
 
     public void setYn(Integer yn) {
         this.yn = yn;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd == null ? null : pwd.trim();
+    }
+
+    public Date getPwdLastResetTime() {
+        return pwdLastResetTime;
+    }
+
+    public void setPwdLastResetTime(Date pwdLastResetTime) {
+        this.pwdLastResetTime = pwdLastResetTime;
     }
 }

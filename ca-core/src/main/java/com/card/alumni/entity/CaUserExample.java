@@ -2311,6 +2311,136 @@ public class CaUserExample {
             addCriterion("yn not between", value1, value2, "yn");
             return (Criteria) this;
         }
+
+        public Criteria andPwdIsNull() {
+            addCriterion("pwd is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdIsNotNull() {
+            addCriterion("pwd is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdEqualTo(String value) {
+            addCriterion("pwd =", value, "pwd");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdNotEqualTo(String value) {
+            addCriterion("pwd <>", value, "pwd");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdGreaterThan(String value) {
+            addCriterion("pwd >", value, "pwd");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdGreaterThanOrEqualTo(String value) {
+            addCriterion("pwd >=", value, "pwd");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdLessThan(String value) {
+            addCriterion("pwd <", value, "pwd");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdLessThanOrEqualTo(String value) {
+            addCriterion("pwd <=", value, "pwd");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdLike(String value) {
+            addCriterion("pwd like", value, "pwd");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdNotLike(String value) {
+            addCriterion("pwd not like", value, "pwd");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdIn(List<String> values) {
+            addCriterion("pwd in", values, "pwd");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdNotIn(List<String> values) {
+            addCriterion("pwd not in", values, "pwd");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdBetween(String value1, String value2) {
+            addCriterion("pwd between", value1, value2, "pwd");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdNotBetween(String value1, String value2) {
+            addCriterion("pwd not between", value1, value2, "pwd");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdLastResetTimeIsNull() {
+            addCriterion("pwd_last_reset_time is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdLastResetTimeIsNotNull() {
+            addCriterion("pwd_last_reset_time is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdLastResetTimeEqualTo(Date value) {
+            addCriterion("pwd_last_reset_time =", value, "pwdLastResetTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdLastResetTimeNotEqualTo(Date value) {
+            addCriterion("pwd_last_reset_time <>", value, "pwdLastResetTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdLastResetTimeGreaterThan(Date value) {
+            addCriterion("pwd_last_reset_time >", value, "pwdLastResetTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdLastResetTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("pwd_last_reset_time >=", value, "pwdLastResetTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdLastResetTimeLessThan(Date value) {
+            addCriterion("pwd_last_reset_time <", value, "pwdLastResetTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdLastResetTimeLessThanOrEqualTo(Date value) {
+            addCriterion("pwd_last_reset_time <=", value, "pwdLastResetTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdLastResetTimeIn(List<Date> values) {
+            addCriterion("pwd_last_reset_time in", values, "pwdLastResetTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdLastResetTimeNotIn(List<Date> values) {
+            addCriterion("pwd_last_reset_time not in", values, "pwdLastResetTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdLastResetTimeBetween(Date value1, Date value2) {
+            addCriterion("pwd_last_reset_time between", value1, value2, "pwdLastResetTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andPwdLastResetTimeNotBetween(Date value1, Date value2) {
+            addCriterion("pwd_last_reset_time not between", value1, value2, "pwdLastResetTime");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {
