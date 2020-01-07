@@ -1,7 +1,10 @@
 package com.card.alumni.controller;
 
+import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaConfigException;
+import com.card.alumni.model.HomeGuideModel;
 import com.card.alumni.request.HomeGuideQueryRequest;
 import com.card.alumni.request.HomeGuideRequest;
 import com.card.alumni.service.HomeGuideService;
@@ -39,86 +42,86 @@ public class HomeGuideController {
     private HomeGuideService homeGuideService;
 
     @PostMapping
-    @ApiOperation(value = "保存主页导航", notes = "保存主页导航", response = UnifiedResponse.class)
-    public UnifiedResponse save(@RequestBody HomeGuideRequest request) throws Exception {
+    @ApiOperation(value = "保存主页导航", notes = "保存主页导航")
+    public UnifiedResult<Integer> save(@RequestBody HomeGuideRequest request) throws Exception {
 
         LOGGER.info("{} save home guide. request = {}, operator = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
         try {
-            return new UnifiedResponse(homeGuideService.save(request));
+            return UnifiedResult.success(homeGuideService.save(request));
         } catch (CaConfigException e) {
             LOGGER.error("{} save home guide error. request = {}", LOGGER_PREFIX, request, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
     }
 
     @PutMapping
-    @ApiOperation(value = "更新主页导航", notes = "更新主页导航", response = UnifiedResponse.class)
-    public UnifiedResponse update(@RequestBody HomeGuideRequest request) throws Exception {
+    @ApiOperation(value = "更新主页导航", notes = "更新主页导航")
+    public UnifiedResult update(@RequestBody HomeGuideRequest request) throws Exception {
 
         LOGGER.info("{} update home guide. request = {}, operator = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
         try {
             homeGuideService.update(request);
         } catch (CaConfigException e) {
             LOGGER.error("{} update home guide error. request = {}", LOGGER_PREFIX, request, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
-        return new UnifiedResponse();
+        return UnifiedResult.success();
     }
 
     @PutMapping("/{pageHomeId}/rank")
-    @ApiOperation(value = "更新主页导航", notes = "更新主页导航", response = UnifiedResponse.class)
-    public UnifiedResponse rank(@PathVariable("pageHomeId") Integer pageHomeId, @RequestBody List<Integer> children) throws Exception {
+    @ApiOperation(value = "更新主页导航", notes = "更新主页导航")
+    public UnifiedResult rank(@PathVariable("pageHomeId") Integer pageHomeId, @RequestBody List<Integer> children) throws Exception {
 
         LOGGER.info("{} update home guide. pageHomeId = {}, children = {}, operator = {}", LOGGER_PREFIX, pageHomeId, children, RequestUtil.getUserId().toString());
         try {
             homeGuideService.rank(pageHomeId, children);
         } catch (CaConfigException e) {
             LOGGER.error("{} update home guide error. pageHomeId = {}, request = {}", LOGGER_PREFIX, pageHomeId, children, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
-        return new UnifiedResponse();
+        return UnifiedResult.success();
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "根据ID删除主页导航", notes = "根据ID删除主页导航", response = UnifiedResponse.class)
-    public UnifiedResponse deleteById(@PathVariable("id") Integer id) throws Exception {
+    @ApiOperation(value = "根据ID删除主页导航", notes = "根据ID删除主页导航")
+    public UnifiedResult deleteById(@PathVariable("id") Integer id) throws Exception {
 
         LOGGER.info("{} delete home guide by id. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
         try {
             homeGuideService.deleteById(id);
-            return new UnifiedResponse();
+            return UnifiedResult.success();
         } catch (CaConfigException e) {
             LOGGER.error("{} delete home guide by id error. id = {}", LOGGER_PREFIX, id, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
     }
 
     @GetMapping("/{id}")
-    @ApiOperation(value = "根据ID查询主页导航", notes = "根据ID查询主页导航", response = UnifiedResponse.class)
-    public UnifiedResponse findById(@PathVariable("id") Integer id) throws Exception {
+    @ApiOperation(value = "根据ID查询主页导航", notes = "根据ID查询主页导航")
+    public UnifiedResult<HomeGuideModel> findById(@PathVariable("id") Integer id) throws Exception {
 
         LOGGER.info("{} find home guide by id. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
 
-        return new UnifiedResponse(homeGuideService.findModelById(id));
+        return UnifiedResult.success(homeGuideService.findModelById(id));
 
     }
 
     @GetMapping("/{homePageId}/list")
-    @ApiOperation(value = "根据主页ID查询有序导航列表", notes = "根据主页ID查询有序导航列表", response = UnifiedResponse.class)
-    public UnifiedResponse listRankByHomePageId(@PathVariable("homePageId") Integer homePageId) throws Exception {
+    @ApiOperation(value = "根据主页ID查询有序导航列表", notes = "根据主页ID查询有序导航列表")
+    public UnifiedResult<List<HomeGuideModel>> listRankByHomePageId(@PathVariable("homePageId") Integer homePageId) throws Exception {
 
         LOGGER.info("{} list home guides by homePageId. homePageId = {}", LOGGER_PREFIX, homePageId, RequestUtil.getUserId().toString());
 
-        return new UnifiedResponse(homeGuideService.listRankModelByHomePageId(homePageId));
+        return UnifiedResult.success(homeGuideService.listRankModelByHomePageId(homePageId));
     }
 
     @PostMapping("/page")
-    @ApiOperation(value = "分页查询主页导航列表", notes = "分页查询主页导航列表", response = UnifiedResponse.class)
-    public UnifiedResponse pageByRequest(@RequestBody HomeGuideQueryRequest request) throws Exception {
+    @ApiOperation(value = "分页查询主页导航列表", notes = "分页查询主页导航列表")
+    public UnifiedResult<PageData<HomeGuideModel>> pageByRequest(@RequestBody HomeGuideQueryRequest request) throws Exception {
 
         LOGGER.info("{} page home guides by request. request = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
 
-        return new UnifiedResponse(homeGuideService.pageByRequest(request));
+        return UnifiedResult.success(homeGuideService.pageByRequest(request));
     }
 
 }

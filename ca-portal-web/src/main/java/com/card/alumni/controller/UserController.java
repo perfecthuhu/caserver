@@ -1,7 +1,10 @@
 package com.card.alumni.controller;
 
+import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.entity.CaUser;
+import com.card.alumni.model.SimpleUserModel;
 import com.card.alumni.service.UserService;
 import com.card.alumni.utils.AESUtil;
 import com.card.alumni.utils.CookieUtils;
@@ -47,8 +50,8 @@ public class UserController {
      * @throws Exception
      */
     @PostMapping("/login")
-    @ApiOperation(value = "登陆", notes = "登陆", response = UnifiedResponse.class)
-    public UnifiedResponse login(@RequestBody UserPhoneCodeVO phoneCode, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @ApiOperation(value = "登陆", notes = "登陆")
+    public UnifiedResult<UserLoginVO> login(@RequestBody UserPhoneCodeVO phoneCode, HttpServletRequest request, HttpServletResponse response) throws Exception {
         UserVO userVO = new UserVO();
         userVO.setPhone(phoneCode.getPhone());
         CaUser caUser = userService.login(userVO, phoneCode.getCode());
@@ -57,7 +60,7 @@ public class UserController {
         CookieUtils.setCookie(request, response, "token", token, 60 * 30, "utf-8");
         response.setHeader("token", token);
         redisUtils.set("user_login_" + id, token, CaPortalWebConstants.TOKEN_EXPIRE_TIME);
-        return new UnifiedResponse(new UserLoginVO(caUser.getId(), caUser.getYn(), token));
+        return UnifiedResult.success(new UserLoginVO(caUser.getId(), caUser.getYn(), token));
     }
 
     /**
@@ -67,10 +70,10 @@ public class UserController {
      * @return
      */
     @PostMapping("/submit")
-    @ApiOperation(value = "填写用户信息", notes = "填写用户信息", response = UnifiedResponse.class)
-    public UnifiedResponse submitUserInfo(@RequestBody UserVO userVO) throws Exception {
+    @ApiOperation(value = "填写用户信息", notes = "填写用户信息")
+    public UnifiedResult submitUserInfo(@RequestBody UserVO userVO) throws Exception {
         userService.submitUserInfo(userVO);
-        return new UnifiedResponse();
+        return UnifiedResult.success();
     }
 
     /**
@@ -80,9 +83,9 @@ public class UserController {
      * @return
      */
     @PostMapping("/query")
-    @ApiOperation(value = "查询用户信息", notes = "查询用户信息", response = UnifiedResponse.class)
-    public UnifiedResponse queryUserVO(@RequestBody UserQuery userQuery) {
-        return new UnifiedResponse(userService.queryUserVO(userQuery));
+    @ApiOperation(value = "查询用户信息", notes = "查询用户信息")
+    public UnifiedResult<PageData<UserVO>> queryUserVO(@RequestBody UserQuery userQuery) {
+        return UnifiedResult.success(userService.queryUserVO(userQuery));
     }
 
     /**
@@ -93,22 +96,22 @@ public class UserController {
      * @throws Exception
      */
     @PostMapping("/send/code")
-    @ApiOperation(value = "发送验证码", notes = "发送验证码", response = UnifiedResponse.class)
-    public UnifiedResponse sendCode(@RequestBody UserPhoneCodeVO phone) throws Exception {
+    @ApiOperation(value = "发送验证码", notes = "发送验证码")
+    public UnifiedResult sendCode(@RequestBody UserPhoneCodeVO phone) throws Exception {
         userService.sendValidateCode(phone.getPhone());
-        return new UnifiedResponse();
+        return UnifiedResult.success();
     }
 
     @GetMapping("/my")
-    @ApiOperation(value = "我的信息", notes = "我的信息", response = UnifiedResponse.class)
-    public UnifiedResponse findMyUserInfo() throws Exception {
+    @ApiOperation(value = "我的信息", notes = "我的信息")
+    public UnifiedResult<SimpleUserModel> findMyUserInfo() throws Exception {
         Integer userId = RequestUtil.getUserId();
-        return new UnifiedResponse(userService.findUserById(userId));
+        return UnifiedResult.success(userService.findUserById(userId));
     }
 
     @GetMapping("/{id}")
-    @ApiOperation(value = "查询用户信息", notes = "查询用户信息", response = UnifiedResponse.class)
-    public UnifiedResponse findUserById(@PathVariable("id") Integer id) throws Exception {
-        return new UnifiedResponse(userService.findUserById(id));
+    @ApiOperation(value = "查询用户信息", notes = "查询用户信息")
+    public UnifiedResult<SimpleUserModel> findUserById(@PathVariable("id") Integer id) throws Exception {
+        return UnifiedResult.success(userService.findUserById(id));
     }
 }

@@ -1,7 +1,9 @@
 package com.card.alumni.controller;
 
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaConfigException;
+import com.card.alumni.model.HomeBannerModel;
 import com.card.alumni.request.HomeBannerQueryRequest;
 import com.card.alumni.request.HomeBannerRequest;
 import com.card.alumni.service.HomeBannerService;
@@ -39,86 +41,86 @@ public class HomeBannerController {
     private HomeBannerService homeBannerService;
 
     @PostMapping
-    @ApiOperation(value = "保存主页轮播图", notes = "保存主页轮播图", response = UnifiedResponse.class)
-    public UnifiedResponse save(@RequestBody HomeBannerRequest request) throws Exception {
+    @ApiOperation(value = "保存主页轮播图", notes = "保存主页轮播图")
+    public UnifiedResult<Integer> save(@RequestBody HomeBannerRequest request) throws Exception {
 
         LOGGER.info("{} save home banner. request = {}, operator = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
         try {
-            return new UnifiedResponse(homeBannerService.save(request));
+            return UnifiedResult.success(homeBannerService.save(request));
         } catch (CaConfigException e) {
             LOGGER.error("{} save home banner error. request = {}", LOGGER_PREFIX, request, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
     }
 
     @PutMapping
-    @ApiOperation(value = "更新主页轮播图", notes = "更新主页轮播图", response = UnifiedResponse.class)
-    public UnifiedResponse update(@RequestBody HomeBannerRequest request) throws Exception {
+    @ApiOperation(value = "更新主页轮播图", notes = "更新主页轮播图")
+    public UnifiedResult update(@RequestBody HomeBannerRequest request) throws Exception {
 
         LOGGER.info("{} update home banner. request = {}, operator = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
         try {
             homeBannerService.update(request);
         } catch (CaConfigException e) {
             LOGGER.error("{} update home banner error. request = {}", LOGGER_PREFIX, request, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
-        return new UnifiedResponse();
+        return UnifiedResult.success();
     }
 
     @PutMapping("/{pageHomeId}/rank")
-    @ApiOperation(value = "排序主页轮播图", notes = "更新主页轮播图", response = UnifiedResponse.class)
-    public UnifiedResponse rank(@PathVariable("pageHomeId") Integer pageHomeId, @RequestBody List<Integer> children) throws Exception {
+    @ApiOperation(value = "排序主页轮播图", notes = "更新主页轮播图")
+    public UnifiedResult rank(@PathVariable("pageHomeId") Integer pageHomeId, @RequestBody List<Integer> children) throws Exception {
 
         LOGGER.info("{} update home banner. pageHomeId = {}, children = {}, operator = {}", LOGGER_PREFIX, pageHomeId, children, RequestUtil.getUserId().toString());
         try {
             homeBannerService.rank(pageHomeId, children);
         } catch (CaConfigException e) {
             LOGGER.error("{} update home banner error. pageHomeId = {}, request = {}", LOGGER_PREFIX, pageHomeId, children, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
-        return new UnifiedResponse();
+        return UnifiedResult.success();
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "根据ID删除主页轮播图", notes = "根据ID删除主页轮播图", response = UnifiedResponse.class)
-    public UnifiedResponse deleteById(@PathVariable("id") Integer id) throws Exception {
+    @ApiOperation(value = "根据ID删除主页轮播图", notes = "根据ID删除主页轮播图")
+    public UnifiedResult deleteById(@PathVariable("id") Integer id) throws Exception {
 
         LOGGER.info("{} delete home banner by id. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
         try {
             homeBannerService.deleteById(id);
-            return new UnifiedResponse();
+            return UnifiedResult.success();
         } catch (CaConfigException e) {
             LOGGER.error("{} delete home banner by id error. id = {}", LOGGER_PREFIX, id, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
     }
 
     @GetMapping("/{id}")
-    @ApiOperation(value = "根据ID查询主页轮播图", notes = "根据ID查询主页轮播图", response = UnifiedResponse.class)
-    public UnifiedResponse findById(@PathVariable("id") Integer id) throws Exception {
+    @ApiOperation(value = "根据ID查询主页轮播图", notes = "根据ID查询主页轮播图")
+    public UnifiedResult<HomeBannerModel> findById(@PathVariable("id") Integer id) throws Exception {
 
         LOGGER.info("{} find home banner by id. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
 
-        return new UnifiedResponse(homeBannerService.findModelById(id));
+        return UnifiedResult.success(homeBannerService.findModelById(id));
 
     }
 
     @GetMapping("/{homePageId}/list")
-    @ApiOperation(value = "根据主页ID查询有序轮播图列表", notes = "根据主页ID查询有序轮播图列表", response = UnifiedResponse.class)
-    public UnifiedResponse listRankByHomePageId(@PathVariable("homePageId") Integer homePageId) throws Exception {
+    @ApiOperation(value = "根据主页ID查询有序轮播图列表", notes = "根据主页ID查询有序轮播图列表")
+    public UnifiedResult<List<HomeBannerModel>> listRankByHomePageId(@PathVariable("homePageId") Integer homePageId) throws Exception {
 
         LOGGER.info("{} list home banners by homePageId. homePageId = {}", LOGGER_PREFIX, homePageId, RequestUtil.getUserId().toString());
 
-        return new UnifiedResponse(homeBannerService.listRankModelByHomePageId(homePageId));
+        return UnifiedResult.success(homeBannerService.listRankModelByHomePageId(homePageId));
     }
 
     @PostMapping("/page")
-    @ApiOperation(value = "查询主页轮播图列表", notes = "查询主页轮播图列表", response = UnifiedResponse.class)
-    public UnifiedResponse listByRequest(@RequestBody HomeBannerQueryRequest request) throws Exception {
+    @ApiOperation(value = "查询主页轮播图列表", notes = "查询主页轮播图列表")
+    public UnifiedResult<List<HomeBannerModel>> listByRequest(@RequestBody HomeBannerQueryRequest request) throws Exception {
 
         LOGGER.info("{} page home banners by request. request = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
 
-        return new UnifiedResponse(homeBannerService.listRankModelByRequest(request));
+        return UnifiedResult.success(homeBannerService.listRankModelByRequest(request));
     }
 
 }

@@ -1,5 +1,7 @@
 package com.card.alumni.common;
 
+import io.swagger.annotations.ApiModel;
+
 import java.io.Serializable;
 import java.util.List;
 

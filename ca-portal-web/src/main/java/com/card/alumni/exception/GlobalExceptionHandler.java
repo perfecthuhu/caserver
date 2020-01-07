@@ -1,6 +1,7 @@
 package com.card.alumni.exception;
 
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.common.UnifiedResult;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,14 +26,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = CaException.class)
-    public UnifiedResponse handleBusinessException(HttpServletRequest req, CaException ex) {
+    public UnifiedResult handleBusinessException(HttpServletRequest req, CaException ex) {
         LOGGER.error("CaException -> code = {}, message = {}", ex.getCode(), ex.getMessage());
-        return new UnifiedResponse(ex.getCode(), ex.getMessage());
+        return UnifiedResult.failure(ex.getCode(), ex.getMessage());
     }
 
     @ExceptionHandler(value = Exception.class)
-    public UnifiedResponse handleException(HttpServletRequest req, Exception ex) {
+    public UnifiedResult handleException(HttpServletRequest req, Exception ex) {
         LOGGER.error("Exception -> ", ex);
-        return new UnifiedResponse(ResultCodeEnum.SYS_ERROR.getCode(), ex.getMessage());
+        return UnifiedResult.failure(ResultCodeEnum.SYS_ERROR.getCode(), ex.getMessage());
     }
 }

@@ -1,8 +1,11 @@
 package com.card.alumni.controller;
 
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.service.BaseInfoService;
+import com.card.alumni.vo.HomeVO;
+import com.card.alumni.vo.SchoolVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author sunxiaodong10 2019/12/9
@@ -30,9 +34,9 @@ public class BaseInfoController {
      * @return
      */
     @GetMapping("/school")
-    @ApiOperation(value = "查询所有学校信息", notes = "查询所有学校信息", response = UnifiedResponse.class)
-    public UnifiedResponse querySchool() {
-        return new UnifiedResponse(baseInfoService.querySchool());
+    @ApiOperation(value = "查询所有学校信息", notes = "查询所有学校信息")
+    public UnifiedResult<List<SchoolVO>> querySchool() {
+        return UnifiedResult.success(baseInfoService.querySchool());
     }
 
     /**
@@ -40,14 +44,14 @@ public class BaseInfoController {
      * @return
      */
     @GetMapping("/home")
-    @ApiOperation(value = "查询首页结构信息", notes = "查询首页结构信息", response = UnifiedResponse.class)
-    public UnifiedResponse queryHomeInfo() {
-        return new UnifiedResponse(baseInfoService.queryHomeInfo());
+    @ApiOperation(value = "查询首页结构信息", notes = "查询首页结构信息")
+    public UnifiedResult<HomeVO> queryHomeInfo() {
+        return UnifiedResult.success(baseInfoService.queryHomeInfo());
     }
 
     @GetMapping("/upload")
-    @ApiOperation(value = "上传文件及图片", notes = "上传文件及图片", response = UnifiedResponse.class)
-    public UnifiedResponse uploadFile(@RequestParam("file") MultipartFile file, Long maxSize) throws CaException {
-        return new UnifiedResponse(baseInfoService.uploadFile(file, maxSize));
+    @ApiOperation(value = "上传文件及图片", notes = "上传文件及图片")
+    public UnifiedResult<String> uploadFile(@RequestParam("file") MultipartFile file, Long maxSize) throws CaException {
+        return UnifiedResult.success(baseInfoService.uploadFile(file, maxSize));
     }
 }

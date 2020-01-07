@@ -1,6 +1,7 @@
 package com.card.alumni.controller;
 
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.security.service.OnlineUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,8 +30,8 @@ public class OnlineController {
     @ApiOperation("查询在线用户")
     @GetMapping
     @PreAuthorize("@ca.check()")
-    public UnifiedResponse getAll(String filter, Pageable pageable) {
-        return new UnifiedResponse(onlineUserService.getAll(filter, pageable));
+    public UnifiedResult getAll(String filter, Pageable pageable) {
+        return UnifiedResult.success(onlineUserService.getAll(filter, pageable));
     }
 
     @ApiOperation("导出数据")
@@ -43,8 +44,8 @@ public class OnlineController {
     @ApiOperation("踢出用户")
     @DeleteMapping(value = "/{key}")
     @PreAuthorize("@ca.check()")
-    public UnifiedResponse delete(@PathVariable String key) throws Exception {
+    public UnifiedResult delete(@PathVariable String key) throws Exception {
         onlineUserService.kickOut(key);
-        return new UnifiedResponse();
+        return UnifiedResult.success();
     }
 }

@@ -1,13 +1,17 @@
 package com.card.alumni.controller;
 
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.service.ArticleService;
+import com.card.alumni.vo.ArticleVO;
 import com.card.alumni.vo.query.ArticleQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author sunxiaodong10 2019/12/9
@@ -26,9 +30,9 @@ public class ArticleController {
      * @return
      */
     @PostMapping("/page")
-    @ApiOperation(value = "查询首页新闻列表", notes = "查询首页新闻列表", response = UnifiedResponse.class)
-    public UnifiedResponse queryArticleService(@RequestBody ArticleQuery articleQuery) throws Exception {
-        return new UnifiedResponse(articleService.queryArticleService(articleQuery));
+    @ApiOperation(value = "查询首页新闻列表", notes = "查询首页新闻列表")
+    public UnifiedResult<Map<Integer, List<ArticleVO>>> queryArticleService(@RequestBody ArticleQuery articleQuery) throws Exception {
+        return UnifiedResult.success(articleService.queryArticleService(articleQuery));
     }
 
     /**
@@ -37,8 +41,8 @@ public class ArticleController {
      * @return
      */
     @GetMapping("/detail/{id}")
-    @ApiOperation(value = "查询新闻详情", notes = "查询新闻详情", response = UnifiedResponse.class)
-    public UnifiedResponse queryArticleDetail(@PathVariable Integer id) throws Exception {
-        return new UnifiedResponse(articleService.queryArticleDetail(id));
+    @ApiOperation(value = "查询新闻详情", notes = "查询新闻详情")
+    public UnifiedResult<ArticleVO> queryArticleDetail(@PathVariable Integer id) throws Exception {
+        return UnifiedResult.success(articleService.queryArticleDetail(id));
     }
 }

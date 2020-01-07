@@ -1,8 +1,11 @@
 package com.card.alumni.controller;
 
+import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.entity.CaUserFriend;
 import com.card.alumni.exception.CaException;
+import com.card.alumni.model.SimpleUserModel;
 import com.card.alumni.request.UserFriendQueryRequest;
 import com.card.alumni.service.UserFriendService;
 import com.card.alumni.utils.RequestUtil;
@@ -37,35 +40,35 @@ public class UserFriendController {
     private UserFriendService userFriendService;
 
     @DeleteMapping("/{friendId}")
-    @ApiOperation(value = "删除我的好友", notes = "删除我的好友", response = UnifiedResponse.class)
-    public UnifiedResponse deleteMyFriend(@PathVariable("friendId") Integer friendId) throws Exception {
+    @ApiOperation(value = "删除我的好友", notes = "删除我的好友")
+    public UnifiedResult deleteMyFriend(@PathVariable("friendId") Integer friendId) throws Exception {
 
         Integer userId = RequestUtil.getUserId();
         LOGGER.info("{} delete my friend by friendId. friendId = {}, operator = {}", LOGGER_PREFIX, friendId, userId);
         try {
             userFriendService.deleteByUserIdAndFriendId(userId, friendId);
-            return new UnifiedResponse();
+            return UnifiedResult.success();
         } catch (CaException e) {
             LOGGER.error("{}  delete my friend by friendId error. friendId = {}", LOGGER_PREFIX, friendId, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
     }
 
     @PostMapping("/page")
-    @ApiOperation(value = "分页查询我的好友列表", notes = "分页查询我的好友列表", response = UnifiedResponse.class)
-    public UnifiedResponse pageFriendsByRequest(@RequestBody UserFriendQueryRequest request) throws Exception {
+    @ApiOperation(value = "分页查询我的好友列表", notes = "分页查询我的好友列表")
+    public UnifiedResult<PageData<SimpleUserModel>> pageFriendsByRequest(@RequestBody UserFriendQueryRequest request) throws Exception {
 
         LOGGER.info("{} page my friends by request. request = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
-        return new UnifiedResponse(userFriendService.pageFriendsByRequest(request));
+        return UnifiedResult.success(userFriendService.pageFriendsByRequest(request));
     }
 
     @PostMapping("/{friendId}/check")
-    @ApiOperation(value = "校验当前操作人与该用户是否是好友", notes = "校验当前操作人与该用户是否是好友", response = UnifiedResponse.class)
-    public UnifiedResponse checkFriendShip(@PathVariable("friendId") Integer friendId) throws Exception {
+    @ApiOperation(value = "校验当前操作人与该用户是否是好友", notes = "校验当前操作人与该用户是否是好友")
+    public UnifiedResult<Boolean> checkFriendShip(@PathVariable("friendId") Integer friendId) throws Exception {
         Integer currentUserId = RequestUtil.getUserId();
         LOGGER.info("{} check is my friend ?. friendId = {}, operatorId = {}", LOGGER_PREFIX, friendId, currentUserId);
         CaUserFriend friend = userFriendService.findByUserIdAndFriendId(currentUserId, friendId);
-        return new UnifiedResponse(Objects.nonNull(friend));
+        return UnifiedResult.success(Objects.nonNull(friend));
     }
 
 

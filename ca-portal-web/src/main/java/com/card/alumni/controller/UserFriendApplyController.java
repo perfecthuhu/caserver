@@ -1,7 +1,10 @@
 package com.card.alumni.controller;
 
+import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaException;
+import com.card.alumni.model.UserFriendApplyModel;
 import com.card.alumni.request.UserFriendApplyQueryRequest;
 import com.card.alumni.request.UserFriendApplyRequest;
 import com.card.alumni.service.UserFriendApplyService;
@@ -34,72 +37,72 @@ public class UserFriendApplyController {
     private UserFriendApplyService userFriendApplyService;
 
     @PostMapping
-    @ApiOperation(value = "发起好友申请", notes = "发起好友申请", response = UnifiedResponse.class)
-    public UnifiedResponse apply(@RequestBody UserFriendApplyRequest request) throws Exception {
+    @ApiOperation(value = "发起好友申请", notes = "发起好友申请")
+    public UnifiedResult apply(@RequestBody UserFriendApplyRequest request) throws Exception {
 
         Integer userId = RequestUtil.getUserId();
         LOGGER.info("{} invoke friend apply. request = {}, operator = {}", LOGGER_PREFIX, request, userId);
         try {
             userFriendApplyService.apply(request);
-            return new UnifiedResponse();
+            return UnifiedResult.success();
         } catch (CaException e) {
             LOGGER.error("{}  invoke friend apply error. request = {}", LOGGER_PREFIX, request, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
     }
 
     @PutMapping("/agree")
-    @ApiOperation(value = "同意好友申请", notes = "同意好友申请", response = UnifiedResponse.class)
-    public UnifiedResponse agree(@RequestBody UserFriendApplyRequest request) throws Exception {
+    @ApiOperation(value = "同意好友申请", notes = "同意好友申请")
+    public UnifiedResult agree(@RequestBody UserFriendApplyRequest request) throws Exception {
 
         Integer userId = RequestUtil.getUserId();
         LOGGER.info("{} agree friend apply. request = {}, operator = {}", LOGGER_PREFIX, request, userId);
         try {
             userFriendApplyService.agree(request);
-            return new UnifiedResponse();
+            return UnifiedResult.success();
         } catch (CaException e) {
             LOGGER.error("{}  agree friend apply error. request = {}", LOGGER_PREFIX, request, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
     }
 
     @PutMapping("/refuse")
-    @ApiOperation(value = "拒绝好友申请", notes = "拒绝好友申请", response = UnifiedResponse.class)
-    public UnifiedResponse refuse(@RequestBody UserFriendApplyRequest request) throws Exception {
+    @ApiOperation(value = "拒绝好友申请", notes = "拒绝好友申请")
+    public UnifiedResult refuse(@RequestBody UserFriendApplyRequest request) throws Exception {
 
         Integer userId = RequestUtil.getUserId();
         LOGGER.info("{} refuse friend apply. request = {}, operator = {}", LOGGER_PREFIX, request, userId);
         try {
             userFriendApplyService.refuse(request);
-            return new UnifiedResponse();
+            return UnifiedResult.success();
         } catch (CaException e) {
             LOGGER.error("{}  refuse friend apply error. request = {}", LOGGER_PREFIX, request, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
     }
 
     @PostMapping("/my/unprocessed/count")
-    @ApiOperation(value = "我未处理的好友申请数量", notes = "我未处理的好友申请数量", response = UnifiedResponse.class)
-    public UnifiedResponse countByMyUnprocessed() throws Exception {
+    @ApiOperation(value = "我未处理的好友申请数量", notes = "我未处理的好友申请数量")
+    public UnifiedResult<Integer> countByMyUnprocessed() throws Exception {
 
         LOGGER.info("{} query my unprocessed friend apply count, operator = {}", LOGGER_PREFIX, RequestUtil.getUserId().toString());
-        return new UnifiedResponse(userFriendApplyService.countByMyUnprocessed());
+        return UnifiedResult.success(userFriendApplyService.countByMyUnprocessed());
     }
 
 
     @PostMapping("/page/my/apply")
-    @ApiOperation(value = "分页查询我的申请列表", notes = "分页查询我的申请列表", response = UnifiedResponse.class)
-    public UnifiedResponse pageByMyApply(@RequestBody UserFriendApplyQueryRequest request) throws Exception {
+    @ApiOperation(value = "分页查询我的申请列表", notes = "分页查询我的申请列表")
+    public UnifiedResult<PageData<UserFriendApplyModel>> pageByMyApply(@RequestBody UserFriendApplyQueryRequest request) throws Exception {
 
         LOGGER.info("{} page my friend apply list by request. request = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
-        return new UnifiedResponse(userFriendApplyService.pageByMyApply(request));
+        return UnifiedResult.success(userFriendApplyService.pageByMyApply(request));
     }
 
     @PostMapping("/page/my/handle")
-    @ApiOperation(value = "分页查询我的好友申请处理列表", notes = "分页查询我的好友申请处理列表", response = UnifiedResponse.class)
-    public UnifiedResponse pageByMyHandle(@RequestBody UserFriendApplyQueryRequest request) throws Exception {
+    @ApiOperation(value = "分页查询我的好友申请处理列表", notes = "分页查询我的好友申请处理列表")
+    public UnifiedResult<PageData<UserFriendApplyModel>> pageByMyHandle(@RequestBody UserFriendApplyQueryRequest request) throws Exception {
 
         LOGGER.info("{} page my friend handle list by request. request = {}, operator = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
-        return new UnifiedResponse(userFriendApplyService.pageByMyHandle(request));
+        return UnifiedResult.success(userFriendApplyService.pageByMyHandle(request));
     }
 }

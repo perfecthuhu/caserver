@@ -1,7 +1,10 @@
 package com.card.alumni.controller;
 
+import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaConfigException;
+import com.card.alumni.model.SchoolModel;
 import com.card.alumni.request.SchoolQueryRequest;
 import com.card.alumni.request.SchoolRequest;
 import com.card.alumni.service.SchoolService;
@@ -37,63 +40,63 @@ public class SchoolController {
     private SchoolService schoolService;
 
     @PostMapping
-    @ApiOperation(value = "保存学校", notes = "保护学校", response = UnifiedResponse.class)
-    public UnifiedResponse save(@RequestBody SchoolRequest request) throws Exception {
+    @ApiOperation(value = "保存学校", notes = "保护学校")
+    public UnifiedResult<Integer> save(@RequestBody SchoolRequest request) throws Exception {
 
         LOGGER.info("{} save school. request = {}, operator = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
         try {
-            return new UnifiedResponse(schoolService.save(request));
+            return UnifiedResult.success(schoolService.save(request));
         } catch (CaConfigException e) {
             LOGGER.error("{} save school error. request = {}", LOGGER_PREFIX, request, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
     }
 
     @PutMapping
-    @ApiOperation(value = "更新学校", notes = "更新学校", response = UnifiedResponse.class)
-    public UnifiedResponse update(@RequestBody SchoolRequest request) throws Exception {
+    @ApiOperation(value = "更新学校", notes = "更新学校")
+    public UnifiedResult update(@RequestBody SchoolRequest request) throws Exception {
 
         LOGGER.info("{} update school. request = {}, operator = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
         try {
             schoolService.update(request);
         } catch (CaConfigException e) {
             LOGGER.error("{} update school error. request = {}", LOGGER_PREFIX, request, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
-        return new UnifiedResponse();
+        return UnifiedResult.success();
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "根据ID删除学校", notes = "根据ID删除学校", response = UnifiedResponse.class)
-    public UnifiedResponse deleteById(@PathVariable("id") Integer id) throws Exception {
+    @ApiOperation(value = "根据ID删除学校", notes = "根据ID删除学校")
+    public UnifiedResult deleteById(@PathVariable("id") Integer id) throws Exception {
 
         LOGGER.info("{} delete school by id. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
         try {
             schoolService.deleteById(id);
-            return new UnifiedResponse();
+            return UnifiedResult.success();
         } catch (CaConfigException e) {
             LOGGER.error("{} delete school by id error. id = {}", LOGGER_PREFIX, id, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
     }
 
     @GetMapping("/{id}")
-    @ApiOperation(value = "根据ID查询学校", notes = "根据ID查询学校", response = UnifiedResponse.class)
-    public UnifiedResponse findById(@PathVariable("id") Integer id) throws Exception {
+    @ApiOperation(value = "根据ID查询学校", notes = "根据ID查询学校")
+    public UnifiedResult<SchoolModel> findById(@PathVariable("id") Integer id) throws Exception {
 
         LOGGER.info("{} find school by id. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
 
-        return new UnifiedResponse(schoolService.findModelById(id));
+        return UnifiedResult.success(schoolService.findModelById(id));
 
     }
 
     @PostMapping("/page")
-    @ApiOperation(value = "分页查询学校列表", notes = "分页查询学校列表", response = UnifiedResponse.class)
-    public UnifiedResponse pageByRequest(@RequestBody SchoolQueryRequest request) throws Exception {
+    @ApiOperation(value = "分页查询学校列表", notes = "分页查询学校列表")
+    public UnifiedResult<PageData<SchoolModel>> pageByRequest(@RequestBody SchoolQueryRequest request) throws Exception {
 
         LOGGER.info("{} page schools by request. request = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
 
-        return new UnifiedResponse(schoolService.pageByRequest(request));
+        return UnifiedResult.success(schoolService.pageByRequest(request));
     }
 
 }

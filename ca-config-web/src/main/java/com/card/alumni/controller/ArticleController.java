@@ -1,7 +1,10 @@
 package com.card.alumni.controller;
 
+import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaConfigException;
+import com.card.alumni.model.ArticleModel;
 import com.card.alumni.request.ArticleQueryRequest;
 import com.card.alumni.request.ArticleRequest;
 import com.card.alumni.service.ArticleService;
@@ -39,62 +42,62 @@ public class ArticleController {
     private ArticleService articleService;
 
     @PostMapping
-    @ApiOperation(value = "保存文章", notes = "保存文章", response = UnifiedResponse.class)
-    public UnifiedResponse save(@RequestBody ArticleRequest articleRequest, HttpServletRequest request) throws Exception {
+    @ApiOperation(value = "保存文章", notes = "保存文章")
+    public UnifiedResult<Integer> save(@RequestBody ArticleRequest articleRequest, HttpServletRequest request) throws Exception {
 
         LOGGER.info("{} save article. request = {}, operator = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
         try {
-            return new UnifiedResponse(articleService.save(articleRequest));
+            return UnifiedResult.success(articleService.save(articleRequest));
         } catch (CaConfigException e) {
             LOGGER.error("{} save article error. request = {}", LOGGER_PREFIX, request, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
     }
 
     @PutMapping
-    @ApiOperation(value = "更新文章", notes = "更新文章", response = UnifiedResponse.class)
-    public UnifiedResponse update(@RequestBody ArticleRequest articleRequest, HttpServletRequest request) throws Exception {
+    @ApiOperation(value = "更新文章", notes = "更新文章")
+    public UnifiedResult update(@RequestBody ArticleRequest articleRequest, HttpServletRequest request) throws Exception {
 
         LOGGER.info("{} update article. request = {}, operator = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
         try {
             articleService.update(articleRequest);
         } catch (CaConfigException e) {
             LOGGER.error("{} update article error. request = {}", LOGGER_PREFIX, request, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
-        return new UnifiedResponse();
+        return UnifiedResult.success();
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "根据ID删除文章", notes = "根据ID删除文章", response = UnifiedResponse.class)
-    public UnifiedResponse deleteById(@PathVariable("id") Integer id) throws Exception {
+    @ApiOperation(value = "根据ID删除文章", notes = "根据ID删除文章")
+    public UnifiedResult deleteById(@PathVariable("id") Integer id) throws Exception {
 
         LOGGER.info("{} delete article by id. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
         try {
             articleService.deleteById(id);
-            return new UnifiedResponse();
+            return UnifiedResult.success();
         } catch (CaConfigException e) {
             LOGGER.error("{} delete article by id error. id = {}", LOGGER_PREFIX, id, e);
-            return new UnifiedResponse(e.getCode(), e.getMessage());
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
     }
 
     @GetMapping("/{id}")
-    @ApiOperation(value = "根据ID查询文章", notes = "根据ID查询文章", response = UnifiedResponse.class)
-    public UnifiedResponse findById(@PathVariable("id") Integer id) throws Exception {
+    @ApiOperation(value = "根据ID查询文章", notes = "根据ID查询文章")
+    public UnifiedResult<ArticleModel> findById(@PathVariable("id") Integer id) throws Exception {
 
         LOGGER.info("{} find article by id. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
 
-        return new UnifiedResponse(articleService.findModelById(id));
+        return UnifiedResult.success(articleService.findModelById(id));
 
     }
 
     @PostMapping("/page")
-    @ApiOperation(value = "分页查询文章列表", notes = "分页查询文章列表", response = UnifiedResponse.class)
-    public UnifiedResponse pageByRequest(@RequestBody ArticleQueryRequest request) throws Exception {
+    @ApiOperation(value = "分页查询文章列表", notes = "分页查询文章列表")
+    public UnifiedResult<PageData<ArticleModel>> pageByRequest(@RequestBody ArticleQueryRequest request) throws Exception {
 
         LOGGER.info("{} page articles by request. request = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
-        return new UnifiedResponse(articleService.pageByRequest(request));
+        return UnifiedResult.success(articleService.pageByRequest(request));
     }
 
 }

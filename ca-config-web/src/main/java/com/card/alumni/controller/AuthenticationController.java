@@ -1,6 +1,7 @@
 package com.card.alumni.controller;
 
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.security.annotation.IgnoreLogin;
 import com.card.alumni.security.entity.AuthInfo;
 import com.card.alumni.security.entity.AuthUser;
@@ -58,7 +59,7 @@ public class AuthenticationController {
     @ApiOperation("登录授权")
     @IgnoreLogin
     @PostMapping(value = "/login")
-    public UnifiedResponse login(@Validated @RequestBody AuthUser authUser, HttpServletRequest request) throws Exception {
+    public UnifiedResult<AuthInfo> login(@Validated @RequestBody AuthUser authUser, HttpServletRequest request) throws Exception {
 
         final JwtUser jwtUser = (JwtUser) userDetailsService.loadUserByUsername(authUser.getUsername());
 
@@ -74,19 +75,19 @@ public class AuthenticationController {
         // 保存在线信息
         onlineUserService.save(jwtUser, token, request);
         // 返回 token
-        return new UnifiedResponse(new AuthInfo(token, jwtUser));
+        return UnifiedResult.success(new AuthInfo(token, jwtUser));
     }
 
     @ApiOperation("获取用户信息")
     @GetMapping(value = "/info")
-    public UnifiedResponse getUserInfo() throws Exception {
+    public UnifiedResult<JwtUser> getUserInfo() throws Exception {
         JwtUser jwtUser = (JwtUser) userDetailsService.loadUserByUsername(SecurityUtils.getUsername());
-        return new UnifiedResponse(jwtUser);
+        return UnifiedResult.success(jwtUser);
     }
 
     @ApiOperation("更改用户密码")
     @PutMapping(value = "/pwd")
-    public UnifiedResponse modifyUserPwd(@Validated @RequestBody AuthUser authUser, HttpServletRequest request) throws Exception {
+    public UnifiedResult modifyUserPwd(@Validated @RequestBody AuthUser authUser, HttpServletRequest request) throws Exception {
         final JwtUser jwtUser = (JwtUser) userDetailsService.loadUserByUsername(authUser.getUsername());
 
         if (StringUtils.isBlank(authUser.getOldPassword()) &&
@@ -102,14 +103,14 @@ public class AuthenticationController {
 
         onlineUserService.logout(jwtTokenUtil.getToken(request));
 
-        return new UnifiedResponse();
+        return UnifiedResult.success();
     }
 
     @ApiOperation("退出登录")
     @IgnoreLogin
     @DeleteMapping(value = "/logout")
-    public UnifiedResponse logout(HttpServletRequest request) throws Exception {
+    public UnifiedResult logout(HttpServletRequest request) throws Exception {
         onlineUserService.logout(jwtTokenUtil.getToken(request));
-        return new UnifiedResponse();
+        return UnifiedResult.success();
     }
 }
