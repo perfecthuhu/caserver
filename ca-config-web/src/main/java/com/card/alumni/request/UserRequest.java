@@ -73,6 +73,6 @@ public class UserRequest implements Serializable {
 
     private String schoolName;
 
-    private List<Integer> userTagId;
+    private List<Integer> userTagIdList;
 
 }

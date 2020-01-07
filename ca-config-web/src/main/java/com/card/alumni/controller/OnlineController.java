@@ -1,6 +1,5 @@
 package com.card.alumni.controller;
 
-import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.security.service.OnlineUserService;
 import io.swagger.annotations.Api;

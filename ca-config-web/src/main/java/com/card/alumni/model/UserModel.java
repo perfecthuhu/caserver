@@ -73,7 +73,7 @@ public class UserModel implements Serializable {
 
     private String schoolName;
 
-    private List<Integer> userTagId;
+    private List<Integer> userTagIdList;
 
     private String pwd;
 

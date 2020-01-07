@@ -48,9 +48,19 @@ public class UserTagServiceImpl implements UserTagService {
     public void update(CaUserTag userTag) throws CaConfigException {
         checkParam(userTag);
 
-        userTag.setUpdateTime(new Date());
+        CaUserTag tag = findByUserId(userTag.getUserId());
+        if (Objects.isNull(tag)) {
+            save(userTag);
+            return;
+        }
 
-        caUserTagMapper.updateByPrimaryKeySelective(userTag);
+        tag.setGirlFriend(userTag.getGirlFriend());
+        tag.setResource(userTag.getResource());
+        tag.setFood(userTag.getFood());
+        tag.setJob(userTag.getJob());
+        tag.setUpdateTime(new Date());
+
+        caUserTagMapper.updateByPrimaryKeySelective(tag);
     }
 
     @Override

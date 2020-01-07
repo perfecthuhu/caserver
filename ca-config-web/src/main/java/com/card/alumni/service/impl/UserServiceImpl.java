@@ -8,13 +8,16 @@ import com.card.alumni.entity.CaUser;
 import com.card.alumni.entity.CaUserExample;
 import com.card.alumni.entity.CaUserRoleRelation;
 import com.card.alumni.entity.CaUserRoleRelationExample;
+import com.card.alumni.entity.CaUserTag;
 import com.card.alumni.enums.StatusEnum;
+import com.card.alumni.enums.UserTagEnum;
 import com.card.alumni.exception.CaConfigException;
 import com.card.alumni.model.UserModel;
 import com.card.alumni.request.UserQueryRequest;
 import com.card.alumni.request.UserRequest;
 import com.card.alumni.service.UserFriendService;
 import com.card.alumni.service.UserService;
+import com.card.alumni.service.UserTagService;
 import com.card.alumni.utils.EncryptUtils;
 import com.card.alumni.utils.RequestUtil;
 import com.github.pagehelper.PageHelper;
@@ -46,6 +49,9 @@ public class UserServiceImpl implements UserService {
     private CaUserMapper caUserMapper;
 
     @Autowired
+    private UserTagService userTagService;
+
+    @Autowired
     private UserFriendService userFriendService;
 
     @Autowired
@@ -73,6 +79,8 @@ public class UserServiceImpl implements UserService {
 
         caUserMapper.insert(user);
 
+        userTagService.save(convert2CaUserTag(user.getId(), request));
+
         return user.getId();
     }
 
@@ -87,6 +95,8 @@ public class UserServiceImpl implements UserService {
         user.setUpdateTime(new Date());
 
         caUserMapper.updateByPrimaryKeySelective(user);
+
+        userTagService.update(convert2CaUserTag(user.getId(), request));
     }
 
     @Override
@@ -143,7 +153,12 @@ public class UserServiceImpl implements UserService {
 
         CaUser user = findById(id);
 
-        return convert2Model(user);
+        UserModel model = convert2Model(user);
+
+        if (Objects.nonNull(model)) {
+            model.setUserTagIdList(populateUserTag(id));
+        }
+        return model;
     }
 
     @Override
@@ -278,5 +293,53 @@ public class UserServiceImpl implements UserService {
         CaUser user = new CaUser();
         BeanUtils.copyProperties(request, user);
         return user;
+    }
+
+    private CaUserTag convert2CaUserTag(Integer userId, UserRequest request) {
+        CaUserTag caUserTag = new CaUserTag();
+        caUserTag.setUserId(userId);
+        List<Integer> userTagId = request.getUserTagIdList();
+        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(userTagId)) {
+            userTagId.forEach(s -> {
+                UserTagEnum userTagEnum = UserTagEnum.getUserTagEnum(s);
+                switch (userTagEnum) {
+                    case GIRL_FRIEND:
+                        caUserTag.setGirlFriend(StatusEnum.YES.getCode());
+                        break;
+                    case RESOURCE:
+                        caUserTag.setResource(StatusEnum.YES.getCode());
+                        break;
+                    case FOOD:
+                        caUserTag.setFood(StatusEnum.YES.getCode());
+                        break;
+                    case JOB:
+                        caUserTag.setJob(StatusEnum.YES.getCode());
+                        break;
+                    default:
+                }
+            });
+        }
+        return caUserTag;
+    }
+
+    private List<Integer> populateUserTag(Integer userId) throws CaConfigException {
+        CaUserTag userTag = userTagService.findByUserId(userId);
+
+        List<Integer> userTagIdList = Lists.newArrayList();
+
+        if (StatusEnum.YES.getCode().equals(userTag.getGirlFriend())) {
+            userTagIdList.add(UserTagEnum.GIRL_FRIEND.getCode());
+        }
+        if (StatusEnum.YES.getCode().equals(userTag.getResource())) {
+            userTagIdList.add(UserTagEnum.RESOURCE.getCode());
+        }
+        if (StatusEnum.YES.getCode().equals(userTag.getFood())) {
+            userTagIdList.add(UserTagEnum.FOOD.getCode());
+        }
+        if (StatusEnum.YES.getCode().equals(userTag.getJob())) {
+            userTagIdList.add(UserTagEnum.JOB.getCode());
+        }
+
+        return userTagIdList;
     }
 }

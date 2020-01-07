@@ -1,7 +1,6 @@
 package com.card.alumni.controller;
 
 import com.card.alumni.common.PageData;
-import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaConfigException;
 import com.card.alumni.model.SchoolModel;

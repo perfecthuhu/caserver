@@ -16,7 +16,7 @@ import com.card.alumni.utils.RequestUtil;
 import com.card.alumni.utils.VerificationCodeUtils;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.enums.StatusEnum;
-import com.card.alumni.vo.enums.UserTagEnum;
+import com.card.alumni.enums.UserTagEnum;
 import com.card.alumni.vo.query.UserQuery;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
