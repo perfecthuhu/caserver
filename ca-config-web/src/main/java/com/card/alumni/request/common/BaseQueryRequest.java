@@ -2,6 +2,7 @@ package com.card.alumni.request.common;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -10,6 +11,7 @@ import java.io.Serializable;
  * @date 2019-12-09 9:47 PM
  */
 @Data
+@ToString
 public class BaseQueryRequest implements Serializable {
 
     /**

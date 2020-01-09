@@ -2,6 +2,8 @@ package com.card.alumni.common;
 
 import com.card.alumni.exception.ResultCodeEnum;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
@@ -9,9 +11,12 @@ import java.io.Serializable;
  * @author sunxiaodong10 2019/12/9
  * @date 8:45 PM
  */
+
 /**
  * 返回结果代码
  */
+@Accessors(chain = true)
+@ApiModel(value = "统一响应体", description = "统一响应体")
 public class UnifiedResult<T> implements Serializable {
 
     /**
@@ -22,24 +27,26 @@ public class UnifiedResult<T> implements Serializable {
     /**
      * 是否成功
      */
-    private boolean success =false;
+    @ApiModelProperty(value = "是否成功")
+    private boolean success = false;
 
     /**
      * 响应码
      */
+    @ApiModelProperty(value = "响应码")
     private Integer status;
 
     /**
      * 消息
      */
+    @ApiModelProperty(value = "错误信息")
     private String message;
 
     /**
      * 数据
      */
+    @ApiModelProperty(value = "响应数据")
     private T data;
-
-
 
 
     public UnifiedResult() {
@@ -60,6 +67,7 @@ public class UnifiedResult<T> implements Serializable {
 
     /**
      * success
+     *
      * @param data
      * @param <T>
      * @return
@@ -86,7 +94,6 @@ public class UnifiedResult<T> implements Serializable {
 
 
     /**
-     *
      * @param errorCodeEnum
      * @param <T>
      * @return
@@ -97,6 +104,7 @@ public class UnifiedResult<T> implements Serializable {
 
     /**
      * 失败
+     *
      * @param code
      * @param message
      * @param <T>

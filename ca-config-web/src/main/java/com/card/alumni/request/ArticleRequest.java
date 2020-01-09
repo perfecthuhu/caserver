@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value = "文章请求(ArticleRequest)", description = "文章请求")
+@ApiModel(value = "文章请求", description = "文章请求")
 public class ArticleRequest implements Serializable {
 
     @ApiModelProperty(value = "文章ID")
