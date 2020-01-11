@@ -1,5 +1,6 @@
 package com.card.alumni.security.filter;
 
+import com.card.alumni.context.User;
 import com.card.alumni.context.UserContext;
 import com.card.alumni.security.entity.JwtUser;
 import com.card.alumni.security.entity.OnlineUser;
@@ -60,10 +61,24 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                // todo
-                // UserContext.setCurrentUser();
+                UserContext.setCurrentUser(convert(userDetails));
             }
         }
         chain.doFilter(request, response);
+    }
+
+    private UserContext convert(JwtUser userDetails) {
+        User user = new User();
+        user.setId(userDetails.getId());
+        user.setPhone(userDetails.getUsername());
+        user.setEmail(userDetails.getEmail());
+        user.setName(userDetails.getName());
+        user.setPhotoImg(userDetails.getAvatar());
+        user.setCreateTime(userDetails.getCreateTime());
+        user.setPwdLastResetTime(userDetails.getLastPasswordResetDate());
+
+        UserContext userContext = new UserContext();
+        userContext.setUser(user);
+        return userContext;
     }
 }
