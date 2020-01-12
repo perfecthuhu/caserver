@@ -101,6 +101,7 @@ public class AlumniServiceImpl implements AlumniService {
         if (Objects.nonNull(alumniRequest.getType())) {
             criteria.andTypeEqualTo(alumniRequest.getType());
         }
+
         return example;
     }
 

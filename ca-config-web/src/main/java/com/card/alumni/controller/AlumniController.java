@@ -10,22 +10,24 @@ import com.card.alumni.model.enums.AlumniAuditStatusEnum;
 import com.card.alumni.request.AlumniAppointAdminRequest;
 import com.card.alumni.request.AlumniRequest;
 import com.card.alumni.service.AlumniService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * @author sunxiaodong10 2020/1/12
  * @date 11:52 AM
  */
+@RestController
+@Api(value = "组织模块", tags = "组织模块")
+@RequestMapping("/api/alumni")
 public class AlumniController {
 
+    @Resource
     private AlumniService alumniService;
-
 
     /**
      * 查询协会校友会
