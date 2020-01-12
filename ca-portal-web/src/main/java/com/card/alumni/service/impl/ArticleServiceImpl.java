@@ -10,10 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -28,7 +25,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Map<Integer, List<ArticleVO>> queryArticleService(ArticleQuery articleQuery) throws Exception {
-        CaArticleExample example = new CaArticleExample();
+        CaArticleExample example = buildCaArticleExample(articleQuery);
         List<CaArticle> caArticles = caArticleMapper.selectByExampleWithBLOBs(example);
         List<ArticleVO> articleVOList = caArticles.stream().map(s -> convertArticleVO(s)).collect(Collectors.toList());
         Map<Integer, List<ArticleVO>> resultMap = new HashMap<>();
@@ -39,6 +36,39 @@ public class ArticleServiceImpl implements ArticleService {
             });
         });
         return resultMap;
+    }
+
+    private CaArticleExample buildCaArticleExample(ArticleQuery articleQuery) {
+        CaArticleExample example = new CaArticleExample();
+        CaArticleExample.Criteria criteria = example.createCriteria();
+
+        if (Objects.nonNull(articleQuery)) {
+            return example;
+        }
+
+        if (Objects.nonNull(articleQuery.getId())) {
+            criteria.andIdEqualTo(articleQuery.getId());
+        }
+
+        if (Objects.nonNull(articleQuery.getType())) {
+            criteria.andTypeEqualTo(articleQuery.getType());
+        }
+
+        if (Objects.nonNull(articleQuery.getPublisher())) {
+            criteria.andPublisherEqualTo(articleQuery.getPublisher());
+        }
+
+        if (Objects.nonNull(articleQuery.getPublishTimeStart())) {
+            criteria.andPublishTimeGreaterThanOrEqualTo(articleQuery.getPublishTimeStart());
+        }
+
+        if (Objects.nonNull(articleQuery.getPublishTimeEnd())) {
+            criteria.andPublishTimeLessThan(articleQuery.getPublishTimeEnd());
+        }
+
+        criteria.andIsPublishEqualTo(true);
+
+        return example;
     }
 
     @Override

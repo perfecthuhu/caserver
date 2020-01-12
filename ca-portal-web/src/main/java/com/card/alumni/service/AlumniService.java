@@ -32,29 +32,6 @@ public interface AlumniService {
     AlumniVO queryAlumniDetail(Integer alumniId) throws CaException;
 
     /**
-     * 查询协会待审核记录
-     * @param alumniId
-     * @return
-     */
-    List<UserVO> queryAlumniAudit(Integer alumniId);
-
-    /**
-     * 审核加入协会申请
-     * @param alumniId
-     * @param status
-     * @return
-     */
-    Boolean auidtAlumniRecord(Integer alumniId, AlumniAuditStatusEnum status) throws CaException;
-
-    /**
-     * 分配管理员
-     * @param alumniId
-     * @param userId
-     * @return
-     */
-    Boolean appointAdmin(Integer alumniId, Integer userId) throws CaException;
-
-    /**
      * 申请加入协会
      * @param alumniId
      * @return
@@ -63,19 +40,11 @@ public interface AlumniService {
     Boolean applyAlumni(Integer alumniId) throws CaException;
 
     /**
-     * 创建协会
-     * @param alumniVO
+     * 退出协会
+     * @param id
+     * @param statusEnum
      * @return
      * @throws CaException
      */
-    Boolean createAlumni(AlumniVO alumniVO) throws CaException;
-
-    /**
-     * 修改协会信息
-     * @param alumniVO
-     * @return
-     * @throws CaException
-     */
-    Boolean updateAlimni(AlumniVO alumniVO) throws CaException;
-
+    Boolean auidtAlumniRecord(Integer id, AlumniAuditStatusEnum statusEnum) throws CaException;
 }
