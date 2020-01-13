@@ -47,4 +47,5 @@ public interface AlumniService {
      * @throws CaException
      */
     Boolean auidtAlumniRecord(Integer id, AlumniAuditStatusEnum statusEnum) throws CaException;
+
 }

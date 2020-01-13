@@ -5,6 +5,7 @@ import com.card.alumni.common.PageData;
 import com.card.alumni.context.User;
 import com.card.alumni.dao.CaUserMapper;
 import com.card.alumni.dao.CaUserTagMapper;
+import com.card.alumni.dao.UserFeedbackMapper;
 import com.card.alumni.entity.*;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.model.SimpleUserModel;
@@ -49,6 +50,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private CaUserTagMapper caUserTagMapper;
+
+    @Resource
+    private UserFeedbackMapper userFeedbackMapper;
     
     @Resource
     private RedisUtils redisUtils;
@@ -107,6 +111,18 @@ public class UserServiceImpl implements UserService {
         }
         LOGGER.info("更新用户信息入参:{}", JSON.toJSONString(userVO));
         caUserTagMapper.insert(convert2CaUserTag(userVO));
+
+        if (StringUtils.isNotBlank(userVO.getOtherDesc())) {
+            UserFeedback userFeedback = new UserFeedback();
+
+            userFeedback.setStatus(1);
+            userFeedback.setUserId(RequestUtil.getUserId());
+            userFeedback.setFeedbackDesc(userVO.getOtherDesc());
+            userFeedback.setCreateTime(new Date(System.currentTimeMillis()));
+            userFeedback.setUpdateTime(new Date(System.currentTimeMillis()));
+
+            userFeedbackMapper.insert(userFeedback);
+        }
     }
 
     private CaUser convert2CaUser(UserVO userVO) {

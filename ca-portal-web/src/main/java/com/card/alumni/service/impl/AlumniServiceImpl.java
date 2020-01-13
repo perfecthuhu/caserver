@@ -61,12 +61,46 @@ public class AlumniServiceImpl implements AlumniService {
     public PageData<AlumniVO> queryAlumniService(AlumniQuery alumniQuery) {
         LOGGER.info("查询群组 param:{}", JSON.toJSONString(alumniQuery));
         CaAlumniExample example = buildCaAlumniExample(alumniQuery);
+
         PageHelper.startPage(alumniQuery.getPage(), alumniQuery.getPageSize());
+
         List<CaAlumni> caAlumni = caAlumniMapper.selectByExample(example);
+
         PageInfo<CaAlumni> pageInfo = new PageInfo<>(caAlumni);
-        PageData<AlumniVO> alumniVOPageData = new PageData<>(pageInfo.getTotal(), convertAlumniVOList(caAlumni));
+        List<AlumniVO> alumniVOS = convertAlumniVOList(caAlumni);
+        queryUserAndAlumniRelation(alumniVOS);
+
+        PageData<AlumniVO> alumniVOPageData = new PageData<>(pageInfo.getTotal(), alumniVOS);
+
         LOGGER.info("查询群组 result:{}", JSON.toJSONString(alumniVOPageData));
         return alumniVOPageData;
+    }
+
+    private void queryUserAndAlumniRelation(List<AlumniVO> alumniVOS) {
+        CaAlumniAuditLogExample example = new CaAlumniAuditLogExample();
+        example.createCriteria().andStudentIdEqualTo(RequestUtil.getUserId());
+        List<CaAlumniAuditLog> caAlumniAuditLogs = caAlumniAuditLogMapper.selectByExample(example);
+        Map<Integer, CaAlumniAuditLog> caAlumniAuditLogMap = new HashMap<>();
+
+        caAlumniAuditLogs.stream().forEach(s -> {
+            CaAlumniAuditLog caAlumniAuditLog = caAlumniAuditLogMap.get(s.getStudentId());
+            if (Objects.isNull(caAlumniAuditLog)) {
+                caAlumniAuditLogMap.put(s.getStudentId(), s);
+            } else {
+                if (s.getCreateTime().compareTo(caAlumniAuditLog.getCreateTime()) == 1) {
+                    caAlumniAuditLogMap.put(s.getStudentId(), s);
+                }
+            }
+        });
+
+        Map<Integer, Integer> userAlumniMap = caAlumniAuditLogMap.values().stream().collect(Collectors.toMap(CaAlumniAuditLog::getAlumniId, CaAlumniAuditLog::getAuditStatus));
+
+        alumniVOS.stream().forEach(s -> {
+            Integer status = userAlumniMap.get(s.getId());
+            if (Objects.nonNull(status)) {
+                s.setRelation(status);
+            }
+        });
     }
 
     @Override

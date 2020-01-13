@@ -75,4 +75,6 @@ public class AlumniVO implements Serializable {
     @ApiModelProperty(value = "成员")
     private List<UserVO> userVOList;
 
+    @ApiModelProperty(value = "与协会关系(1:已申请2:已驳回3:已加入4:已退出 为空:未加入)")
+    private Integer relation;
 }

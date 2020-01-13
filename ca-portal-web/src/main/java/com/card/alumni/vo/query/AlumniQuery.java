@@ -28,4 +28,6 @@ public class AlumniQuery extends PageParam implements Serializable {
     @ApiModelProperty(value = "组织类型ID")
     private Integer type;
 
+
+
 }
