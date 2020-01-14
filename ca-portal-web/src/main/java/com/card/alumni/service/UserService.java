@@ -72,4 +72,12 @@ public interface UserService {
      * @throws CaException e
      */
     SimpleUserModel findUserById(Integer userId) throws CaException;
+
+    /**
+     * 查询我的信息
+     *
+     * @return 用户信息
+     * @throws CaException e
+     */
+    UserVO findMyUserInfo() throws CaException;
 }
