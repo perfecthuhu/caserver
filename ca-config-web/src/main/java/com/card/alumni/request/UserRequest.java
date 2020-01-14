@@ -108,6 +108,9 @@ public class UserRequest implements Serializable {
     @ApiModelProperty(value = "学校名称")
     private String schoolName;
 
+    @ApiModelProperty(value = "个人风采")
+    private String photoList;
+
     @ApiModelProperty(value = "用户标签列表")
     private List<Integer> userTagIdList;
 
