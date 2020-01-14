@@ -231,8 +231,8 @@ public class UserFriendServiceImpl implements UserFriendService {
         Integer userId = Objects.isNull(request.getUserId()) ? RequestUtil.getUserId() : request.getUserId();
         int page = Objects.isNull(request.getPage()) ? 1 : request.getPage();
         int size = Objects.isNull(request.getSize()) ? 20 : request.getSize();
-        String orderField = StringUtils.isBlank(request.getOrderField()) ? "create_time" : request.getOrderField();
-        String orderType = StringUtils.isBlank(request.getOrderType()) ? "desc" : request.getOrderType();
+        String orderField = StringUtils.isBlank(request.getOrderField()) ? "name_py" : request.getOrderField();
+        String orderType = StringUtils.isBlank(request.getOrderType()) ? "asc" : request.getOrderType();
 
         PageHelper.startPage(page, size);
 
