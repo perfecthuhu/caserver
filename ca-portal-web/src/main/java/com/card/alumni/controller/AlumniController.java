@@ -5,6 +5,7 @@ import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.service.AlumniService;
+import com.card.alumni.utils.RequestUtil;
 import com.card.alumni.vo.AlumniVO;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.enums.AlumniAuditStatusEnum;
@@ -74,6 +75,13 @@ public class AlumniController {
     @ApiOperation(value = "申请加入协会", notes = "申请加入协会")
     public UnifiedResult<Boolean> applyAlumni(@PathVariable Integer alumniId) throws Exception {
         return UnifiedResult.success(alumniService.applyAlumni(alumniId));
+    }
+
+    @GetMapping("/my")
+    @ApiOperation(value = "我加入的协会", notes = "我加入的协会")
+    public UnifiedResult<List<AlumniVO>> queryMyAlumni() {
+
+        return UnifiedResult.success(alumniService.queryMyAlumni(RequestUtil.getUserId()));
     }
 
 }

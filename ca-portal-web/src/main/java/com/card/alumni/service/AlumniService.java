@@ -48,4 +48,10 @@ public interface AlumniService {
      */
     Boolean auidtAlumniRecord(Integer id, AlumniAuditStatusEnum statusEnum) throws CaException;
 
+    /**
+     * 根据用户ID查询协会
+     * @param userId
+     * @return
+     */
+    List<AlumniVO> queryMyAlumni(Integer userId);
 }

@@ -66,13 +66,13 @@ public class AlumniVO implements Serializable {
     @ApiModelProperty(value = "修改时间")
     private Date updateTime;
 
-    @ApiModelProperty(value = "会长")
+    @ApiModelProperty(value = "会长(只有详情接口会返回该信息)")
     private UserVO leader;
 
-    @ApiModelProperty(value = "管理员")
+    @ApiModelProperty(value = "管理员(只有详情接口会返回该信息)")
     private List<UserVO> adminVO;
 
-    @ApiModelProperty(value = "成员")
+    @ApiModelProperty(value = "成员(只有详情接口会返回该信息)")
     private List<UserVO> userVOList;
 
     @ApiModelProperty(value = "与协会关系(1:已申请2:已驳回3:已加入4:已退出 为空:未加入)")
