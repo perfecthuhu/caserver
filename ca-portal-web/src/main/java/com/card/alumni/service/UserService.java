@@ -74,6 +74,12 @@ public interface UserService {
     SimpleUserModel findUserById(Integer userId) throws CaException;
 
     /**
+     * 用户退出
+     * @param userId
+     */
+    void loginOut(Integer userId) throws CaException;
+
+    /**
      * 查询我的信息
      *
      * @return 用户信息

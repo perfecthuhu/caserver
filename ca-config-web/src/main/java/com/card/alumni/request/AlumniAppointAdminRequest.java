@@ -1,4 +1,4 @@
-package com.card.alumni.vo.query;
+package com.card.alumni.request;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,12 +11,13 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@ApiModel(value = "组织查询", description = "组织查询")
-public class AlumniAppointAdminParam {
+@ApiModel(value = "组织管理查询", description = "组织管理查询请求")
+public class AlumniAppointAdminRequest {
 
-    @ApiModelProperty(value = "协会ID")
+    @ApiModelProperty(value = "组织ID")
     private Integer alumniId;
 
     @ApiModelProperty(value = "用户ID")
     private Integer userId;
+
 }

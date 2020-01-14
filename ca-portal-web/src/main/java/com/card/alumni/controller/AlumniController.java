@@ -5,6 +5,7 @@ import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.service.AlumniService;
+import com.card.alumni.utils.RequestUtil;
 import com.card.alumni.vo.AlumniVO;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.enums.AlumniAuditStatusEnum;
@@ -54,39 +55,6 @@ public class AlumniController {
     }
 
     /**
-     * 查询协会待审核记录
-     * @param alumniId
-     * @return
-     */
-    @GetMapping("/audit/list/{alumniId}")
-    @ApiOperation(value = "查询协会待审核记录", notes = "查询协会待审核记录")
-    public UnifiedResult<List<UserVO>> queryAlumniAudit(@PathVariable Integer alumniId) {
-        return UnifiedResult.success(alumniService.queryAlumniAudit(alumniId));
-    }
-
-    /**
-     * 审核通过加入协会申请
-     * @param id
-     * @return
-     */
-    @GetMapping("/audit/pass/{id}")
-    @ApiOperation(value = "审核通过加入协会申请", notes = "审核通过加入协会申请")
-    public UnifiedResult<Boolean> auidtAlumniRecordPass(@PathVariable Integer id) throws Exception {
-        return UnifiedResult.success(alumniService.auidtAlumniRecord(id, AlumniAuditStatusEnum.PASS));
-    }
-
-    /**
-     * 审核通过驳回协会申请
-     * @param id
-     * @return
-     */
-    @GetMapping("/audit/reject/{id}")
-    @ApiOperation(value = "审核通过驳回协会申请", notes = "审核通过驳回协会申请")
-    public UnifiedResult<Boolean> auidtAlumniRecordReject(@PathVariable Integer id) throws Exception {
-        return UnifiedResult.success(alumniService.auidtAlumniRecord(id, AlumniAuditStatusEnum.REJECT));
-    }
-
-    /**
      * 退出协会
      * @param id
      * @return
@@ -95,17 +63,6 @@ public class AlumniController {
     @ApiOperation(value = "退出协会", notes = "退出协会")
     public UnifiedResult<Boolean> exitAlumn(@PathVariable Integer id) throws Exception {
         return UnifiedResult.success(alumniService.auidtAlumniRecord(id, AlumniAuditStatusEnum.EXIT));
-    }
-
-    /**
-     * 分配管理员
-     * @param alumniAppointAdminParam
-     * @return
-     */
-    @PostMapping("/appoint/admin")
-    @ApiOperation(value = "分配管理员", notes = "分配管理员")
-    public UnifiedResult<Boolean> appointAdmin(@RequestBody AlumniAppointAdminParam alumniAppointAdminParam) throws Exception {
-        return UnifiedResult.success(alumniService.appointAdmin(alumniAppointAdminParam.getAlumniId(), alumniAppointAdminParam.getUserId()));
     }
 
     /**
@@ -120,27 +77,11 @@ public class AlumniController {
         return UnifiedResult.success(alumniService.applyAlumni(alumniId));
     }
 
-    /**
-     * 创建协会
-     * @param alumniVO
-     * @return
-     * @throws CaException
-     */
-    @PostMapping("/create")
-    @ApiOperation(value = "申请创建协会", notes = "申请创建协会")
-    public UnifiedResult<Boolean> createAlumni(@RequestBody AlumniVO alumniVO) throws CaException {
-        return UnifiedResult.success(alumniService.createAlumni(alumniVO));
+    @GetMapping("/my")
+    @ApiOperation(value = "我加入的协会", notes = "我加入的协会")
+    public UnifiedResult<List<AlumniVO>> queryMyAlumni() {
+
+        return UnifiedResult.success(alumniService.queryMyAlumni(RequestUtil.getUserId()));
     }
 
-    /**
-     * 修改协会信息
-     * @param alumniVO
-     * @return
-     * @throws CaException
-     */
-    @PostMapping("/update")
-    @ApiOperation(value = "更新协会信息", notes = "更新协会信息")
-    public UnifiedResult<Boolean> updateAlimni(@RequestBody AlumniVO alumniVO) throws CaException {
-        return UnifiedResult.success(alumniService.updateAlimni(alumniVO));
-    }
 }

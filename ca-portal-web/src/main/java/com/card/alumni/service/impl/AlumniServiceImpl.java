@@ -61,12 +61,46 @@ public class AlumniServiceImpl implements AlumniService {
     public PageData<AlumniVO> queryAlumniService(AlumniQuery alumniQuery) {
         LOGGER.info("查询群组 param:{}", JSON.toJSONString(alumniQuery));
         CaAlumniExample example = buildCaAlumniExample(alumniQuery);
+
         PageHelper.startPage(alumniQuery.getPage(), alumniQuery.getPageSize());
+
         List<CaAlumni> caAlumni = caAlumniMapper.selectByExample(example);
+
         PageInfo<CaAlumni> pageInfo = new PageInfo<>(caAlumni);
-        PageData<AlumniVO> alumniVOPageData = new PageData<>(pageInfo.getTotal(), convertAlumniVOList(caAlumni));
+        List<AlumniVO> alumniVOS = convertAlumniVOList(caAlumni);
+        queryUserAndAlumniRelation(alumniVOS);
+
+        PageData<AlumniVO> alumniVOPageData = new PageData<>(pageInfo.getTotal(), alumniVOS);
+
         LOGGER.info("查询群组 result:{}", JSON.toJSONString(alumniVOPageData));
         return alumniVOPageData;
+    }
+
+    private void queryUserAndAlumniRelation(List<AlumniVO> alumniVOS) {
+        CaAlumniAuditLogExample example = new CaAlumniAuditLogExample();
+        example.createCriteria().andStudentIdEqualTo(RequestUtil.getUserId());
+        List<CaAlumniAuditLog> caAlumniAuditLogs = caAlumniAuditLogMapper.selectByExample(example);
+        Map<Integer, CaAlumniAuditLog> caAlumniAuditLogMap = new HashMap<>();
+
+        caAlumniAuditLogs.stream().forEach(s -> {
+            CaAlumniAuditLog caAlumniAuditLog = caAlumniAuditLogMap.get(s.getStudentId());
+            if (Objects.isNull(caAlumniAuditLog)) {
+                caAlumniAuditLogMap.put(s.getStudentId(), s);
+            } else {
+                if (s.getCreateTime().compareTo(caAlumniAuditLog.getCreateTime()) == 1) {
+                    caAlumniAuditLogMap.put(s.getStudentId(), s);
+                }
+            }
+        });
+
+        Map<Integer, Integer> userAlumniMap = caAlumniAuditLogMap.values().stream().collect(Collectors.toMap(CaAlumniAuditLog::getAlumniId, CaAlumniAuditLog::getAuditStatus));
+
+        alumniVOS.stream().forEach(s -> {
+            Integer status = userAlumniMap.get(s.getId());
+            if (Objects.nonNull(status)) {
+                s.setRelation(status);
+            }
+        });
     }
 
     @Override
@@ -118,22 +152,6 @@ public class AlumniServiceImpl implements AlumniService {
         return userVOList;
     }
 
-    @Override
-    public List<UserVO> queryAlumniAudit(Integer id) {
-        LOGGER.info("查询协会代审信息 param:{}", id);
-        CaAlumniAuditLogExample example = new CaAlumniAuditLogExample();
-        example.createCriteria()
-                .andAlumniIdEqualTo(id)
-                .andAuditStatusEqualTo(AlumniAuditStatusEnum.APPLY.getCode());
-        List<CaAlumniAuditLog> caAlumniAuditLogs = caAlumniAuditLogMapper.selectByExample(example);
-        if (!CollectionUtils.isEmpty(caAlumniAuditLogs)) {
-            return null;
-        }
-        List<Integer> userIdList = caAlumniAuditLogs.stream().map(CaAlumniAuditLog::getStudentId).collect(Collectors.toList());
-        List<UserVO> userVOList = queryByIdList(userIdList);
-        LOGGER.info("查询协会代审信息 result:{}", userVOList);
-        return userVOList;
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -143,9 +161,6 @@ public class AlumniServiceImpl implements AlumniService {
         CaAlumniAuditLog caAlumniAuditLog = caAlumniAuditLogMapper.selectByPrimaryKey(id);
 
         switch (statusEnum) {
-            case PASS:
-                insertAlumniRole(caAlumniAuditLog);
-                break;
             case EXIT:
                 deleteAlumniRole(caAlumniAuditLog);
                 break;
@@ -159,6 +174,25 @@ public class AlumniServiceImpl implements AlumniService {
             throw new CaException("审核失败");
         }
         return true;
+    }
+
+    @Override
+    public List<AlumniVO> queryMyAlumni(Integer userId) {
+        CaAlumniRoleExample example = new CaAlumniRoleExample();
+        example.createCriteria().andStudentIdEqualTo(userId);
+
+        List<CaAlumniRole> caAlumniRoles = caAlumniRoleMapper.selectByExample(example);
+        List<AlumniVO> resultList = new ArrayList<>();
+        if (CollectionUtils.isEmpty(caAlumniRoles)) {
+            List<Integer> alumniIds = caAlumniRoles.stream().map(CaAlumniRole::getAlumniId).collect(Collectors.toList());
+            CaAlumniExample alumniExample  = new CaAlumniExample();
+            alumniExample.createCriteria().andIdIn(alumniIds);
+
+            List<CaAlumni> caAlumni = caAlumniMapper.selectByExample(alumniExample);
+            resultList = convertAlumniVOList(caAlumni);
+        }
+
+        return resultList;
     }
 
     private void deleteAlumniRole(CaAlumniAuditLog caAlumniAuditLog) throws CaException {
@@ -179,46 +213,12 @@ public class AlumniServiceImpl implements AlumniService {
         }
     }
 
-    private void insertAlumniRole(CaAlumniAuditLog caAlumniAuditLog) throws CaException  {
-        CaAlumniRole alumniRole = convertCaAlumniRole(caAlumniAuditLog);
-        int count = caAlumniRoleMapper.insert(alumniRole);
-        if (count != 1) {
-            throw new CaException("审核失败");
-        }
-    }
-
-    private CaAlumniRole convertCaAlumniRole(CaAlumniAuditLog caAlumniAuditLog) {
-        CaAlumniRole alumniRole = new CaAlumniRole();
-        alumniRole.setAlumniId(caAlumniAuditLog.getAlumniId());
-        alumniRole.setStudentId(caAlumniAuditLog.getStudentId());
-        alumniRole.setCreateTime(new Date(System.currentTimeMillis()));
-        alumniRole.setUpdateTime(new Date(System.currentTimeMillis()));
-        alumniRole.setRole(AlumniRoleEnum.MEMBER.getCode());
-
-        return alumniRole;
-
-    }
-
     private void validateUserLimit(Integer userId, Integer id) throws CaException {
         CaAlumniRole alumniRole = getCaAlumniRole(userId, id);
         if (Objects.isNull(alumniRole) || (!AlumniRoleEnum.LEADER.getCode().equals(alumniRole.getRole())
                 && !AlumniRoleEnum.ADMIN.getCode().equals(alumniRole.getRole()))) {
             throw new CaException("无权限");
         }
-    }
-
-    @Override
-    public Boolean appointAdmin(Integer id, Integer userId) throws CaException {
-        validateAppointAdmin(RequestUtil.getUserId(), id);
-        CaAlumniRole role = new CaAlumniRole();
-        role.setRole(AlumniRoleEnum.ADMIN.getCode());
-        CaAlumniRoleExample example = new CaAlumniRoleExample();
-        example.createCriteria().andAlumniIdEqualTo(id).andStudentIdEqualTo(userId);
-        int count = caAlumniRoleMapper.updateByExampleSelective(role, example);
-        if (count != 1) {
-            throw new CaException("分配管理员失败");
-        }
-        return true;
     }
 
     @Override
@@ -230,58 +230,6 @@ public class AlumniServiceImpl implements AlumniService {
         return true;
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Boolean createAlumni(AlumniVO alumniVO) throws CaException {
-        LOGGER.info("创建协会 param:{}", JSON.toJSONString(alumniVO));
-        validateAlimniVO(alumniVO);
-        CaAlumni alumni = buildCaAlumni(alumniVO);
-        int count = caAlumniMapper.insert(alumni);
-        if (count != 1) {
-            throw new CaException("创建协会失败");
-        }
-        CaAlumniRole caAlumniRole = new CaAlumniRole();
-        caAlumniRole.setStudentId(RequestUtil.getUserId());
-        caAlumniRole.setAlumniId(alumni.getId());
-        caAlumniRole.setRole(AlumniRoleEnum.LEADER.getCode());
-        caAlumniRole.setCreateTime(new Date(System.currentTimeMillis()));
-        caAlumniRole.setUpdateTime(new Date(System.currentTimeMillis()));
-        count = caAlumniRoleMapper.insert(caAlumniRole);
-        if (count != 1) {
-            throw new CaException("创建协会失败");
-        }
-        return true;
-    }
-
-    @Override
-    public Boolean updateAlimni(AlumniVO alumniVO) throws CaException {
-        LOGGER.info("更想协会信息 param:{}", JSON.toJSONString(alumniVO));
-        validateUserLimit(RequestUtil.getUserId(), alumniVO.getId());
-        CaAlumni alumni = convertAlumniVO(alumniVO);
-        int count = caAlumniMapper.updateByPrimaryKeySelective(alumni);
-        if (count != 1) {
-            throw new CaException("协会信息保存失败");
-        }
-        return true;
-    }
-
-    private void validateAlimniVO(AlumniVO alumniVO) throws CaException {
-        if (Objects.isNull(alumniVO)) {
-            throw new CaException("协会信息为空");
-        }
-        if (Objects.isNull(alumniVO.getName()))  {
-            throw new CaException("协会名称为空");
-        }
-    }
-
-    private CaAlumni buildCaAlumni(AlumniVO alumniVO) {
-        CaAlumni alumni = new CaAlumni();
-        BeanUtils.copyProperties(alumniVO, alumni);
-        alumni.setPartentId(AlumniTypeEnum.ASSOCIATION.getCode());
-        alumni.setType(AlumniTypeEnum.ASSOCIATION.getCode());
-        return alumni;
-    }
-
     private CaAlumniAuditLog buildCaAlumniAuditLog(Integer alumniId) {
         CaAlumniAuditLog caAlumniAuditLog = new CaAlumniAuditLog();
         caAlumniAuditLog.setAlumniId(alumniId);
@@ -290,13 +238,6 @@ public class AlumniServiceImpl implements AlumniService {
         caAlumniAuditLog.setCreateTime(new Date(System.currentTimeMillis()));
         caAlumniAuditLog.setUpdateTime(new Date(System.currentTimeMillis()));
         return caAlumniAuditLog;
-    }
-
-    private void validateAppointAdmin(Integer userId, Integer id) throws CaException {
-        CaAlumniRole caAlumniRole = getCaAlumniRole(userId, id);
-        if (Objects.isNull(caAlumniRole) || !AlumniRoleEnum.LEADER.getCode().equals(caAlumniRole.getRole())) {
-            throw new CaException("无权限");
-        }
     }
 
     private CaAlumniRole getCaAlumniRole(Integer userId, Integer alumniId) {
@@ -319,12 +260,6 @@ public class AlumniServiceImpl implements AlumniService {
         AlumniVO alumniVO = new AlumniVO();
         BeanUtils.copyProperties(caAlumni, alumniVO);
         return alumniVO;
-    }
-
-    private CaAlumni convertAlumniVO(AlumniVO alumniVO) {
-        CaAlumni caAlumni = new CaAlumni();
-        BeanUtils.copyProperties(alumniVO, caAlumni);
-        return caAlumni;
     }
 
     private CaAlumniExample buildCaAlumniExample(AlumniQuery alumniQuery) {

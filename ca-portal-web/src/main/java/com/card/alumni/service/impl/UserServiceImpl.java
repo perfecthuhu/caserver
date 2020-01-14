@@ -5,6 +5,8 @@ import com.card.alumni.common.PageData;
 import com.card.alumni.context.User;
 import com.card.alumni.dao.CaUserMapper;
 import com.card.alumni.dao.CaUserTagMapper;
+import com.card.alumni.dao.UserFeedbackMapper;
+import com.card.alumni.entity.*;
 import com.card.alumni.entity.CaUser;
 import com.card.alumni.entity.CaUserExample;
 import com.card.alumni.entity.CaUserTag;
@@ -51,12 +53,14 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private CaUserTagMapper caUserTagMapper;
-
+    @Resource
+    private UserFeedbackMapper userFeedbackMapper;
     @Resource
     private RedisUtils redisUtils;
 
     @Override
     public CaUser login(UserVO userVO, String verificatioCode) throws Exception {
+        LOGGER.info("UserServiceImpl.queryUserById param userVO: {}, verificatioCode: {}", JSON.toJSONString(userVO), verificatioCode);
         if (!validateVerificatioCode(userVO, verificatioCode)) {
             throw new CaException("验证码错误");
         }
@@ -70,7 +74,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User queryUserById(Integer userId) {
+    public User queryUserById(Integer userId){
+        LOGGER.info("UserServiceImpl.queryUserById param : {}", userId);
         User user = null;
         try {
             if (Objects.isNull(userId)) {
@@ -96,6 +101,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void submitUserInfo(UserVO userVO) throws Exception {
+        LOGGER.info("UserServiceImpl.submitUserInfo param : {}", JSON.toJSONString(userVO));
         if (Objects.isNull(userVO) || Objects.isNull(userVO.getId())) {
             userVO.setId(RequestUtil.getUserId());
         }
@@ -106,6 +112,18 @@ public class UserServiceImpl implements UserService {
         }
         LOGGER.info("更新用户信息入参:{}", JSON.toJSONString(userVO));
         caUserTagMapper.insert(convert2CaUserTag(userVO));
+
+        if (StringUtils.isNotBlank(userVO.getOtherDesc())) {
+            UserFeedback userFeedback = new UserFeedback();
+
+            userFeedback.setStatus(1);
+            userFeedback.setUserId(RequestUtil.getUserId());
+            userFeedback.setFeedbackDesc(userVO.getOtherDesc());
+            userFeedback.setCreateTime(new Date(System.currentTimeMillis()));
+            userFeedback.setUpdateTime(new Date(System.currentTimeMillis()));
+
+            userFeedbackMapper.insert(userFeedback);
+        }
     }
 
     private CaUser convert2CaUser(UserVO userVO) {
@@ -210,6 +228,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private CaUser register(UserVO userVO) throws Exception {
+        LOGGER.info("UserServiceImpl.register param : {}", JSON.toJSONString(userVO));
         if (Objects.isNull(userVO)) {
             throw new CaException("用户信息为空");
         }
@@ -231,6 +250,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CaUser queryUserByPhone(String phone) {
+        LOGGER.info("UserServiceImpl.queryUserByPhone param : {}", phone);
         if (StringUtils.isBlank(phone)) {
             return null;
         }
@@ -247,12 +267,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void sendValidateCode(String phone) throws Exception {
+        LOGGER.info("UserServiceImpl.sendValidateCode param : {}", phone);
         String code = VerificationCodeUtils.getVerificationCode(phone);
         redisUtils.set("CA_VALIDATE_CODE_KEY_" + phone, Integer.valueOf(code), 60 * 30);
     }
 
     @Override
     public SimpleUserModel findUserById(Integer userId) throws CaException {
+        LOGGER.info("UserServiceImpl.findUserById param : {}", userId);
         if (Objects.isNull(userId)) {
             throw new CaException("用户ID不能为空");
         }
@@ -262,6 +284,18 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(user, userModel);
 
         return userModel;
+    }
+
+    @Override
+    public void loginOut(Integer userId) throws CaException {
+        LOGGER.info("UserServiceImpl.loginOut param : {}", userId);
+        try {
+            redisUtils.del("user_login_" + userId);
+        } catch (Exception e) {
+            LOGGER.error("UserServiceImpl.loginOut error, error param:{}", userId, e);
+            throw new CaException("帐号退出异常");
+
+        }
     }
 
     @Override

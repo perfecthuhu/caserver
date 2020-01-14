@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author liumingyu
@@ -31,5 +32,7 @@ public class UserQueryRequest extends BaseQueryRequest implements Serializable {
 
     @ApiModelProperty(value = "是否可用")
     private Integer yn;
+
+    private List<Integer> userIdList;
 
 }

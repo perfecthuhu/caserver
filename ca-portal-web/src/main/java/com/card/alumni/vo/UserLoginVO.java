@@ -1,5 +1,7 @@
 package com.card.alumni.vo;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,11 +17,16 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ApiModel(value = "登陆返回VO", description = "登陆返回VO")
 public class UserLoginVO implements Serializable {
 
+    @ApiModelProperty(value = "ID")
     private Integer id;
 
+    @ApiModelProperty(value = "用户状态")
     private Integer userStatus;
 
+    @ApiModelProperty(value = "用户token")
     private String token;
 }
+

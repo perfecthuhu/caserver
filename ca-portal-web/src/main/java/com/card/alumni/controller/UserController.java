@@ -4,6 +4,7 @@ import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.entity.CaUser;
+import com.card.alumni.exception.CaException;
 import com.card.alumni.model.SimpleUserModel;
 import com.card.alumni.service.UserService;
 import com.card.alumni.utils.AESUtil;
@@ -112,5 +113,12 @@ public class UserController {
     @ApiOperation(value = "查询用户信息", notes = "查询用户信息")
     public UnifiedResult<SimpleUserModel> findUserById(@PathVariable("id") Integer id) throws Exception {
         return UnifiedResult.success(userService.findUserById(id));
+    }
+
+    @GetMapping("/loginOut")
+    @ApiOperation(value = "登出", notes = "登出")
+    public UnifiedResult<Boolean> loginOut() throws CaException {
+        userService.loginOut(RequestUtil.getUserId());
+        return UnifiedResult.success(true);
     }
 }
