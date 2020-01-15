@@ -23,6 +23,7 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -260,10 +261,7 @@ public class UserFriendApplyServiceImpl implements UserFriendApplyService {
             CaUser user = userMap.get(model.getTargetId());
             if (Objects.nonNull(user)) {
                 SimpleUserModel userModel = new SimpleUserModel();
-                userModel.setId(user.getId());
-                userModel.setSex(user.getSex());
-                userModel.setName(user.getName());
-                userModel.setPhotoImg(user.getPhotoImg());
+                BeanUtils.copyProperties(user, userModel);
                 model.setUserModel(userModel);
             }
         });
@@ -289,10 +287,7 @@ public class UserFriendApplyServiceImpl implements UserFriendApplyService {
             CaUser user = userMap.get(model.getSponsorId());
             if (Objects.nonNull(user)) {
                 SimpleUserModel userModel = new SimpleUserModel();
-                userModel.setId(user.getId());
-                userModel.setName(user.getName());
-                userModel.setSex(user.getSex());
-                userModel.setPhotoImg(user.getPhotoImg());
+                BeanUtils.copyProperties(user, userModel);
                 model.setUserModel(userModel);
             }
         });

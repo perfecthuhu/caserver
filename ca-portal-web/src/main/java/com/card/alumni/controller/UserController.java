@@ -105,9 +105,8 @@ public class UserController {
 
     @GetMapping("/my")
     @ApiOperation(value = "我的信息", notes = "我的信息")
-    public UnifiedResult<SimpleUserModel> findMyUserInfo() throws Exception {
-        Integer userId = RequestUtil.getUserId();
-        return UnifiedResult.success(userService.findUserById(userId));
+    public UnifiedResult<UserVO> findMyUserInfo() throws Exception {
+        return UnifiedResult.success(userService.findMyUserInfo());
     }
 
     @GetMapping("/{id}")

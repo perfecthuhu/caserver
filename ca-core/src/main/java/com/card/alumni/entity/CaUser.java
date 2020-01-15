@@ -73,7 +73,9 @@ public class CaUser {
 
     private Date pwdLastResetTime;
 
-    public CaUser(Integer id, String phone, String name, String namePy, String idCard, Integer sex, String professional, Integer education, String acceptAnceDate, String graduateDate, Date birthday, Integer status, String secondTel, String qq, String wx, String email, String address, Integer classId, Integer collegeId, String collegeName, Integer facultyId, String facultyName, String photoImg, String workUnit, String duty, Integer alumniId, String alumniName, String signature, Integer schoolId, String schoolName, Date createTime, Date updateTime, Integer yn, String pwd, Date pwdLastResetTime) {
+    private String photoList;
+
+    public CaUser(Integer id, String phone, String name, String namePy, String idCard, Integer sex, String professional, Integer education, String acceptAnceDate, String graduateDate, Date birthday, Integer status, String secondTel, String qq, String wx, String email, String address, Integer classId, Integer collegeId, String collegeName, Integer facultyId, String facultyName, String photoImg, String workUnit, String duty, Integer alumniId, String alumniName, String signature, Integer schoolId, String schoolName, Date createTime, Date updateTime, Integer yn, String pwd, Date pwdLastResetTime, String photoList) {
         this.id = id;
         this.phone = phone;
         this.name = name;
@@ -109,6 +111,7 @@ public class CaUser {
         this.yn = yn;
         this.pwd = pwd;
         this.pwdLastResetTime = pwdLastResetTime;
+        this.photoList = photoList;
     }
 
     public CaUser() {
@@ -393,5 +396,13 @@ public class CaUser {
 
     public void setPwdLastResetTime(Date pwdLastResetTime) {
         this.pwdLastResetTime = pwdLastResetTime;
+    }
+
+    public String getPhotoList() {
+        return photoList;
+    }
+
+    public void setPhotoList(String photoList) {
+        this.photoList = photoList == null ? null : photoList.trim();
     }
 }

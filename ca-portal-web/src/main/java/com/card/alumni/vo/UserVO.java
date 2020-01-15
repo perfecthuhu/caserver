@@ -1,5 +1,6 @@
 package com.card.alumni.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -25,6 +26,7 @@ public class UserVO implements Serializable {
     private String phone;
 
     @ApiModelProperty(value = "密码")
+    @JsonIgnore
     private String pwd;
 
     @ApiModelProperty(value = "用户名")
@@ -104,6 +106,12 @@ public class UserVO implements Serializable {
 
     @ApiModelProperty(value = "学校ID")
     private Integer schoolId;
+
+    @ApiModelProperty(value = "学校名称")
+    private String schoolName;
+
+    @ApiModelProperty(value = "个人风采")
+    private String photoList;
 
     @ApiModelProperty(value = "用户标签ID")
     private List<Integer> userTagId;

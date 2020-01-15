@@ -7,6 +7,11 @@ import com.card.alumni.dao.CaUserMapper;
 import com.card.alumni.dao.CaUserTagMapper;
 import com.card.alumni.dao.UserFeedbackMapper;
 import com.card.alumni.entity.*;
+import com.card.alumni.entity.CaUser;
+import com.card.alumni.entity.CaUserExample;
+import com.card.alumni.entity.CaUserTag;
+import com.card.alumni.enums.StatusEnum;
+import com.card.alumni.enums.UserTagEnum;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.model.SimpleUserModel;
 import com.card.alumni.service.UserService;
@@ -16,8 +21,6 @@ import com.card.alumni.utils.RedisUtils;
 import com.card.alumni.utils.RequestUtil;
 import com.card.alumni.utils.VerificationCodeUtils;
 import com.card.alumni.vo.UserVO;
-import com.card.alumni.enums.StatusEnum;
-import com.card.alumni.enums.UserTagEnum;
 import com.card.alumni.vo.query.UserQuery;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -50,15 +53,13 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private CaUserTagMapper caUserTagMapper;
-
     @Resource
     private UserFeedbackMapper userFeedbackMapper;
-    
     @Resource
     private RedisUtils redisUtils;
 
     @Override
-    public CaUser login(UserVO userVO, String verificatioCode) throws Exception  {
+    public CaUser login(UserVO userVO, String verificatioCode) throws Exception {
         LOGGER.info("UserServiceImpl.queryUserById param userVO: {}, verificatioCode: {}", JSON.toJSONString(userVO), verificatioCode);
         if (!validateVerificatioCode(userVO, verificatioCode)) {
             throw new CaException("验证码错误");
@@ -193,7 +194,7 @@ public class UserServiceImpl implements UserService {
         }).collect(Collectors.toList());
     }
 
-    private  CaUserExample buildCaUserExample(UserQuery userQuery) {
+    private CaUserExample buildCaUserExample(UserQuery userQuery) {
         CaUserExample example = new CaUserExample();
         CaUserExample.Criteria criteria = example.createCriteria();
         if (Objects.isNull(userQuery)) {
@@ -301,6 +302,15 @@ public class UserServiceImpl implements UserService {
             throw new CaException("帐号退出异常");
 
         }
+    }
+
+    @Override
+    public UserVO findMyUserInfo() throws CaException {
+        Integer userId = RequestUtil.getUserId();
+        CaUser user = caUserMapper.selectByPrimaryKey(userId);
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(user, userVO);
+        return userVO;
     }
 
     private boolean validateVerificatioCode(UserVO userVO, String verificatioCode) {

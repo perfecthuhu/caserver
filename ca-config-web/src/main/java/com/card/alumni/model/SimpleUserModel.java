@@ -81,4 +81,7 @@ public class SimpleUserModel implements Serializable {
 
     @ApiModelProperty(value = "学校名称")
     private String schoolName;
+
+    @ApiModelProperty(value = "个人风采")
+    private String photoList;
 }

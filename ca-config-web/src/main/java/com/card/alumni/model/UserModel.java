@@ -113,4 +113,7 @@ public class UserModel implements Serializable {
 
     @ApiModelProperty(value = "密码最后更新时间")
     private Date pwdLastResetTime;
+
+    @ApiModelProperty(value = "个人风采")
+    private String photoList;
 }

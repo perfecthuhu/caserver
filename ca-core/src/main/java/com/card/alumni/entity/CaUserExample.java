@@ -2441,6 +2441,76 @@ public class CaUserExample {
             addCriterion("pwd_last_reset_time not between", value1, value2, "pwdLastResetTime");
             return (Criteria) this;
         }
+
+        public Criteria andPhotoListIsNull() {
+            addCriterion("photo_list is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPhotoListIsNotNull() {
+            addCriterion("photo_list is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPhotoListEqualTo(String value) {
+            addCriterion("photo_list =", value, "photoList");
+            return (Criteria) this;
+        }
+
+        public Criteria andPhotoListNotEqualTo(String value) {
+            addCriterion("photo_list <>", value, "photoList");
+            return (Criteria) this;
+        }
+
+        public Criteria andPhotoListGreaterThan(String value) {
+            addCriterion("photo_list >", value, "photoList");
+            return (Criteria) this;
+        }
+
+        public Criteria andPhotoListGreaterThanOrEqualTo(String value) {
+            addCriterion("photo_list >=", value, "photoList");
+            return (Criteria) this;
+        }
+
+        public Criteria andPhotoListLessThan(String value) {
+            addCriterion("photo_list <", value, "photoList");
+            return (Criteria) this;
+        }
+
+        public Criteria andPhotoListLessThanOrEqualTo(String value) {
+            addCriterion("photo_list <=", value, "photoList");
+            return (Criteria) this;
+        }
+
+        public Criteria andPhotoListLike(String value) {
+            addCriterion("photo_list like", value, "photoList");
+            return (Criteria) this;
+        }
+
+        public Criteria andPhotoListNotLike(String value) {
+            addCriterion("photo_list not like", value, "photoList");
+            return (Criteria) this;
+        }
+
+        public Criteria andPhotoListIn(List<String> values) {
+            addCriterion("photo_list in", values, "photoList");
+            return (Criteria) this;
+        }
+
+        public Criteria andPhotoListNotIn(List<String> values) {
+            addCriterion("photo_list not in", values, "photoList");
+            return (Criteria) this;
+        }
+
+        public Criteria andPhotoListBetween(String value1, String value2) {
+            addCriterion("photo_list between", value1, value2, "photoList");
+            return (Criteria) this;
+        }
+
+        public Criteria andPhotoListNotBetween(String value1, String value2) {
+            addCriterion("photo_list not between", value1, value2, "photoList");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

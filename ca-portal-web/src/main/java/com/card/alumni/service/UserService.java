@@ -78,4 +78,12 @@ public interface UserService {
      * @param userId
      */
     void loginOut(Integer userId) throws CaException;
+
+    /**
+     * 查询我的信息
+     *
+     * @return 用户信息
+     * @throws CaException e
+     */
+    UserVO findMyUserInfo() throws CaException;
 }
