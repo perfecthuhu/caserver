@@ -109,8 +109,14 @@ public class UserServiceImpl implements UserService {
         if (count != 1) {
             throw new CaException("填写信息失败");
         }
+        if (CollectionUtils.isNotEmpty(userVO.getUserTagId())) {
+            CaUserTagExample example = new CaUserTagExample();
+            example.createCriteria().andUserIdEqualTo(userVO.getId());
+            caUserTagMapper.deleteByExample(example);
+            caUserTagMapper.insert(convert2CaUserTag(userVO));
+        }
+
         LOGGER.info("更新用户信息入参:{}", JSON.toJSONString(userVO));
-        caUserTagMapper.insert(convert2CaUserTag(userVO));
 
         if (StringUtils.isNotBlank(userVO.getOtherDesc())) {
             UserFeedback userFeedback = new UserFeedback();
