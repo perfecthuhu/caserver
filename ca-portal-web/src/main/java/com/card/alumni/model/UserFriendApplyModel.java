@@ -17,7 +17,7 @@ import java.util.Date;
 @ApiModel(value = "用户的好友申请", description = "用户的好友申请")
 public class UserFriendApplyModel implements Serializable {
 
-    @ApiModelProperty(value = "申请ID")
+    @ApiModelProperty(value = "申请ID 处理申请时需要")
     private Integer id;
 
     @ApiModelProperty(value = "发起人ID")
@@ -26,13 +26,13 @@ public class UserFriendApplyModel implements Serializable {
     @ApiModelProperty(value = "目标人ID")
     private Integer targetId;
 
-    @ApiModelProperty(value = "状态")
+    @ApiModelProperty(value = "状态 1-处理中 2-已同意 3-已拒绝")
     private Integer status;
 
-    @ApiModelProperty(value = "备注")
+    @ApiModelProperty(value = "备注 发起申请时选填")
     private String remark;
 
-    @ApiModelProperty(value = "反馈")
+    @ApiModelProperty(value = "反馈 处理申请时选填")
     private String feedback;
 
     @ApiModelProperty(value = "更新人ID")
@@ -44,6 +44,6 @@ public class UserFriendApplyModel implements Serializable {
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
 
-    @ApiModelProperty(value = "用户信息")
+    @ApiModelProperty(value = "用户信息 1.查询申请列表时为目标人列表 2.查询处理列表时为发起人列表")
     private SimpleUserModel userModel;
 }

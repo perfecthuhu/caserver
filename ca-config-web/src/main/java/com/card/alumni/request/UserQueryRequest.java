@@ -27,10 +27,10 @@ public class UserQueryRequest extends BaseQueryRequest implements Serializable {
     @ApiModelProperty(value = "关键字")
     private String keyword;
 
-    @ApiModelProperty(value = "状态")
+    @ApiModelProperty(value = "状态 待定字段")
     private Integer status;
 
-    @ApiModelProperty(value = "是否可用")
+    @ApiModelProperty(value = "是否可用 1:可用 2:不可用")
     private Integer yn;
 
     private List<Integer> userIdList;

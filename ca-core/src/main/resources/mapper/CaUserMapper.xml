@@ -21,6 +21,7 @@
       <arg column="email" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="address" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="class_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="class_name" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="college_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="college_name" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="faculty_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
@@ -101,10 +102,10 @@
   </sql>
   <sql id="Base_Column_List" >
     id, phone, name, name_py, id_card, sex, professional, education, accept_ance_date, 
-    graduate_date, birthday, status, second_tel, qq, wx, email, address, class_id, college_id, 
-    college_name, faculty_id, faculty_name, photo_img, work_unit, duty, alumni_id, alumni_name, 
-    signature, school_id, school_name, create_time, update_time, yn, pwd, pwd_last_reset_time, 
-    photo_list
+    graduate_date, birthday, status, second_tel, qq, wx, email, address, class_id, class_name, 
+    college_id, college_name, faculty_id, faculty_name, photo_img, work_unit, duty, alumni_id, 
+    alumni_name, signature, school_id, school_name, create_time, update_time, yn, pwd, 
+    pwd_last_reset_time, photo_list
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.card.alumni.entity.CaUserExample" >
     select
@@ -144,26 +145,26 @@
       graduate_date, birthday, status, 
       second_tel, qq, wx, 
       email, address, class_id, 
-      college_id, college_name, faculty_id, 
-      faculty_name, photo_img, work_unit, 
-      duty, alumni_id, alumni_name, 
-      signature, school_id, school_name, 
-      create_time, update_time, yn, 
-      pwd, pwd_last_reset_time, photo_list
-      )
+      class_name, college_id, college_name, 
+      faculty_id, faculty_name, photo_img, 
+      work_unit, duty, alumni_id, 
+      alumni_name, signature, school_id, 
+      school_name, create_time, update_time, 
+      yn, pwd, pwd_last_reset_time, 
+      photo_list)
     values (#{id,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{namePy,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, 
       #{professional,jdbcType=VARCHAR}, #{education,jdbcType=INTEGER}, #{acceptAnceDate,jdbcType=VARCHAR}, 
       #{graduateDate,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, #{status,jdbcType=INTEGER}, 
       #{secondTel,jdbcType=VARCHAR}, #{qq,jdbcType=VARCHAR}, #{wx,jdbcType=VARCHAR}, 
       #{email,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{classId,jdbcType=INTEGER}, 
-      #{collegeId,jdbcType=INTEGER}, #{collegeName,jdbcType=VARCHAR}, #{facultyId,jdbcType=INTEGER}, 
-      #{facultyName,jdbcType=VARCHAR}, #{photoImg,jdbcType=VARCHAR}, #{workUnit,jdbcType=VARCHAR}, 
-      #{duty,jdbcType=VARCHAR}, #{alumniId,jdbcType=INTEGER}, #{alumniName,jdbcType=VARCHAR}, 
-      #{signature,jdbcType=VARCHAR}, #{schoolId,jdbcType=INTEGER}, #{schoolName,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{yn,jdbcType=INTEGER}, 
-      #{pwd,jdbcType=VARCHAR}, #{pwdLastResetTime,jdbcType=TIMESTAMP}, #{photoList,jdbcType=VARCHAR}
-      )
+      #{className,jdbcType=VARCHAR}, #{collegeId,jdbcType=INTEGER}, #{collegeName,jdbcType=VARCHAR}, 
+      #{facultyId,jdbcType=INTEGER}, #{facultyName,jdbcType=VARCHAR}, #{photoImg,jdbcType=VARCHAR}, 
+      #{workUnit,jdbcType=VARCHAR}, #{duty,jdbcType=VARCHAR}, #{alumniId,jdbcType=INTEGER}, 
+      #{alumniName,jdbcType=VARCHAR}, #{signature,jdbcType=VARCHAR}, #{schoolId,jdbcType=INTEGER}, 
+      #{schoolName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{yn,jdbcType=INTEGER}, #{pwd,jdbcType=VARCHAR}, #{pwdLastResetTime,jdbcType=TIMESTAMP}, 
+      #{photoList,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.card.alumni.entity.CaUser" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_user
@@ -221,6 +222,9 @@
       </if>
       <if test="classId != null" >
         class_id,
+      </if>
+      <if test="className != null" >
+        class_name,
       </if>
       <if test="collegeId != null" >
         college_id,
@@ -331,6 +335,9 @@
       </if>
       <if test="classId != null" >
         #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="className != null" >
+        #{className,jdbcType=VARCHAR},
       </if>
       <if test="collegeId != null" >
         #{collegeId,jdbcType=INTEGER},
@@ -451,6 +458,9 @@
       <if test="record.classId != null" >
         class_id = #{record.classId,jdbcType=INTEGER},
       </if>
+      <if test="record.className != null" >
+        class_name = #{record.className,jdbcType=VARCHAR},
+      </if>
       <if test="record.collegeId != null" >
         college_id = #{record.collegeId,jdbcType=INTEGER},
       </if>
@@ -530,6 +540,7 @@
       email = #{record.email,jdbcType=VARCHAR},
       address = #{record.address,jdbcType=VARCHAR},
       class_id = #{record.classId,jdbcType=INTEGER},
+      class_name = #{record.className,jdbcType=VARCHAR},
       college_id = #{record.collegeId,jdbcType=INTEGER},
       college_name = #{record.collegeName,jdbcType=VARCHAR},
       faculty_id = #{record.facultyId,jdbcType=INTEGER},
@@ -605,6 +616,9 @@
       </if>
       <if test="classId != null" >
         class_id = #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="className != null" >
+        class_name = #{className,jdbcType=VARCHAR},
       </if>
       <if test="collegeId != null" >
         college_id = #{collegeId,jdbcType=INTEGER},
@@ -682,6 +696,7 @@
       email = #{email,jdbcType=VARCHAR},
       address = #{address,jdbcType=VARCHAR},
       class_id = #{classId,jdbcType=INTEGER},
+      class_name = #{className,jdbcType=VARCHAR},
       college_id = #{collegeId,jdbcType=INTEGER},
       college_name = #{collegeName,jdbcType=VARCHAR},
       faculty_id = #{facultyId,jdbcType=INTEGER},

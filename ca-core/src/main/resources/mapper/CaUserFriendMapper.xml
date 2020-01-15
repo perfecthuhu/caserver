@@ -6,6 +6,7 @@
       <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="friend_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="friend_name_py" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="creator" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="updater" jdbcType="INTEGER" javaType="java.lang.Integer" />
@@ -72,7 +73,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, user_id, friend_id, creator, create_time, updater, update_time, is_delete
+    id, user_id, friend_id, friend_name_py, creator, create_time, updater, update_time, 
+    is_delete
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.card.alumni.entity.CaUserFriendExample" >
     select
@@ -90,7 +92,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select
+    select 
     <include refid="Base_Column_List" />
     from ca_user_friend
     where id = #{id,jdbcType=INTEGER}
@@ -107,13 +109,15 @@
   </delete>
   <insert id="insert" parameterType="com.card.alumni.entity.CaUserFriend" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_user_friend (id, user_id, friend_id, 
-      creator, create_time, updater, 
-      update_time, is_delete)
+      friend_name_py, creator, create_time, 
+      updater, update_time, is_delete
+      )
     values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{friendId,jdbcType=INTEGER}, 
-      #{creator,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updater,jdbcType=INTEGER}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=BIT})
+      #{friendNamePy,jdbcType=VARCHAR}, #{creator,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updater,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=BIT}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.card.alumni.entity.CaUserFriend" >
+  <insert id="insertSelective" parameterType="com.card.alumni.entity.CaUserFriend" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_user_friend
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -124,6 +128,9 @@
       </if>
       <if test="friendId != null" >
         friend_id,
+      </if>
+      <if test="friendNamePy != null" >
+        friend_name_py,
       </if>
       <if test="creator != null" >
         creator,
@@ -150,6 +157,9 @@
       </if>
       <if test="friendId != null" >
         #{friendId,jdbcType=INTEGER},
+      </if>
+      <if test="friendNamePy != null" >
+        #{friendNamePy,jdbcType=VARCHAR},
       </if>
       <if test="creator != null" >
         #{creator,jdbcType=INTEGER},
@@ -186,6 +196,9 @@
       <if test="record.friendId != null" >
         friend_id = #{record.friendId,jdbcType=INTEGER},
       </if>
+      <if test="record.friendNamePy != null" >
+        friend_name_py = #{record.friendNamePy,jdbcType=VARCHAR},
+      </if>
       <if test="record.creator != null" >
         creator = #{record.creator,jdbcType=INTEGER},
       </if>
@@ -211,6 +224,7 @@
     set id = #{record.id,jdbcType=INTEGER},
       user_id = #{record.userId,jdbcType=INTEGER},
       friend_id = #{record.friendId,jdbcType=INTEGER},
+      friend_name_py = #{record.friendNamePy,jdbcType=VARCHAR},
       creator = #{record.creator,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       updater = #{record.updater,jdbcType=INTEGER},
@@ -228,6 +242,9 @@
       </if>
       <if test="friendId != null" >
         friend_id = #{friendId,jdbcType=INTEGER},
+      </if>
+      <if test="friendNamePy != null" >
+        friend_name_py = #{friendNamePy,jdbcType=VARCHAR},
       </if>
       <if test="creator != null" >
         creator = #{creator,jdbcType=INTEGER},
@@ -251,53 +268,12 @@
     update ca_user_friend
     set user_id = #{userId,jdbcType=INTEGER},
       friend_id = #{friendId,jdbcType=INTEGER},
+      friend_name_py = #{friendNamePy,jdbcType=VARCHAR},
       creator = #{creator,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       updater = #{updater,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       is_delete = #{isDelete,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
-  </update>
-
-  <insert id="batchInsert" parameterType="com.card.alumni.entity.CaUserFriend" >
-    insert into ca_user_friend (id, user_id, friend_id,
-    creator, create_time, updater,
-    update_time, is_delete)
-    values
-    <foreach collection="list" index="index" item="record" separator=",">
-    (#{record.id,jdbcType=INTEGER}, #{record.userId,jdbcType=INTEGER}, #{record.friendId,jdbcType=INTEGER},
-    #{record.creator,jdbcType=INTEGER}, #{record.createTime,jdbcType=TIMESTAMP}, #{record.updater,jdbcType=INTEGER},
-    #{record.updateTime,jdbcType=TIMESTAMP}, #{record.isDelete,jdbcType=BIT})
-    </foreach>
-  </insert>
-
-  <update id="batchUpdate" parameterType="com.card.alumni.entity.CaUserFriend" >
-    <foreach collection="list" separator=";" item="record">
-      update ca_user_friend
-      <set >
-        <if test="record.userId != null" >
-          user_id = #{userId,jdbcType=INTEGER},
-        </if>
-        <if test="record.friendId != null" >
-          friend_id = #{record.friendId,jdbcType=INTEGER},
-        </if>
-        <if test="record.creator != null" >
-          creator = #{record.creator,jdbcType=INTEGER},
-        </if>
-        <if test="record.createTime != null" >
-          create_time = #{record.createTime,jdbcType=TIMESTAMP},
-        </if>
-        <if test="record.updater != null" >
-          updater = #{record.updater,jdbcType=INTEGER},
-        </if>
-        <if test="record.updateTime != null" >
-          update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-        </if>
-        <if test="record.isDelete != null" >
-          is_delete = #{record.isDelete,jdbcType=BIT},
-        </if>
-      </set>
-      where id = #{record.id,jdbcType=INTEGER}
-    </foreach>
   </update>
 </mapper>

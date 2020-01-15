@@ -19,7 +19,7 @@ public class RoleRequest implements Serializable {
     @ApiModelProperty(value = "角色ID")
     private Integer id;
 
-    @ApiModelProperty(value = "名称")
+    @ApiModelProperty(value = "名称", required = true)
     private String name;
 
     @ApiModelProperty(value = "备注")
@@ -28,6 +28,6 @@ public class RoleRequest implements Serializable {
     @ApiModelProperty(value = "数据范围")
     private String dataScope;
 
-    @ApiModelProperty(value = "权限标识")
+    @ApiModelProperty(value = "权限标识", required = true)
     private String permission;
 }

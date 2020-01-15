@@ -285,6 +285,76 @@ public class CaUserFriendExample {
             return (Criteria) this;
         }
 
+        public Criteria andFriendNamePyIsNull() {
+            addCriterion("friend_name_py is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendNamePyIsNotNull() {
+            addCriterion("friend_name_py is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendNamePyEqualTo(String value) {
+            addCriterion("friend_name_py =", value, "friendNamePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendNamePyNotEqualTo(String value) {
+            addCriterion("friend_name_py <>", value, "friendNamePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendNamePyGreaterThan(String value) {
+            addCriterion("friend_name_py >", value, "friendNamePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendNamePyGreaterThanOrEqualTo(String value) {
+            addCriterion("friend_name_py >=", value, "friendNamePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendNamePyLessThan(String value) {
+            addCriterion("friend_name_py <", value, "friendNamePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendNamePyLessThanOrEqualTo(String value) {
+            addCriterion("friend_name_py <=", value, "friendNamePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendNamePyLike(String value) {
+            addCriterion("friend_name_py like", value, "friendNamePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendNamePyNotLike(String value) {
+            addCriterion("friend_name_py not like", value, "friendNamePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendNamePyIn(List<String> values) {
+            addCriterion("friend_name_py in", values, "friendNamePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendNamePyNotIn(List<String> values) {
+            addCriterion("friend_name_py not in", values, "friendNamePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendNamePyBetween(String value1, String value2) {
+            addCriterion("friend_name_py between", value1, value2, "friendNamePy");
+            return (Criteria) this;
+        }
+
+        public Criteria andFriendNamePyNotBetween(String value1, String value2) {
+            addCriterion("friend_name_py not between", value1, value2, "friendNamePy");
+            return (Criteria) this;
+        }
+
         public Criteria andCreatorIsNull() {
             addCriterion("creator is null");
             return (Criteria) this;

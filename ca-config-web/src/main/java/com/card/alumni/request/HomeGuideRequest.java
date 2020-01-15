@@ -19,16 +19,16 @@ public class HomeGuideRequest implements Serializable {
     @ApiModelProperty(value = "导航ID")
     private Integer id;
 
-    @ApiModelProperty(value = "主页ID")
+    @ApiModelProperty(value = "主页ID", required = true)
     private Integer homePageId;
 
-    @ApiModelProperty(value = "名称")
+    @ApiModelProperty(value = "名称", required = true)
     private String name;
 
     @ApiModelProperty(value = "排序字段")
     private Integer rank;
 
-    @ApiModelProperty(value = "跳转地址")
+    @ApiModelProperty(value = "跳转地址", required = true)
     private String redirectPath;
 
     @ApiModelProperty(value = "背景颜色")

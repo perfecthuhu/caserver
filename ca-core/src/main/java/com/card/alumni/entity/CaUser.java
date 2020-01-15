@@ -39,6 +39,8 @@ public class CaUser {
 
     private Integer classId;
 
+    private String className;
+
     private Integer collegeId;
 
     private String collegeName;
@@ -75,7 +77,7 @@ public class CaUser {
 
     private String photoList;
 
-    public CaUser(Integer id, String phone, String name, String namePy, String idCard, Integer sex, String professional, Integer education, String acceptAnceDate, String graduateDate, Date birthday, Integer status, String secondTel, String qq, String wx, String email, String address, Integer classId, Integer collegeId, String collegeName, Integer facultyId, String facultyName, String photoImg, String workUnit, String duty, Integer alumniId, String alumniName, String signature, Integer schoolId, String schoolName, Date createTime, Date updateTime, Integer yn, String pwd, Date pwdLastResetTime, String photoList) {
+    public CaUser(Integer id, String phone, String name, String namePy, String idCard, Integer sex, String professional, Integer education, String acceptAnceDate, String graduateDate, Date birthday, Integer status, String secondTel, String qq, String wx, String email, String address, Integer classId, String className, Integer collegeId, String collegeName, Integer facultyId, String facultyName, String photoImg, String workUnit, String duty, Integer alumniId, String alumniName, String signature, Integer schoolId, String schoolName, Date createTime, Date updateTime, Integer yn, String pwd, Date pwdLastResetTime, String photoList) {
         this.id = id;
         this.phone = phone;
         this.name = name;
@@ -94,6 +96,7 @@ public class CaUser {
         this.email = email;
         this.address = address;
         this.classId = classId;
+        this.className = className;
         this.collegeId = collegeId;
         this.collegeName = collegeName;
         this.facultyId = facultyId;
@@ -260,6 +263,14 @@ public class CaUser {
 
     public void setClassId(Integer classId) {
         this.classId = classId;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className == null ? null : className.trim();
     }
 
     public Integer getCollegeId() {

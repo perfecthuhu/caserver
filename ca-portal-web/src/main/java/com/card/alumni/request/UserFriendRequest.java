@@ -25,6 +25,9 @@ public class UserFriendRequest implements Serializable {
     @ApiModelProperty(value = "好友ID")
     private Integer friendId;
 
+    @ApiModelProperty(value = "好友姓名拼音首字母")
+    private String friendNamePy;
+
     public UserFriendRequest() {
 
     }

@@ -16,7 +16,7 @@ import java.io.Serializable;
 @ApiModel(value = "用户好友查询请求", description = "用户好友查询请求")
 public class UserFriendQueryRequest implements Serializable {
 
-    @ApiModelProperty(value = "用户ID")
+    @ApiModelProperty(value = "用户ID 查询我的列表时可不填")
     private Integer userId;
 
     @ApiModelProperty(value = "当前页数")

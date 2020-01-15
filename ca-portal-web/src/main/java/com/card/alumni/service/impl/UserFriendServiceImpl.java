@@ -17,6 +17,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,13 @@ public class UserFriendServiceImpl implements UserFriendService {
             return history.getId();
         }
 
+        CaUser user = userLocalService.findById(request.getFriendId());
+        if (Objects.isNull(user)) {
+            throw new CaException("好友不存在");
+        }
+
         CaUserFriend friend = convert(request);
+        friend.setFriendNamePy(user.getNamePy());
 
         Date now = new Date();
         friend.setCreateTime(now);
@@ -89,10 +96,19 @@ public class UserFriendServiceImpl implements UserFriendService {
             return;
         }
 
+        Map<Integer, CaUser> userMap = userLocalService.mapByIdList(friendIdList);
+        if (MapUtils.isEmpty(userMap)) {
+            return;
+        }
+
         Date now = new Date();
         List<CaUserFriend> friendList = Lists.newArrayList();
         for (Integer friendId : friendIds) {
             CaUserFriend friend = new CaUserFriend();
+            CaUser user = userMap.get(friendId);
+            if (Objects.nonNull(user)) {
+                friend.setFriendNamePy(user.getNamePy());
+            }
             friend.setUserId(userId);
             friend.setFriendId(friendId);
             friend.setCreateTime(now);
@@ -115,7 +131,13 @@ public class UserFriendServiceImpl implements UserFriendService {
             throw new CaException("主键ID不能为空");
         }
 
+        CaUser user = userLocalService.findById(request.getFriendId());
+        if (Objects.isNull(user)) {
+            throw new CaException("好友不存在");
+        }
+
         CaUserFriend friend = convert(request);
+        friend.setFriendNamePy(user.getNamePy());
 
         friend.setUpdateTime(new Date());
         friend.setUpdater(RequestUtil.getUserId());
@@ -231,7 +253,7 @@ public class UserFriendServiceImpl implements UserFriendService {
         Integer userId = Objects.isNull(request.getUserId()) ? RequestUtil.getUserId() : request.getUserId();
         int page = Objects.isNull(request.getPage()) ? 1 : request.getPage();
         int size = Objects.isNull(request.getSize()) ? 20 : request.getSize();
-        String orderField = StringUtils.isBlank(request.getOrderField()) ? "name_py" : request.getOrderField();
+        String orderField = StringUtils.isBlank(request.getOrderField()) ? "friend_name_py" : request.getOrderField();
         String orderType = StringUtils.isBlank(request.getOrderType()) ? "asc" : request.getOrderType();
 
         PageHelper.startPage(page, size);
@@ -245,6 +267,28 @@ public class UserFriendServiceImpl implements UserFriendService {
         PageInfo<CaUserFriend> pageInfo = new PageInfo<>(friendList);
 
         return new PageData<>(pageInfo.getTotal(), convert2UserModelList(friendList));
+    }
+
+    @Override
+    public List<SimpleUserModel> listMyFriends() throws CaException {
+
+        CaUserFriendExample example = new CaUserFriendExample();
+        CaUserFriendExample.Criteria criteria = example.createCriteria();
+        criteria.andUserIdEqualTo(RequestUtil.getUserId());
+        criteria.andIsDeleteEqualTo(Boolean.FALSE);
+        example.setOrderByClause("friend_name_py asc");
+        List<CaUserFriend> friendList = caUserFriendMapper.selectByExample(example);
+
+        return convert2UserModelList(friendList);
+    }
+
+    @Override
+    public Integer countMyFriends() throws CaException {
+        CaUserFriendExample example = new CaUserFriendExample();
+        CaUserFriendExample.Criteria criteria = example.createCriteria();
+        criteria.andUserIdEqualTo(RequestUtil.getUserId());
+        criteria.andIsDeleteEqualTo(Boolean.FALSE);
+        return caUserFriendMapper.countByExample(example);
     }
 
     private void checkParam(UserFriendRequest request) throws CaException {

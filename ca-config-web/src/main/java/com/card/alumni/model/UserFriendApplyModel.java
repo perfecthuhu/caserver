@@ -26,7 +26,7 @@ public class UserFriendApplyModel implements Serializable {
     @ApiModelProperty(value = "目标人ID")
     private Integer targetId;
 
-    @ApiModelProperty(value = "状态")
+    @ApiModelProperty(value = "状态 1-处理中 2-已同意 3-已拒绝")
     private Integer status;
 
     @ApiModelProperty(value = "备注")

@@ -25,7 +25,7 @@ public class ArticleRequest implements Serializable {
     @ApiModelProperty(value = "子标题")
     private String subTitle;
 
-    @ApiModelProperty(value = "文章类型", required = true)
+    @ApiModelProperty(value = "文章类型 1:公告 2:新闻", required = true)
     private Integer type;
 
     @ApiModelProperty(value = "文章内容", required = true)

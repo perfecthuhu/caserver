@@ -98,6 +98,7 @@ public class UserLocalServiceImpl implements UserLocalService {
         CaUserExample.Criteria criteria = example.createCriteria();
         criteria.andIdIn(ids);
 
+        example.setOrderByClause("friend_name_py asc");
         return caUserMapper.selectByExample(example);
     }
 

@@ -19,13 +19,13 @@ public class HomeBannerRequest implements Serializable {
     @ApiModelProperty(value = "BannerID")
     private Integer id;
 
-    @ApiModelProperty(value = "主页ID")
+    @ApiModelProperty(value = "主页ID", required = true)
     private Integer homePageId;
 
-    @ApiModelProperty(value = "标题")
+    @ApiModelProperty(value = "标题", required = true)
     private String title;
 
-    @ApiModelProperty(value = "图片地址")
+    @ApiModelProperty(value = "图片地址", required = true)
     private String path;
 
     @ApiModelProperty(value = "排序字段")

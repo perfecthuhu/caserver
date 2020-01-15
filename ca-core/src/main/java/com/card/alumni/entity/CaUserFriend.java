@@ -9,6 +9,8 @@ public class CaUserFriend {
 
     private Integer friendId;
 
+    private String friendNamePy;
+
     private Integer creator;
 
     private Date createTime;
@@ -19,10 +21,11 @@ public class CaUserFriend {
 
     private Boolean isDelete;
 
-    public CaUserFriend(Integer id, Integer userId, Integer friendId, Integer creator, Date createTime, Integer updater, Date updateTime, Boolean isDelete) {
+    public CaUserFriend(Integer id, Integer userId, Integer friendId, String friendNamePy, Integer creator, Date createTime, Integer updater, Date updateTime, Boolean isDelete) {
         this.id = id;
         this.userId = userId;
         this.friendId = friendId;
+        this.friendNamePy = friendNamePy;
         this.creator = creator;
         this.createTime = createTime;
         this.updater = updater;
@@ -56,6 +59,14 @@ public class CaUserFriend {
 
     public void setFriendId(Integer friendId) {
         this.friendId = friendId;
+    }
+
+    public String getFriendNamePy() {
+        return friendNamePy;
+    }
+
+    public void setFriendNamePy(String friendNamePy) {
+        this.friendNamePy = friendNamePy == null ? null : friendNamePy.trim();
     }
 
     public Integer getCreator() {

@@ -19,16 +19,16 @@ public class MenuRequest {
     @ApiModelProperty(value = "菜单ID")
     private Integer id;
 
-    @ApiModelProperty(value = "名称")
+    @ApiModelProperty(value = "名称", required = true)
     private String name;
 
-    @ApiModelProperty(value = "菜单类型 1-目录 2-菜单 3-按钮")
+    @ApiModelProperty(value = "菜单类型 1-目录 2-菜单 3-按钮", required = true)
     private Integer type;
 
     @ApiModelProperty(value = "父ID")
     private Integer pid;
 
-    @ApiModelProperty(value = "权限标识")
+    @ApiModelProperty(value = "权限标识", required = true)
     private String permission;
 
     @ApiModelProperty(value = "icon")
@@ -37,9 +37,9 @@ public class MenuRequest {
     @ApiModelProperty(value = "跳转地址")
     private String path;
 
-    @ApiModelProperty(value = "是否可见 0-不可见 1-可见")
+    @ApiModelProperty(value = "是否可见 0-不可见 1-可见", required = true)
     private Boolean visible;
 
-    @ApiModelProperty(value = "打开方式 menuItem-页签 menuBlank-新窗口")
+    @ApiModelProperty(value = "打开方式 menuItem-页签 menuBlank-新窗口", required = true)
     private String target;
 }

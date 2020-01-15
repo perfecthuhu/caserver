@@ -50,6 +50,9 @@ public class SimpleUserModel implements Serializable {
     @ApiModelProperty(value = "班级ID")
     private Integer classId;
 
+    @ApiModelProperty(value = "班级名称")
+    private String className;
+
     @ApiModelProperty(value = "学院ID")
     private Integer collegeId;
 

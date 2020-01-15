@@ -19,6 +19,6 @@ public class RecommendModel implements Serializable {
     @ApiModelProperty(value = "推荐ID")
     private Integer recommendId;
 
-    @ApiModelProperty(value = "用户信息")
+    @ApiModelProperty(value = "被推荐人的用户信息")
     private SimpleUserModel user;
 }

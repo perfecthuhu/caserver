@@ -20,7 +20,7 @@ public class HomePageRequest implements Serializable {
     @ApiModelProperty(value = "主页ID")
     private Integer id;
 
-    @ApiModelProperty(value = "名称")
+    @ApiModelProperty(value = "名称", required = true)
     private String name;
 
     @ApiModelProperty(value = "开始时间")
