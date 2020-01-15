@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author liumingyu
@@ -83,5 +84,5 @@ public class SimpleUserModel implements Serializable {
     private String schoolName;
 
     @ApiModelProperty(value = "个人风采")
-    private String photoList;
+    private List<String> photoList;
 }

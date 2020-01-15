@@ -34,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -136,6 +137,13 @@ public class UserServiceImpl implements UserService {
         CaUser caUser = new CaUser();
         BeanUtils.copyProperties(userVO, caUser);
         caUser.setNamePy(PinyinUtils.getFirstLetter(userVO.getName()));
+        if (CollectionUtils.isNotEmpty(userVO.getPhotoLists())) {
+            StringBuilder sb = new StringBuilder();
+            for (String photo : userVO.getPhotoLists()) {
+                sb.append(photo).append(",");
+            }
+            caUser.setPhotoList(sb.substring(0, sb.length() - 1));
+        }
         caUser.setYn(1);
         caUser.setUpdateTime(new Date(System.currentTimeMillis()));
         caUser.setCreateTime(new Date(System.currentTimeMillis()));
@@ -190,6 +198,7 @@ public class UserServiceImpl implements UserService {
             UserVO userVO = new UserVO();
             BeanUtils.copyProperties(s, userVO);
             userVO.setPwd(null);
+            userVO.setPhotoLists(convertStringToList(s.getPhotoList()));
             return userVO;
         }).collect(Collectors.toList());
     }
@@ -288,7 +297,7 @@ public class UserServiceImpl implements UserService {
         CaUser user = caUserMapper.selectByPrimaryKey(userId);
         SimpleUserModel userModel = new SimpleUserModel();
         BeanUtils.copyProperties(user, userModel);
-
+        userModel.setPhotoList(convertStringToList(user.getPhotoList()));
         return userModel;
     }
 
@@ -310,6 +319,7 @@ public class UserServiceImpl implements UserService {
         CaUser user = caUserMapper.selectByPrimaryKey(userId);
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(user, userVO);
+        userVO.setPhotoLists(convertStringToList(user.getPhotoList()));
         return userVO;
     }
 
@@ -325,4 +335,7 @@ public class UserServiceImpl implements UserService {
         return flag;
     }
 
+    private List<String> convertStringToList(String str) {
+        return StringUtils.isNotBlank(str) ? Lists.newArrayList(str.split(",")) : new ArrayList<>();
+    }
 }
