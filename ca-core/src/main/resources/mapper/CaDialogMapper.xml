@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.card.alumni.dao.CaDialogMapper" >
+  <resultMap id="BaseResultMap" type="com.card.alumni.entity.CaDialog" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="type" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="from_id" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="target_id" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="latest_message_id" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="object_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="unread_message_count" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="latest_message" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="sent_status" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="sent_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="remark" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, type, from_id, target_id, latest_message_id, object_name, unread_message_count, 
+    latest_message, sent_status, sent_time, remark, create_time, update_time
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.card.alumni.entity.CaDialogExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from ca_dialog
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ca_dialog
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ca_dialog
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.card.alumni.entity.CaDialogExample" >
+    delete from ca_dialog
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.card.alumni.entity.CaDialog" >
+    insert into ca_dialog (id, type, from_id, 
+      target_id, latest_message_id, object_name, 
+      unread_message_count, latest_message, sent_status, 
+      sent_time, remark, create_time, 
+      update_time)
+    values (#{id,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{fromId,jdbcType=VARCHAR}, 
+      #{targetId,jdbcType=VARCHAR}, #{latestMessageId,jdbcType=VARCHAR}, #{objectName,jdbcType=VARCHAR}, 
+      #{unreadMessageCount,jdbcType=INTEGER}, #{latestMessage,jdbcType=VARCHAR}, #{sentStatus,jdbcType=INTEGER}, 
+      #{sentTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.card.alumni.entity.CaDialog" >
+    insert into ca_dialog
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="fromId != null" >
+        from_id,
+      </if>
+      <if test="targetId != null" >
+        target_id,
+      </if>
+      <if test="latestMessageId != null" >
+        latest_message_id,
+      </if>
+      <if test="objectName != null" >
+        object_name,
+      </if>
+      <if test="unreadMessageCount != null" >
+        unread_message_count,
+      </if>
+      <if test="latestMessage != null" >
+        latest_message,
+      </if>
+      <if test="sentStatus != null" >
+        sent_status,
+      </if>
+      <if test="sentTime != null" >
+        sent_time,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="fromId != null" >
+        #{fromId,jdbcType=VARCHAR},
+      </if>
+      <if test="targetId != null" >
+        #{targetId,jdbcType=VARCHAR},
+      </if>
+      <if test="latestMessageId != null" >
+        #{latestMessageId,jdbcType=VARCHAR},
+      </if>
+      <if test="objectName != null" >
+        #{objectName,jdbcType=VARCHAR},
+      </if>
+      <if test="unreadMessageCount != null" >
+        #{unreadMessageCount,jdbcType=INTEGER},
+      </if>
+      <if test="latestMessage != null" >
+        #{latestMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="sentStatus != null" >
+        #{sentStatus,jdbcType=INTEGER},
+      </if>
+      <if test="sentTime != null" >
+        #{sentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.card.alumni.entity.CaDialogExample" resultType="java.lang.Integer" >
+    select count(*) from ca_dialog
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update ca_dialog
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.type != null" >
+        type = #{record.type,jdbcType=INTEGER},
+      </if>
+      <if test="record.fromId != null" >
+        from_id = #{record.fromId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.targetId != null" >
+        target_id = #{record.targetId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.latestMessageId != null" >
+        latest_message_id = #{record.latestMessageId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.objectName != null" >
+        object_name = #{record.objectName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.unreadMessageCount != null" >
+        unread_message_count = #{record.unreadMessageCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.latestMessage != null" >
+        latest_message = #{record.latestMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sentStatus != null" >
+        sent_status = #{record.sentStatus,jdbcType=INTEGER},
+      </if>
+      <if test="record.sentTime != null" >
+        sent_time = #{record.sentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.remark != null" >
+        remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update ca_dialog
+    set id = #{record.id,jdbcType=INTEGER},
+      type = #{record.type,jdbcType=INTEGER},
+      from_id = #{record.fromId,jdbcType=VARCHAR},
+      target_id = #{record.targetId,jdbcType=VARCHAR},
+      latest_message_id = #{record.latestMessageId,jdbcType=VARCHAR},
+      object_name = #{record.objectName,jdbcType=VARCHAR},
+      unread_message_count = #{record.unreadMessageCount,jdbcType=INTEGER},
+      latest_message = #{record.latestMessage,jdbcType=VARCHAR},
+      sent_status = #{record.sentStatus,jdbcType=INTEGER},
+      sent_time = #{record.sentTime,jdbcType=TIMESTAMP},
+      remark = #{record.remark,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.card.alumni.entity.CaDialog" >
+    update ca_dialog
+    <set >
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="fromId != null" >
+        from_id = #{fromId,jdbcType=VARCHAR},
+      </if>
+      <if test="targetId != null" >
+        target_id = #{targetId,jdbcType=VARCHAR},
+      </if>
+      <if test="latestMessageId != null" >
+        latest_message_id = #{latestMessageId,jdbcType=VARCHAR},
+      </if>
+      <if test="objectName != null" >
+        object_name = #{objectName,jdbcType=VARCHAR},
+      </if>
+      <if test="unreadMessageCount != null" >
+        unread_message_count = #{unreadMessageCount,jdbcType=INTEGER},
+      </if>
+      <if test="latestMessage != null" >
+        latest_message = #{latestMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="sentStatus != null" >
+        sent_status = #{sentStatus,jdbcType=INTEGER},
+      </if>
+      <if test="sentTime != null" >
+        sent_time = #{sentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.card.alumni.entity.CaDialog" >
+    update ca_dialog
+    set type = #{type,jdbcType=INTEGER},
+      from_id = #{fromId,jdbcType=VARCHAR},
+      target_id = #{targetId,jdbcType=VARCHAR},
+      latest_message_id = #{latestMessageId,jdbcType=VARCHAR},
+      object_name = #{objectName,jdbcType=VARCHAR},
+      unread_message_count = #{unreadMessageCount,jdbcType=INTEGER},
+      latest_message = #{latestMessage,jdbcType=VARCHAR},
+      sent_status = #{sentStatus,jdbcType=INTEGER},
+      sent_time = #{sentTime,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

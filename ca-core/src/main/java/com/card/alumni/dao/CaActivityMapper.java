@@ -16,9 +16,21 @@ public interface CaActivityMapper {
 
     int insertSelective(CaActivity record);
 
+    List<CaActivity> selectByExampleWithBLOBs(CaActivityExample example);
+
     List<CaActivity> selectByExample(CaActivityExample example);
+
+    CaActivity selectByPrimaryKey(Integer id);
 
     int updateByExampleSelective(@Param("record") CaActivity record, @Param("example") CaActivityExample example);
 
+    int updateByExampleWithBLOBs(@Param("record") CaActivity record, @Param("example") CaActivityExample example);
+
     int updateByExample(@Param("record") CaActivity record, @Param("example") CaActivityExample example);
+
+    int updateByPrimaryKeySelective(CaActivity record);
+
+    int updateByPrimaryKeyWithBLOBs(CaActivity record);
+
+    int updateByPrimaryKey(CaActivity record);
 }
