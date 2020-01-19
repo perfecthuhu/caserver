@@ -24,6 +24,7 @@ import com.card.alumni.vo.query.AlumniQuery;
 import com.card.alumni.vo.query.UserQuery;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -130,7 +131,7 @@ public class AlumniServiceImpl implements AlumniService {
             Map<Integer, UserVO> userVOMap = userVOList.stream().collect(Collectors.toMap(UserVO::getId, Function.identity()));
             caAlumniRoles.stream().filter(Objects::nonNull).forEach(s -> {
                 UserVO userVO = userVOMap.get(s.getStudentId());
-                resultMap.merge(s.getRole(), Arrays.asList(userVO), (o, n) -> {
+                resultMap.merge(s.getRole(), Lists.newArrayList(userVO), (o, n) -> {
                     o.addAll(n);
                     return o;
                 });

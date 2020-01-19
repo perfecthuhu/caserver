@@ -6,6 +6,7 @@ import com.card.alumni.entity.CaArticleExample;
 import com.card.alumni.service.ArticleService;
 import com.card.alumni.vo.ArticleVO;
 import com.card.alumni.vo.query.ArticleQuery;
+import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,7 @@ public class ArticleServiceImpl implements ArticleService {
         List<ArticleVO> articleVOList = caArticles.stream().map(s -> convertArticleVO(s)).collect(Collectors.toList());
         Map<Integer, List<ArticleVO>> resultMap = new HashMap<>();
         articleVOList.stream().forEach(s -> {
-            resultMap.merge(s.getType(), Arrays.asList(s), (o, n) -> {
+            resultMap.merge(s.getType(), Lists.newArrayList(s), (o, n) -> {
                 o.addAll(n);
                 return o;
             });

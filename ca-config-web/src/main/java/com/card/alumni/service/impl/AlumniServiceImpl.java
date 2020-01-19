@@ -20,6 +20,7 @@ import com.card.alumni.service.UserService;
 import com.card.alumni.utils.RequestUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -134,7 +135,7 @@ public class AlumniServiceImpl implements AlumniService {
             Map<Integer, UserModel> userModelMap = userModelList.stream().collect(Collectors.toMap(UserModel::getId, Function.identity()));
             caAlumniRoles.stream().filter(Objects::nonNull).forEach(s -> {
                 UserModel userVO = userModelMap.get(s.getStudentId());
-                resultMap.merge(s.getRole(), Arrays.asList(userVO), (o, n) -> {
+                resultMap.merge(s.getRole(), Lists.newArrayList(userVO), (o, n) -> {
                     o.addAll(n);
                     return o;
                 });
