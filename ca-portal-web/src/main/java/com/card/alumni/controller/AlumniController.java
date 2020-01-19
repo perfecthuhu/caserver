@@ -1,21 +1,21 @@
 package com.card.alumni.controller;
 
 import com.card.alumni.common.PageData;
-import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.service.AlumniService;
 import com.card.alumni.utils.RequestUtil;
 import com.card.alumni.vo.AlumniVO;
-import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.enums.AlumniAuditStatusEnum;
-import com.card.alumni.vo.query.AlumniAppointAdminParam;
 import com.card.alumni.vo.query.AlumniQuery;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -34,6 +34,7 @@ public class AlumniController {
 
     /**
      * 查询协会校友会
+     *
      * @param alumniQuery
      * @return
      */
@@ -45,6 +46,7 @@ public class AlumniController {
 
     /**
      * 查询单个协会
+     *
      * @param id
      * @return
      */
@@ -56,6 +58,7 @@ public class AlumniController {
 
     /**
      * 退出协会
+     *
      * @param id
      * @return
      */
@@ -67,6 +70,7 @@ public class AlumniController {
 
     /**
      * 申请加入协会
+     *
      * @param alumniId
      * @return
      * @throws CaException

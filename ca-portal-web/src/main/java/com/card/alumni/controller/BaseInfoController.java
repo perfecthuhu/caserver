@@ -1,6 +1,5 @@
 package com.card.alumni.controller;
 
-import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.service.BaseInfoService;
@@ -31,6 +30,7 @@ public class BaseInfoController {
 
     /**
      * 查询所有学校信息
+     *
      * @return
      */
     @GetMapping("/school")
@@ -41,6 +41,7 @@ public class BaseInfoController {
 
     /**
      * 查询首页结构信息
+     *
      * @return
      */
     @GetMapping("/home")

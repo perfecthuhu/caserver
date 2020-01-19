@@ -1,13 +1,17 @@
 package com.card.alumni.controller;
 
-import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.service.ArticleService;
 import com.card.alumni.vo.ArticleVO;
 import com.card.alumni.vo.query.ArticleQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -27,6 +31,7 @@ public class ArticleController {
 
     /**
      * 查询首页新闻列表
+     *
      * @return
      */
     @PostMapping("/page")
@@ -37,6 +42,7 @@ public class ArticleController {
 
     /**
      * 查询新闻详情
+     *
      * @param id
      * @return
      */

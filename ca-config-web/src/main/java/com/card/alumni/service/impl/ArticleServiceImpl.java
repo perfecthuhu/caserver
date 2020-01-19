@@ -177,7 +177,7 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         example.setOrderByClause(orderField + CaConstants.BLANK + orderType);
-        List<CaArticle> articleList = caArticleMapper.selectByExample(example);
+        List<CaArticle> articleList = caArticleMapper.selectByExampleWithBLOBs(example);
         PageInfo<CaArticle> pageInfo = new PageInfo<>(articleList);
 
         return new PageData<>(pageInfo.getTotal(), convert2ModelList(articleList));

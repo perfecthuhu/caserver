@@ -45,6 +45,9 @@ public class ActivityServiceImpl implements ActivityService {
 
         CaActivity activity = convert(request);
 
+        activity.setStatus(ActivityStatusEnum.WAITING.getCode());
+        activity.setIsDelete(Boolean.FALSE);
+
         Date now = new Date();
         activity.setCreateTime(now);
         activity.setUpdateTime(now);
@@ -52,9 +55,6 @@ public class ActivityServiceImpl implements ActivityService {
         Integer userId = RequestUtil.getUserId();
         activity.setCreator(userId);
         activity.setUpdater(userId);
-
-        activity.setStatus(ActivityStatusEnum.WAITING.getCode());
-        activity.setIsDelete(Boolean.FALSE);
 
         caActivityMapper.insert(activity);
 
@@ -72,8 +72,8 @@ public class ActivityServiceImpl implements ActivityService {
 
         CaActivity activity = convert(request);
 
-        activity.setUpdateTime(new Date());
         activity.setUpdater(RequestUtil.getUserId());
+        activity.setUpdateTime(new Date());
 
         caActivityMapper.updateByPrimaryKeyWithBLOBs(activity);
     }
@@ -88,13 +88,9 @@ public class ActivityServiceImpl implements ActivityService {
 
         Integer userId = RequestUtil.getUserId();
 
-        if (!userId.equals(caActivity.getCreator())) {
-            throw new CaException("只有创建人才能操作哦~");
-        }
-
+        caActivity.setUpdater(userId);
         caActivity.setIsDelete(Boolean.TRUE);
         caActivity.setUpdateTime(new Date());
-        caActivity.setUpdater(userId);
 
         caActivityMapper.updateByPrimaryKeyWithBLOBs(caActivity);
     }
@@ -107,16 +103,12 @@ public class ActivityServiceImpl implements ActivityService {
         }
 
         Integer userId = RequestUtil.getUserId();
-        if (!activity.getCreator().equals(userId)) {
-            throw new CaException("只有创建人才能操作哦~");
-        }
+        activity.setUpdater(userId);
+        activity.setPublisher(userId);
 
         Date now = new Date();
         activity.setPublishTime(now);
         activity.setUpdateTime(now);
-
-        activity.setUpdater(userId);
-        activity.setPublisher(userId);
 
         activity.setStatus(ActivityStatusEnum.PUBLISHED.getCode());
 
@@ -149,12 +141,9 @@ public class ActivityServiceImpl implements ActivityService {
             throw new CaException("当前活动不存在或已被删除");
         }
 
-        Integer userId = RequestUtil.getUserId();
-        if (!caActivity.getCreator().equals(userId)) {
-            throw new CaException("只有创建人才能操作哦~");
-        }
-
         caActivity.setUpdateTime(new Date());
+
+        Integer userId = RequestUtil.getUserId();
         caActivity.setUpdater(userId);
 
         caActivity.setStatus(ActivityStatusEnum.RETRACTED.getCode());
@@ -199,40 +188,9 @@ public class ActivityServiceImpl implements ActivityService {
         if (Objects.nonNull(request.getFlowStatus())) {
             initFlowStatusCriteria(criteria, request);
         }
-        criteria.andStatusEqualTo(ActivityStatusEnum.PUBLISHED.getCode());
-
-        example.setOrderByClause(orderField + CaConstants.BLANK + orderType);
-        List<CaActivity> activities = caActivityMapper.selectByExampleWithBLOBs(example);
-        PageInfo<CaActivity> pageInfo = new PageInfo<>(activities);
-
-        return new PageData<>(pageInfo.getTotal(), convert2ModelList(activities));
-    }
-
-    @Override
-    public PageData<ActivityModel> pageMyByRequest(ActivityQueryRequest request) throws CaException {
-        if (Objects.isNull(request)) {
-            throw new CaException("查询请求不能为空");
-        }
-
-        int page = Objects.isNull(request.getPage()) || request.getPage() <= 0 ? 1 : request.getPage();
-        int size = Objects.isNull(request.getSize()) || request.getSize() <= 0 ? 20 : request.getSize();
-        String orderField = StringUtils.isBlank(request.getOrderField()) ? "create_time" : request.getOrderField();
-        String orderType = StringUtils.isBlank(request.getOrderType()) ? "desc" : request.getOrderType();
-
-        PageHelper.startPage(page, size);
-        CaActivityExample example = new CaActivityExample();
-        CaActivityExample.Criteria criteria = example.createCriteria();
-        criteria.andIsDeleteEqualTo(Boolean.FALSE);
-        if (StringUtils.isNotBlank(request.getKeyword())) {
-            criteria.andTitleLike(CaConstants.LIKE + request.getKeyword() + CaConstants.LIKE);
-        }
-        if (Objects.nonNull(request.getFlowStatus())) {
-            initFlowStatusCriteria(criteria, request);
-        }
         if (Objects.nonNull(request.getStatus()) || request.getStatus() > 0) {
             criteria.andStatusEqualTo(request.getStatus());
         }
-        criteria.andCreatorEqualTo(RequestUtil.getUserId());
 
         example.setOrderByClause(orderField + CaConstants.BLANK + orderType);
         List<CaActivity> activities = caActivityMapper.selectByExampleWithBLOBs(example);
@@ -281,9 +239,9 @@ public class ActivityServiceImpl implements ActivityService {
         model.setTitle(entity.getTitle());
         model.setSubTitle(entity.getSubTitle());
         model.setContent(entity.getContent());
+        model.setStatus(entity.getStatus());
         model.setStartTime(entity.getStartTime());
         model.setEndTime(entity.getEndTime());
-        model.setStatus(entity.getStatus());
         model.setPublisher(entity.getPublisher());
         model.setPublishTime(entity.getPublishTime());
         model.setCreator(entity.getCreator());
@@ -306,8 +264,8 @@ public class ActivityServiceImpl implements ActivityService {
         CaActivity activity = new CaActivity();
         activity.setId(request.getId());
         activity.setTitle(request.getTitle());
-        activity.setSubTitle(request.getSubTitle());
         activity.setContent(request.getContent());
+        activity.setSubTitle(request.getSubTitle());
         activity.setStartTime(request.getStartTime());
         activity.setEndTime(request.getEndTime());
         return activity;
@@ -317,11 +275,11 @@ public class ActivityServiceImpl implements ActivityService {
         if (Objects.isNull(request)) {
             throw new CaException("活动请求不能为空");
         }
-        if (StringUtils.isBlank(request.getTitle())) {
-            throw new CaException("标题不能为空");
-        }
         if (StringUtils.isBlank(request.getContent())) {
             throw new CaException("内容不能为空");
+        }
+        if (StringUtils.isBlank(request.getTitle())) {
+            throw new CaException("标题不能为空");
         }
         if (Objects.isNull(request.getStartTime())) {
             throw new CaException("开始时间不能为空");
