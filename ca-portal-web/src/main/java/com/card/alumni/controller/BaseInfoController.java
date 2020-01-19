@@ -22,7 +22,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/base/config")
-@Api(value = "新闻模块", tags = "新闻模块")
+@Api(value = "基础信息模块", tags = "基础信息模块")
 public class BaseInfoController {
 
     @Resource

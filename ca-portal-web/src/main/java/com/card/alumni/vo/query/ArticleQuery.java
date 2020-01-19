@@ -14,12 +14,12 @@ import java.util.Date;
 @Getter
 @Setter
 @ApiModel(value = "文章查询", description = "文章查询")
-public class ArticleQuery {
+public class ArticleQuery extends PageParam {
 
     @ApiModelProperty(value = "ID")
     private Integer id;
 
-    @ApiModelProperty(value = "类型")
+    @ApiModelProperty(value = "类型(1:新闻 2:公告)")
     private Integer type;
 
     @ApiModelProperty(value = "发布人")

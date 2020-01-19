@@ -1,12 +1,19 @@
 package com.card.alumni.service.impl;
 
+import com.card.alumni.common.PageData;
 import com.card.alumni.dao.CaArticleMapper;
+import com.card.alumni.entity.CaAlumni;
 import com.card.alumni.entity.CaArticle;
 import com.card.alumni.entity.CaArticleExample;
 import com.card.alumni.service.ArticleService;
+import com.card.alumni.vo.AlumniVO;
 import com.card.alumni.vo.ArticleVO;
+import com.card.alumni.vo.enums.ArticleTypeEnum;
 import com.card.alumni.vo.query.ArticleQuery;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +32,20 @@ public class ArticleServiceImpl implements ArticleService {
     private CaArticleMapper caArticleMapper;
 
     @Override
-    public Map<Integer, List<ArticleVO>> queryArticleService(ArticleQuery articleQuery) throws Exception {
-        CaArticleExample example = buildCaArticleExample(articleQuery);
-        List<CaArticle> caArticles = caArticleMapper.selectByExampleWithBLOBs(example);
-        List<ArticleVO> articleVOList = caArticles.stream().map(s -> convertArticleVO(s)).collect(Collectors.toList());
+    public Map<Integer, List<ArticleVO>> queryArticleService() throws Exception {
+        ArticleQuery articleQuery = new ArticleQuery();
+        articleQuery.setPageSize(3);
+
+        List<ArticleVO> articleVOS = new ArrayList<>();
+
+        Lists.newArrayList(ArticleTypeEnum.values()).stream().forEach(s -> {
+            articleQuery.setType(s.getCode());
+            PageData<ArticleVO> articleVOPageData = queryPage(articleQuery);
+            articleVOS.addAll(articleVOPageData.getItems());
+        });
+
         Map<Integer, List<ArticleVO>> resultMap = new HashMap<>();
-        articleVOList.stream().forEach(s -> {
+        articleVOS.stream().forEach(s -> {
             resultMap.merge(s.getType(), Lists.newArrayList(s), (o, n) -> {
                 o.addAll(n);
                 return o;
@@ -76,6 +91,28 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleVO queryArticleDetail(Integer id) throws Exception {
         CaArticle caArticle = caArticleMapper.selectByPrimaryKey(id);
         return convertArticleVO(caArticle);
+    }
+
+    @Override
+    public PageData<ArticleVO> queryPage(ArticleQuery articleQuery) {
+        CaArticleExample example = buildCaArticleExample(articleQuery);
+
+        PageHelper.startPage(articleQuery.getPage(), articleQuery.getPageSize());
+
+        List<CaArticle> caArticles = caArticleMapper.selectByExampleWithBLOBs(example);
+        PageInfo<CaArticle> pageInfo = new PageInfo<>(caArticles);
+        List<ArticleVO> articleVOS = convert2ArticleVO(caArticles);
+
+        PageData<ArticleVO> articleVOPageData = new PageData<>(pageInfo.getTotal(), articleVOS);
+
+        return articleVOPageData;
+    }
+
+    private List<ArticleVO> convert2ArticleVO(List<CaArticle> caArticles) {
+        if (CollectionUtils.isEmpty(caArticles)) {
+            return new ArrayList<>();
+        }
+        return caArticles.stream().map(this::convertArticleVO).collect(Collectors.toList());
     }
 
     private ArticleVO convertArticleVO(CaArticle caArticle) {

@@ -1,5 +1,6 @@
 package com.card.alumni.service;
 
+import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.vo.ArticleVO;
 import com.card.alumni.vo.query.ArticleQuery;
@@ -17,7 +18,7 @@ public interface ArticleService {
      * 查询首页新闻列表
      * @return
      */
-    Map<Integer, List<ArticleVO>> queryArticleService(ArticleQuery articleQuery) throws Exception;
+    Map<Integer, List<ArticleVO>> queryArticleService() throws Exception;
 
     /**
      * 查询新闻详情
@@ -25,4 +26,11 @@ public interface ArticleService {
      * @return
      */
     ArticleVO queryArticleDetail(Integer id) throws Exception;
+
+    /**
+     * 分页查询新闻
+     * @param articleQuery
+     * @return
+     */
+    PageData<ArticleVO> queryPage(ArticleQuery articleQuery);
 }

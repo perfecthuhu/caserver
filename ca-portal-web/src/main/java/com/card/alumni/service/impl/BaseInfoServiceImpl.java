@@ -93,6 +93,9 @@ public class BaseInfoServiceImpl implements BaseInfoService {
         example.createCriteria().andStartTimeLessThan(date)
                 .andEndTimeGreaterThanOrEqualTo(date).andIsDeleteEqualTo(Boolean.FALSE);
         List<CaHomePage> caHomePages = caHomePageMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(caHomePages)) {
+            throw new CaException("首页未配置");
+        }
         Integer homeId = caHomePages.get(0).getId();
         CaHomeBannerExample exampleBanner = new CaHomeBannerExample();
         exampleBanner.createCriteria().andHomePageIdEqualTo(homeId);
