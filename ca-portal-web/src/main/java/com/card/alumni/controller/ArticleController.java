@@ -37,8 +37,8 @@ public class ArticleController {
      */
     @PostMapping("/page")
     @ApiOperation(value = "查询首页新闻列表", notes = "查询首页新闻列表")
-    public UnifiedResult<Map<Integer, List<ArticleVO>>> queryArticleService(@RequestBody ArticleQuery articleQuery) throws Exception {
-        return UnifiedResult.success(articleService.queryArticleService(articleQuery));
+    public UnifiedResult<Map<Integer, List<ArticleVO>>> queryArticleService() throws Exception {
+        return UnifiedResult.success(articleService.queryArticleService());
     }
 
     @PostMapping("/queryPage")
