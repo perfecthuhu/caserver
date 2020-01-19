@@ -30,6 +30,4 @@ public interface ActivityService {
     ActivityModel findModelById(Integer id) throws CaException;
 
     PageData<ActivityModel> pageByRequest(ActivityQueryRequest request) throws CaException;
-
-    PageData<ActivityModel> pageMyByRequest(ActivityQueryRequest request) throws CaException;
 }

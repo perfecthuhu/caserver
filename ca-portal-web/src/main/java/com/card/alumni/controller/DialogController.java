@@ -32,6 +32,7 @@ public class DialogController {
 
     /**
      * 保存
+     *
      * @param dialogVO
      * @return
      */
@@ -45,6 +46,7 @@ public class DialogController {
 
     /**
      * 分页查询
+     *
      * @param dialogQuery
      * @return
      */
@@ -58,6 +60,7 @@ public class DialogController {
 
     /**
      * 删除
+     *
      * @param dialogQuery
      */
     @PostMapping("/delete")
@@ -71,6 +74,7 @@ public class DialogController {
 
     /**
      * 更新
+     *
      * @param dialogVO
      */
     @PostMapping("/update")
