@@ -75,7 +75,7 @@ public class AlumniController {
      * @return
      * @throws CaException
      */
-    @PostMapping("/apply/{id}")
+    @PostMapping("/apply/{alumniId}")
     @ApiOperation(value = "申请加入协会", notes = "申请加入协会")
     public UnifiedResult<Boolean> applyAlumni(@PathVariable Integer alumniId) throws Exception {
         return UnifiedResult.success(alumniService.applyAlumni(alumniId));

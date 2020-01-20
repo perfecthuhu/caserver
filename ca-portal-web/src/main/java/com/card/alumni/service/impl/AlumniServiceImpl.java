@@ -184,7 +184,7 @@ public class AlumniServiceImpl implements AlumniService {
 
         List<CaAlumniRole> caAlumniRoles = caAlumniRoleMapper.selectByExample(example);
         List<AlumniVO> resultList = new ArrayList<>();
-        if (CollectionUtils.isEmpty(caAlumniRoles)) {
+        if (!CollectionUtils.isEmpty(caAlumniRoles)) {
             List<Integer> alumniIds = caAlumniRoles.stream().map(CaAlumniRole::getAlumniId).collect(Collectors.toList());
             CaAlumniExample alumniExample  = new CaAlumniExample();
             alumniExample.createCriteria().andIdIn(alumniIds);
@@ -225,7 +225,7 @@ public class AlumniServiceImpl implements AlumniService {
     @Override
     public Boolean applyAlumni(Integer alumniId) throws CaException {
         int count = caAlumniAuditLogMapper.insert(buildCaAlumniAuditLog(alumniId));
-        if (count == 1) {
+        if (count != 1) {
             throw new CaException("申请失败");
         }
         return true;
