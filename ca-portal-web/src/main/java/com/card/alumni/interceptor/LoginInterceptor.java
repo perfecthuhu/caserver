@@ -118,9 +118,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         if (path.startsWith("/user/send/code")) {
             return false;
         }
-        if (path.startsWith("/alumni/page")) {
-            return false;
-        }
         return true;
     }
 
