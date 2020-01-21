@@ -5,6 +5,7 @@ import com.card.alumni.security.annotation.IgnoreLogin;
 import com.card.alumni.security.filter.JwtAuthorizationTokenFilter;
 import com.card.alumni.security.service.JwtUserDetailsService;
 import com.card.alumni.security.support.JwtAuthenticationEntryPoint;
+import com.card.alumni.security.support.RestAuthenticationAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -36,23 +37,23 @@ import java.util.Set;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final JwtAuthenticationEntryPoint unauthorizedHandler;
+    @Autowired
+    private JwtAuthenticationEntryPoint unauthorizedHandler;
 
-    private final JwtUserDetailsService jwtUserDetailsService;
+    @Autowired
+    private JwtUserDetailsService jwtUserDetailsService;
 
-    private final ApplicationContext applicationContext;
+    @Autowired
+    private ApplicationContext applicationContext;
 
-    private final JwtAuthorizationTokenFilter authenticationTokenFilter;
+    @Autowired
+    private JwtAuthorizationTokenFilter authenticationTokenFilter;
+
+    @Autowired
+    private RestAuthenticationAccessDeniedHandler restAuthenticationAccessDeniedHandler;
 
     @Value("${jwt.header}")
     private String tokenHeader;
-
-    public SecurityConfig(JwtAuthenticationEntryPoint unauthorizedHandler, JwtUserDetailsService jwtUserDetailsService, JwtAuthorizationTokenFilter authenticationTokenFilter, ApplicationContext applicationContext) {
-        this.unauthorizedHandler = unauthorizedHandler;
-        this.jwtUserDetailsService = jwtUserDetailsService;
-        this.authenticationTokenFilter = authenticationTokenFilter;
-        this.applicationContext = applicationContext;
-    }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -98,6 +99,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 // 授权异常
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+                .exceptionHandling().accessDeniedHandler(restAuthenticationAccessDeniedHandler).and()
                 // 不创建会话
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 // 过滤请求
