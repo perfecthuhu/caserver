@@ -144,6 +144,14 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public List<RoleModel> listModelByIdList(List<Integer> idList) throws CaConfigException {
+
+        List<CaRole> roleList = listByIdList(idList);
+
+        return convert2ModelList(roleList);
+    }
+
+    @Override
     public PageData<RoleModel> pageByRequest(RoleQueryRequest request) throws CaConfigException {
         int page = Objects.isNull(request.getPage()) ? 1 : request.getPage();
         int size = Objects.isNull(request.getSize()) ? 20 : request.getSize();
@@ -165,6 +173,39 @@ public class RoleServiceImpl implements RoleService {
         populateMenuList(roleModelList);
 
         return new PageData<>(pageInfo.getTotal(), roleModelList);
+    }
+
+    @Override
+    public void batchSaveRoleMenuRel(Integer roleId, List<Integer> menuIdList) throws CaConfigException {
+        if (CollectionUtils.isEmpty(menuIdList)) {
+            deleteRoleMenuRelByRoleId(roleId);
+            return;
+        }
+
+        List<Integer> hasExistMenuIds = listMenuIdsByRoleId(roleId);
+
+        List<Integer> menuIds = menuIdList.stream().filter(Objects::nonNull).filter(menuId -> !hasExistMenuIds.contains(menuId)).collect(Collectors.toList());
+
+        Date now = new Date();
+        Integer operatorId = RequestUtil.getUserId();
+        List<CaRoleMenuRelation> relationList = Lists.newLinkedList();
+        for (Integer menuId : menuIds) {
+            CaRoleMenuRelation relation = new CaRoleMenuRelation();
+            relation.setRoleId(roleId);
+            relation.setMenuId(menuId);
+            relation.setCreator(operatorId);
+            relation.setUpdater(operatorId);
+            relation.setCreateTime(now);
+            relation.setUpdateTime(now);
+            relation.setIsDelete(Boolean.FALSE);
+            relationList.add(relation);
+        }
+
+        if (CollectionUtils.isEmpty(relationList)) {
+            return;
+        }
+
+        caRoleMenuRelationMapper.batchInsert(relationList);
     }
 
     @Override

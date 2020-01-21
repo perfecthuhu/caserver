@@ -38,6 +38,8 @@ public interface UserService {
     PageData<UserModel> pageByRequest(UserQueryRequest request) throws CaConfigException;
 
 
+    void batchSaveUserRoleRel(Integer userId, List<Integer> roleIdList) throws CaConfigException;
+
     void deleteUserRoleRelByUserId(Integer userId) throws CaConfigException;
 
     List<CaUserRoleRelation> listUserRoleRelByUserId(Integer userId) throws CaConfigException;

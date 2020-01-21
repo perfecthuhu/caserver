@@ -3,9 +3,11 @@ package com.card.alumni.controller;
 import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaConfigException;
+import com.card.alumni.model.MenuModel;
 import com.card.alumni.model.RoleModel;
 import com.card.alumni.request.RoleQueryRequest;
 import com.card.alumni.request.RoleRequest;
+import com.card.alumni.service.MenuService;
 import com.card.alumni.service.RoleService;
 import com.card.alumni.utils.RequestUtil;
 import io.swagger.annotations.Api;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @author liumingyu
  * @date 2019-12-09 9:55 PM
@@ -37,6 +41,9 @@ public class RoleController {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private MenuService menuService;
 
     @PostMapping
     @ApiOperation(value = "保存角色", notes = "保存角色")
@@ -89,7 +96,7 @@ public class RoleController {
     }
 
     @PostMapping("/page")
-    @ApiOperation(value = "分页查询角色列表", notes = "分页查询角色列表")
+    @ApiOperation(value = "分页查询角色列表(带关联菜单)", notes = "分页查询角色列表")
     public UnifiedResult<PageData<RoleModel>> pageByRequest(@RequestBody RoleQueryRequest request) throws Exception {
 
         LOGGER.info("{} page roles by request. request = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
@@ -97,4 +104,19 @@ public class RoleController {
         return UnifiedResult.success(roleService.pageByRequest(request));
     }
 
+    @PostMapping("/{id}/menus")
+    @ApiOperation(value = "批量保存角色和菜单的关联关系", notes = "批量保存角色和菜单的关联关系")
+    public UnifiedResult batchSaveRoleMenuRel(@PathVariable("id") Integer id, @RequestBody List<Integer> menuIdList) throws Exception {
+        LOGGER.info("{} batch save role menu rel. roleId = {}, menuIdList = {}, operatorId = {}", LOGGER_PREFIX, id, menuIdList, RequestUtil.getUserId().toString());
+        roleService.batchSaveRoleMenuRel(id, menuIdList);
+        return UnifiedResult.success();
+    }
+
+    @GetMapping("/{id}/menus")
+    @ApiOperation(value = "查询角色关联的菜单列表", notes = "查询角色关联的菜单列表")
+    public UnifiedResult<List<MenuModel>> listModelsByRoleId(@PathVariable("id") Integer id) throws Exception {
+        LOGGER.info("{} list menus by roleId. roleId = {}, operatorId = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
+        List<Integer> roleIds = roleService.listMenuIdsByRoleId(id);
+        return UnifiedResult.success(menuService.listRankModelByIdList(roleIds));
+    }
 }
