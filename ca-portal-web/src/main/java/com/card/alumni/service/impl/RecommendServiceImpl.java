@@ -16,6 +16,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -187,6 +188,9 @@ public class RecommendServiceImpl implements RecommendService {
         }
         SimpleUserModel model = new SimpleUserModel();
         BeanUtils.copyProperties(user, model);
+        if (StringUtils.isNotBlank(user.getPhotoList())) {
+            model.setPhotoList(Lists.newArrayList(user.getPhotoList().split(",")));
+        }
         return model;
     }
 

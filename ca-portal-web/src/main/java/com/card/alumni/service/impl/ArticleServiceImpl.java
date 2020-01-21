@@ -58,7 +58,7 @@ public class ArticleServiceImpl implements ArticleService {
         CaArticleExample example = new CaArticleExample();
         CaArticleExample.Criteria criteria = example.createCriteria();
 
-        if (Objects.nonNull(articleQuery)) {
+        if (Objects.isNull(articleQuery)) {
             return example;
         }
 

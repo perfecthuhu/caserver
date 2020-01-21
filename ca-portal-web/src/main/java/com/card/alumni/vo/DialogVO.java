@@ -55,4 +55,10 @@ public class DialogVO implements Serializable {
 
     @ApiModelProperty(value = "更新时间")
     private Date updateTime;
+
+    @ApiModelProperty(value = "发送消息用户")
+    private UserVO fromUser;
+
+    @ApiModelProperty(value = "接受消息用户")
+    private UserVO targetUser;
 }

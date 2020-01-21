@@ -6,20 +6,23 @@ import com.card.alumni.entity.CaDialog;
 import com.card.alumni.entity.CaDialogExample;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.service.DialogService;
+import com.card.alumni.service.UserService;
 import com.card.alumni.vo.DialogVO;
+import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.query.DialogQuery;
+import com.card.alumni.vo.query.UserQuery;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author sunxiaodong10 2020/1/18
@@ -30,6 +33,9 @@ public class DialogServiceImpl implements DialogService {
 
     @Resource
     private CaDialogMapper caDialogMapper;
+
+    @Resource
+    private UserService userService;
 
     @Override
     public Integer save(DialogVO dialogVO) {
@@ -81,10 +87,38 @@ public class DialogServiceImpl implements DialogService {
 
         PageInfo<CaDialog> pageInfo = new PageInfo<>(caDialogs);
         List<DialogVO> dialogVOS = convertDialogVOList(caDialogs);
+        queryDialogUser(dialogVOS);
 
         PageData<DialogVO> dialogVOPageData = new PageData<>(pageInfo.getTotal(), dialogVOS);
 
         return dialogVOPageData;
+    }
+
+    private void queryDialogUser(List<DialogVO> dialogVOS) {
+        if (CollectionUtils.isEmpty(dialogVOS)) {
+            return;
+        }
+        Set<Integer> userIdSet = dialogVOS.stream().map(s -> Integer.parseInt(s.getFromId())).collect(Collectors.toSet());
+        userIdSet.addAll(dialogVOS.stream().map(s -> Integer.parseInt(s.getTargetId())).collect(Collectors.toSet()));
+        UserQuery userQuery = new UserQuery();
+        userQuery.setIdList(Lists.newArrayList(userIdSet));
+        userQuery.setPageSize(dialogVOS.size());
+        PageData<UserVO> userVOPageData = userService.queryUserVO(userQuery);
+
+        List<UserVO> userVOList;
+        if (userVOPageData != null && CollectionUtils.isNotEmpty(userVOList = userVOPageData.getItems())) {
+            Map<Integer, UserVO> userVOMap = userVOList.stream().collect(Collectors.toMap(UserVO::getId, Function.identity()));
+            dialogVOS.stream().forEach(s -> {
+                UserVO fromUser = userVOMap.get(s.getFromId());
+                if (Objects.nonNull(fromUser)) {
+                    s.setFromUser(fromUser);
+                }
+                UserVO targetUser = userVOMap.get(s.getTargetId());
+                if (Objects.nonNull(targetUser)) {
+                    s.setTargetUser(targetUser);
+                }
+            });
+        }
     }
 
     private List<DialogVO> convertDialogVOList(List<CaDialog> caDialogs) {
