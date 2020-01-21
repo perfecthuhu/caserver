@@ -84,12 +84,12 @@ public class AlumniServiceImpl implements AlumniService {
         Map<Integer, CaAlumniAuditLog> caAlumniAuditLogMap = new HashMap<>();
 
         caAlumniAuditLogs.stream().forEach(s -> {
-            CaAlumniAuditLog caAlumniAuditLog = caAlumniAuditLogMap.get(s.getStudentId());
+            CaAlumniAuditLog caAlumniAuditLog = caAlumniAuditLogMap.get(s.getAlumniId());
             if (Objects.isNull(caAlumniAuditLog)) {
-                caAlumniAuditLogMap.put(s.getStudentId(), s);
+                caAlumniAuditLogMap.put(s.getAlumniId(), s);
             } else {
                 if (s.getCreateTime().compareTo(caAlumniAuditLog.getCreateTime()) == 1) {
-                    caAlumniAuditLogMap.put(s.getStudentId(), s);
+                    caAlumniAuditLogMap.put(s.getAlumniId(), s);
                 }
             }
         });
@@ -276,7 +276,7 @@ public class AlumniServiceImpl implements AlumniService {
             criteria.andPartentIdEqualTo(alumniQuery.getPartentId());
         }
         if (Objects.nonNull(alumniQuery.getName())) {
-            criteria.andNameLike(alumniQuery.getName());
+            criteria.andNameLike("%" + alumniQuery.getName() + "%");
         }
         if (Objects.nonNull(alumniQuery.getType())) {
             criteria.andTypeEqualTo(alumniQuery.getType());
