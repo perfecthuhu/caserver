@@ -5,6 +5,7 @@ import com.card.alumni.context.User;
 import com.card.alumni.entity.CaUser;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.model.SimpleUserModel;
+import com.card.alumni.request.FeedbackRequest;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.query.UserQuery;
 
@@ -86,4 +87,10 @@ public interface UserService {
      * @throws CaException e
      */
     UserVO findMyUserInfo() throws CaException;
+
+    /**
+     * 保存用户反馈
+     * @param request
+     */
+    void saveFeedBack(FeedbackRequest request);
 }

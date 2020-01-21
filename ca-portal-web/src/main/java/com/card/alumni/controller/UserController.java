@@ -5,6 +5,7 @@ import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.entity.CaUser;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.model.SimpleUserModel;
+import com.card.alumni.request.FeedbackRequest;
 import com.card.alumni.service.UserService;
 import com.card.alumni.utils.AESUtil;
 import com.card.alumni.utils.CookieUtils;
@@ -17,12 +18,7 @@ import com.card.alumni.vo.query.UserPhoneCodeVO;
 import com.card.alumni.vo.query.UserQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -118,6 +114,13 @@ public class UserController {
     @ApiOperation(value = "登出", notes = "登出")
     public UnifiedResult<Boolean> loginOut() throws CaException {
         userService.loginOut(RequestUtil.getUserId());
+        return UnifiedResult.success(true);
+    }
+
+    @PostMapping("/send/code")
+    @ApiOperation(value = "提交用户反馈", notes = "提交用户反馈")
+    public UnifiedResult<Boolean> saveFeedBack(@RequestBody FeedbackRequest request) {
+        userService.saveFeedBack(request);
         return UnifiedResult.success(true);
     }
 }

@@ -14,6 +14,7 @@ import com.card.alumni.enums.StatusEnum;
 import com.card.alumni.enums.UserTagEnum;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.model.SimpleUserModel;
+import com.card.alumni.request.FeedbackRequest;
 import com.card.alumni.service.UserService;
 import com.card.alumni.utils.EncryptUtils;
 import com.card.alumni.utils.PinyinUtils;
@@ -56,6 +57,7 @@ public class UserServiceImpl implements UserService {
     private CaUserTagMapper caUserTagMapper;
     @Resource
     private UserFeedbackMapper userFeedbackMapper;
+
     @Resource
     private RedisUtils redisUtils;
 
@@ -121,14 +123,7 @@ public class UserServiceImpl implements UserService {
         LOGGER.info("更新用户信息入参:{}", JSON.toJSONString(userVO));
 
         if (StringUtils.isNotBlank(userVO.getOtherDesc())) {
-            UserFeedback userFeedback = new UserFeedback();
-
-            userFeedback.setStatus(1);
-            userFeedback.setUserId(RequestUtil.getUserId());
-            userFeedback.setFeedbackDesc(userVO.getOtherDesc());
-            userFeedback.setCreateTime(new Date(System.currentTimeMillis()));
-            userFeedback.setUpdateTime(new Date(System.currentTimeMillis()));
-
+            UserFeedback userFeedback = buildUserFeedBack(userVO.getOtherDesc());
             userFeedbackMapper.insert(userFeedback);
         }
     }
@@ -323,6 +318,19 @@ public class UserServiceImpl implements UserService {
         return userVO;
     }
 
+    @Override
+    public void saveFeedBack(FeedbackRequest request) {
+        if (Objects.isNull(request)) {
+            throw new CaException("参数为空");
+        }
+        if (StringUtils.isBlank(request.getFeedBackDesc())) {
+            throw new CaException("参数为空");
+        }
+        UserFeedback record = buildUserFeedBack(request.getFeedBackDesc());
+        userFeedbackMapper.insert(record);
+
+    }
+
     private boolean validateVerificatioCode(UserVO userVO, String verificatioCode) {
         boolean flag = false;
         Object validateCodeCache = redisUtils.get("CA_VALIDATE_CODE_KEY_" + userVO.getPhone());
@@ -333,6 +341,18 @@ public class UserServiceImpl implements UserService {
             }
         }
         return flag;
+    }
+
+    private UserFeedback buildUserFeedBack(String desc) {
+        UserFeedback userFeedback = new UserFeedback();
+
+        userFeedback.setStatus(1);
+        userFeedback.setUserId(RequestUtil.getUserId());
+        userFeedback.setFeedbackDesc(desc);
+        userFeedback.setCreateTime(new Date(System.currentTimeMillis()));
+        userFeedback.setUpdateTime(new Date(System.currentTimeMillis()));
+
+        return userFeedback;
     }
 
     private List<String> convertStringToList(String str) {
