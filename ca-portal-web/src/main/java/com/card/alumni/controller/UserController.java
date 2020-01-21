@@ -117,9 +117,9 @@ public class UserController {
         return UnifiedResult.success(true);
     }
 
-    @PostMapping("/send/code")
+    @PostMapping("/feedback")
     @ApiOperation(value = "提交用户反馈", notes = "提交用户反馈")
-    public UnifiedResult<Boolean> saveFeedBack(@RequestBody FeedbackRequest request) {
+    public UnifiedResult<Boolean> saveFeedBack(@RequestBody FeedbackRequest request) throws CaException {
         userService.saveFeedBack(request);
         return UnifiedResult.success(true);
     }

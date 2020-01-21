@@ -319,7 +319,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveFeedBack(FeedbackRequest request) {
+    public void saveFeedBack(FeedbackRequest request) throws CaException {
         if (Objects.isNull(request)) {
             throw new CaException("参数为空");
         }
@@ -327,8 +327,10 @@ public class UserServiceImpl implements UserService {
             throw new CaException("参数为空");
         }
         UserFeedback record = buildUserFeedBack(request.getFeedBackDesc());
-        userFeedbackMapper.insert(record);
-
+        int count = userFeedbackMapper.insert(record);
+        if (count != 1) {
+            throw new CaException("问题反馈填写异常");
+        }
     }
 
     private boolean validateVerificatioCode(UserVO userVO, String verificatioCode) {

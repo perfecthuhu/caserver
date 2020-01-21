@@ -92,5 +92,5 @@ public interface UserService {
      * 保存用户反馈
      * @param request
      */
-    void saveFeedBack(FeedbackRequest request);
+    void saveFeedBack(FeedbackRequest request) throws CaException;
 }

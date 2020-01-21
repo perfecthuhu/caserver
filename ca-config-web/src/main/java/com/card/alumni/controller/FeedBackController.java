@@ -40,7 +40,7 @@ public class FeedBackController {
      * 解决反馈问题（支持批量）
      * @param feedBackRequest
      */
-    @RequestMapping("/queryPage")
+    @RequestMapping("/update")
     @ApiOperation(value = "将反馈问题置为已解决", notes = "将反馈问题置为已解决")
     public UnifiedResult<Boolean> update(FeedBackRequest feedBackRequest) {
         feedBackService.update(feedBackRequest);
