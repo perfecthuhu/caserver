@@ -95,6 +95,15 @@ public class RoleController {
         return UnifiedResult.success(roleService.findModelById(id));
     }
 
+    @GetMapping("/all")
+    @ApiOperation(value = "查询全部角色列表", notes = "查询全部角色列表")
+    public UnifiedResult<List<RoleModel>> listAll() throws Exception {
+
+        LOGGER.info("{} list all roles. operatorId = {}", LOGGER_PREFIX, RequestUtil.getUserId().toString());
+
+        return UnifiedResult.success(roleService.listAll());
+    }
+
     @PostMapping("/page")
     @ApiOperation(value = "分页查询角色列表(带关联菜单)", notes = "分页查询角色列表")
     public UnifiedResult<PageData<RoleModel>> pageByRequest(@RequestBody RoleQueryRequest request) throws Exception {

@@ -31,6 +31,8 @@ public interface RoleService {
 
     List<RoleModel> listModelByIdList(List<Integer> idList) throws CaConfigException;
 
+    List<RoleModel> listAll() throws CaConfigException;
+
     PageData<RoleModel> pageByRequest(RoleQueryRequest request) throws CaConfigException;
 
 

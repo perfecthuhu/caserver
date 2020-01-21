@@ -152,6 +152,15 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public List<RoleModel> listAll() throws CaConfigException {
+        CaRoleExample example = new CaRoleExample();
+
+        List<CaRole> roleList = caRoleMapper.selectByExample(example);
+
+        return convert2ModelList(roleList);
+    }
+
+    @Override
     public PageData<RoleModel> pageByRequest(RoleQueryRequest request) throws CaConfigException {
         int page = Objects.isNull(request.getPage()) ? 1 : request.getPage();
         int size = Objects.isNull(request.getSize()) ? 20 : request.getSize();
