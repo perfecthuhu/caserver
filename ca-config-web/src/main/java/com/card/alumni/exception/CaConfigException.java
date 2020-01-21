@@ -4,7 +4,7 @@ package com.card.alumni.exception;
  * @author liumingyu
  * @date 2019-11-19 10:50 PM
  */
-public class CaConfigException extends Exception {
+public class CaConfigException extends RuntimeException {
     private static final long serialVersionUID = 8333750150545190863L;
 
     private int code = -1;

@@ -20,4 +20,7 @@ public class MenuQueryRequest extends BaseQueryRequest {
 
     @ApiModelProperty(value = "父ID")
     private Integer pid;
+
+    @ApiModelProperty(value = "关键字")
+    private String keyword;
 }

@@ -86,7 +86,6 @@ public class RoleController {
         LOGGER.info("{} find role by id. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
 
         return UnifiedResult.success(roleService.findModelById(id));
-
     }
 
     @PostMapping("/page")

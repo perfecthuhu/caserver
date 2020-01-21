@@ -50,7 +50,7 @@ public class UserFriendApplyController {
         }
     }
 
-    @PutMapping("/agree")
+    @PostMapping("/agree")
     @ApiOperation(value = "同意好友申请", notes = "同意好友申请")
     public UnifiedResult agree(@RequestBody UserFriendApplyRequest request) throws Exception {
 
@@ -65,7 +65,7 @@ public class UserFriendApplyController {
         }
     }
 
-    @PutMapping("/refuse")
+    @PostMapping("/refuse")
     @ApiOperation(value = "拒绝好友申请", notes = "拒绝好友申请")
     public UnifiedResult refuse(@RequestBody UserFriendApplyRequest request) throws Exception {
 

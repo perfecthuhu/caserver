@@ -12,14 +12,17 @@ import com.card.alumni.entity.CaRoleMenuRelationExample;
 import com.card.alumni.entity.CaUserRoleRelation;
 import com.card.alumni.entity.CaUserRoleRelationExample;
 import com.card.alumni.exception.CaConfigException;
+import com.card.alumni.model.MenuModel;
 import com.card.alumni.model.RoleModel;
 import com.card.alumni.request.RoleQueryRequest;
 import com.card.alumni.request.RoleRequest;
+import com.card.alumni.service.MenuService;
 import com.card.alumni.service.RoleService;
 import com.card.alumni.utils.RequestUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -38,6 +42,9 @@ import java.util.stream.Collectors;
 public class RoleServiceImpl implements RoleService {
 
     private static final int ROLE_NAME_MAX_LEN = 50;
+
+    @Autowired
+    private MenuService menuService;
 
     @Autowired
     private CaRoleMapper caRoleMapper;
@@ -154,7 +161,10 @@ public class RoleServiceImpl implements RoleService {
         List<CaRole> roleList = caRoleMapper.selectByExample(example);
         PageInfo<CaRole> pageInfo = new PageInfo<>(roleList);
 
-        return new PageData<>(pageInfo.getTotal(), convert2ModelList(roleList));
+        List<RoleModel> roleModelList = convert2ModelList(roleList);
+        populateMenuList(roleModelList);
+
+        return new PageData<>(pageInfo.getTotal(), roleModelList);
     }
 
     @Override
@@ -214,6 +224,22 @@ public class RoleServiceImpl implements RoleService {
                 .map(CaRoleMenuRelation::getMenuId).collect(Collectors.toList());
     }
 
+    @Override
+    public Map<Integer, List<CaRoleMenuRelation>> mapByRoleIdList(List<Integer> roleIdList) throws CaConfigException {
+        if (CollectionUtils.isEmpty(roleIdList)) {
+            return Maps.newHashMap();
+        }
+
+        CaRoleMenuRelationExample example = new CaRoleMenuRelationExample();
+        CaRoleMenuRelationExample.Criteria criteria = example.createCriteria();
+        criteria.andRoleIdIn(roleIdList);
+        criteria.andIsDeleteEqualTo(Boolean.FALSE);
+
+        List<CaRoleMenuRelation> relationList = caRoleMenuRelationMapper.selectByExample(example);
+
+        return relationList.stream().filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(CaRoleMenuRelation::getRoleId));
+    }
 
     @Override
     public void deleteUserRoleRelByRoleId(Integer roleId) throws CaConfigException {
@@ -258,6 +284,25 @@ public class RoleServiceImpl implements RoleService {
                 .map(CaUserRoleRelation::getUserId).collect(Collectors.toList());
     }
 
+    private void populateMenuList(List<RoleModel> roleModelList) {
+        if (CollectionUtils.isEmpty(roleModelList)) {
+            return;
+        }
+
+        List<Integer> roleIdList = roleModelList.stream().filter(Objects::nonNull)
+                .map(RoleModel::getId).collect(Collectors.toList());
+
+        Map<Integer, List<CaRoleMenuRelation>> relationMap = mapByRoleIdList(roleIdList);
+
+        for (RoleModel role : roleModelList) {
+            List<CaRoleMenuRelation> relationList = relationMap.get(role.getId());
+            List<Integer> menuIdList = relationList.stream().filter(Objects::nonNull).map(CaRoleMenuRelation::getMenuId).collect(Collectors.toList());
+            role.setMenuIdList(menuIdList);
+
+            List<MenuModel> menuModelList = menuService.listRankModelByIdList(menuIdList);
+            role.setMenuList(menuModelList);
+        }
+    }
 
     /**
      * 校验角色名称是否存在

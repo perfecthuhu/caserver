@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author liumingyu
@@ -43,4 +44,10 @@ public class RoleModel implements Serializable {
 
     @ApiModelProperty(value = "更新时间")
     private Date updateTime;
+
+    @ApiModelProperty(value = "菜单Id列表")
+    private List<Integer> menuIdList;
+
+    @ApiModelProperty(value = "菜单列表")
+    private List<MenuModel> menuList;
 }

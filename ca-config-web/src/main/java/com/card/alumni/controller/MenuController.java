@@ -3,6 +3,7 @@ package com.card.alumni.controller;
 import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaConfigException;
 import com.card.alumni.model.MenuModel;
+import com.card.alumni.request.MenuQueryRequest;
 import com.card.alumni.request.MenuRequest;
 import com.card.alumni.security.utils.SecurityUtils;
 import com.card.alumni.service.MenuService;
@@ -121,18 +122,25 @@ public class MenuController {
         return UnifiedResult.success(menuService.listRankModelByParentId(parentId));
     }
 
-    @GetMapping("/all")
+    @PostMapping("/list")
     @PreAuthorize("@ca.check('menu:list')")
     @ApiOperation(value = "查询全部菜单树", notes = "查询全部菜单树")
-    public UnifiedResult<List<MenuModel>> listAll() throws Exception {
-        List<MenuModel> modelList = menuService.listAll();
+    public UnifiedResult<List<MenuModel>> list(@RequestBody MenuQueryRequest request) throws Exception {
+        List<MenuModel> modelList = menuService.listRankModelByRequest(request);
         return UnifiedResult.success(menuService.buildMenuTree(modelList));
     }
 
     @GetMapping("/tree")
-    @PreAuthorize("@ca.check('menu:list','roles:list')")
-    @ApiOperation(value = "查询当前用户能查看的菜单树", notes = "查询当前用户能查看的菜单树")
+    @PreAuthorize("@ca.check('menu:list', 'role:list')")
+    @ApiOperation(value = "角色页查询全部菜单树", notes = "查询全部菜单树")
     public UnifiedResult<List<MenuModel>> tree() throws Exception {
+        List<MenuModel> modelList = menuService.listAll();
+        return UnifiedResult.success(menuService.buildMenuTree(modelList));
+    }
+
+    @GetMapping("/build")
+    @ApiOperation(value = "查询当前用户能查看的菜单树", notes = "查询当前用户能查看的菜单树")
+    public UnifiedResult<List<MenuModel>> build() throws Exception {
         List<Integer> roleIdList = userService.listRoleIdsByUserId(SecurityUtils.getUserId());
         List<Integer> menuIdList = roleService.listMenuIdsByRoleIdList(roleIdList);
         List<MenuModel> modelList = menuService.listRankModelByIdList(menuIdList);

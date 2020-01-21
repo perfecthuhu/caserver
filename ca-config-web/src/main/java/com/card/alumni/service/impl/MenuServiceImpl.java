@@ -264,10 +264,14 @@ public class MenuServiceImpl implements MenuService {
         }
         CaMenuExample example = new CaMenuExample();
         CaMenuExample.Criteria criteria = example.createCriteria();
-        Integer pid = Objects.isNull(request.getPid()) ? 0 : request.getPid();
-        criteria.andPidEqualTo(pid);
         if (Objects.nonNull(request.getType())) {
             criteria.andTypeEqualTo(request.getType());
+        }
+        if (Objects.nonNull(request.getPid())) {
+            criteria.andPidEqualTo(request.getPid());
+        }
+        if (StringUtils.isNotBlank(request.getKeyword())) {
+            criteria.andNameLike(CaConstants.LIKE + request.getKeyword() + CaConstants.LIKE);
         }
         criteria.andIsDeleteEqualTo(Boolean.FALSE);
 
