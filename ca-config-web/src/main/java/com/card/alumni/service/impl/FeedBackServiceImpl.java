@@ -55,6 +55,19 @@ public class FeedBackServiceImpl implements FeedBackService {
 
     }
 
+    @Override
+    public UserFeedback findById(Integer id) {
+        return userFeedbackMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public FeedBackModel findModeById(Integer id) {
+
+        UserFeedback feedback = new UserFeedback();
+
+        return convert2FeedBackModel(feedback);
+    }
+
     private List<FeedBackModel> convert2ModelList(PageInfo<UserFeedback> pageInfo) {
         if (Objects.isNull(pageInfo)) {
             return new ArrayList<>();

@@ -346,6 +346,9 @@ public class RoleServiceImpl implements RoleService {
 
         for (RoleModel role : roleModelList) {
             List<CaRoleMenuRelation> relationList = relationMap.get(role.getId());
+            if (CollectionUtils.isEmpty(relationList)) {
+                continue;
+            }
             List<Integer> menuIdList = relationList.stream().filter(Objects::nonNull).map(CaRoleMenuRelation::getMenuId).collect(Collectors.toList());
             role.setMenuIdList(menuIdList);
 

@@ -22,14 +22,19 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
+@SuppressWarnings({"unchecked", "all"})
 public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
 
 
     @Value("${jwt.online}")
     private String onlineKey;
+
+    @Value("${jwt.expiration}")
+    private Long expiration;
 
     private final UserDetailsService userDetailsService;
     private final JwtTokenUtil jwtTokenUtil;
@@ -63,6 +68,11 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
 
                 UserContext.setCurrentUser(convert(userDetails));
             }
+        }
+
+        if (onlineUser != null && SecurityContextHolder.getContext().getAuthentication() != null) {
+            // 重新设置token超时时间
+            redisTemplate.expire(onlineKey + authToken, expiration, TimeUnit.MILLISECONDS);
         }
         chain.doFilter(request, response);
     }
