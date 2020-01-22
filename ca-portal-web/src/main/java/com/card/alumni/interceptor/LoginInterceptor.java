@@ -59,7 +59,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 return false;
             }
             if (user.getYn() == 0) {
-                if (!path.startsWith("/user/submit")) {
+                if (path.startsWith("/alumni/page")) {
+                    userContext.setLoginStatus(SystemLoginStatusEnum.NOT_PASS);
+                } else if (!path.startsWith("/user/submit")) {
                     userContext.setLoginStatus(SystemLoginStatusEnum.NOT_PASS);
                     redirect2AddPersonalInformation(request, response);
                     return false;
