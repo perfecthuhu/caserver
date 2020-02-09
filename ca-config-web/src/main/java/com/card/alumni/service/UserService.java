@@ -23,6 +23,8 @@ public interface UserService {
 
     void updatePwd(Integer id, String password) throws CaConfigException;
 
+    void review(Integer id, Integer yn) throws CaConfigException;
+
     void deleteById(Integer id) throws CaConfigException;
 
     CaUser findById(Integer id) throws CaConfigException;

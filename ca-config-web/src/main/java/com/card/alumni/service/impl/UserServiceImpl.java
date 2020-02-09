@@ -114,6 +114,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void review(Integer id, Integer yn) throws CaConfigException {
+        CaUser user = findById(id);
+        if (Objects.isNull(user)) {
+            throw new CaConfigException("用户不存在");
+        }
+
+        yn = Objects.isNull(yn) ? 1 : yn;
+        user.setYn(yn);
+        user.setUpdateTime(new Date());
+        caUserMapper.updateByPrimaryKeySelective(user);
+    }
+
+    @Override
     public void deleteById(Integer id) throws CaConfigException {
         CaUser user = findById(id);
         if (Objects.isNull(user)) {

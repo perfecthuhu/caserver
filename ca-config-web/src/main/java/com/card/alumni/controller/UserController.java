@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -77,6 +78,19 @@ public class UserController {
             userService.update(request);
         } catch (CaConfigException e) {
             LOGGER.error("{} update user error. request = {}", LOGGER_PREFIX, request, e);
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
+        }
+        return UnifiedResult.success();
+    }
+
+    @PutMapping("/review/{id}")
+    @ApiOperation(value = "审核用户", notes = "审核用户")
+    public UnifiedResult review(@PathVariable("id") Integer id, @RequestParam Integer yn) throws Exception {
+        LOGGER.info("{} review user. id = {} ,yn = {}, operator = {}", LOGGER_PREFIX, id, yn, RequestUtil.getUserId().toString());
+        try {
+            userService.review(id, yn);
+        } catch (CaConfigException e) {
+            LOGGER.error("{} update user error. id = {}, yn = {}", LOGGER_PREFIX, id, yn, e);
             return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
         return UnifiedResult.success();
