@@ -106,7 +106,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.card.alumni.entity.CaActivityUserRelation" >
+  <insert id="insert" parameterType="com.card.alumni.entity.CaActivityUserRelation" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_activity_user_relation (id, activity_id, user_id, 
       status, creator, create_time, 
       updater, update_time, is_delete
@@ -116,7 +116,7 @@
       #{updater,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=BIT}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.card.alumni.entity.CaActivityUserRelation" >
+  <insert id="insertSelective" parameterType="com.card.alumni.entity.CaActivityUserRelation" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_activity_user_relation
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

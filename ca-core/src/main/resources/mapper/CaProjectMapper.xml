@@ -149,7 +149,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.card.alumni.entity.CaProject" >
+  <insert id="insert" parameterType="com.card.alumni.entity.CaProject" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_project (id, title, sub_title, 
       type, is_publish, publisher, 
       publish_time, creator, create_time, 
@@ -161,7 +161,7 @@
       #{updater,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=BIT}, 
       #{content,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.card.alumni.entity.CaProject" >
+  <insert id="insertSelective" parameterType="com.card.alumni.entity.CaProject" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_project
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
