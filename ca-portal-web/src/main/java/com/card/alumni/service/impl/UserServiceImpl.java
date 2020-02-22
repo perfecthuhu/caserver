@@ -6,10 +6,11 @@ import com.card.alumni.context.User;
 import com.card.alumni.dao.CaUserMapper;
 import com.card.alumni.dao.CaUserTagMapper;
 import com.card.alumni.dao.UserFeedbackMapper;
-import com.card.alumni.entity.*;
 import com.card.alumni.entity.CaUser;
 import com.card.alumni.entity.CaUserExample;
 import com.card.alumni.entity.CaUserTag;
+import com.card.alumni.entity.CaUserTagExample;
+import com.card.alumni.entity.UserFeedback;
 import com.card.alumni.enums.StatusEnum;
 import com.card.alumni.enums.UserTagEnum;
 import com.card.alumni.exception.CaException;
@@ -77,7 +78,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User queryUserById(Integer userId){
+    public User queryUserById(Integer userId) {
         LOGGER.info("UserServiceImpl.queryUserById param : {}", userId);
         User user = null;
         try {
@@ -139,6 +140,9 @@ public class UserServiceImpl implements UserService {
             }
             caUser.setPhotoList(sb.substring(0, sb.length() - 1));
         }
+        if (userVO.getIdCard().contains("*")) {
+            caUser.setIdCard(null);
+        }
         caUser.setYn(1);
         caUser.setUpdateTime(new Date(System.currentTimeMillis()));
         caUser.setCreateTime(new Date(System.currentTimeMillis()));
@@ -192,6 +196,7 @@ public class UserServiceImpl implements UserService {
         return caUsers.stream().filter(Objects::nonNull).map(s -> {
             UserVO userVO = new UserVO();
             BeanUtils.copyProperties(s, userVO);
+            userVO.setIdCard(StringUtils.isNoneBlank(s.getIdCard()) ? s.getIdCard().substring(0, 3) + "***************" : s.getIdCard());
             userVO.setPwd(null);
             userVO.setPhotoLists(convertStringToList(s.getPhotoList()));
             return userVO;
@@ -275,6 +280,7 @@ public class UserServiceImpl implements UserService {
         }
         CaUser user = caUser.get(0);
         user.setPwd(null);
+        user.setIdCard(StringUtils.isNoneBlank(user.getIdCard()) ? user.getIdCard().substring(0, 3) + "***************" : user.getIdCard());
         return user;
     }
 
@@ -325,6 +331,7 @@ public class UserServiceImpl implements UserService {
         CaUser user = caUserMapper.selectByPrimaryKey(userId);
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(user, userVO);
+        userVO.setIdCard(StringUtils.isNoneBlank(user.getIdCard()) ? user.getIdCard().substring(0, 3) + "***************" : user.getIdCard());
         userVO.setPhotoLists(convertStringToList(user.getPhotoList()));
 
         CaUserTagExample example = new CaUserTagExample();

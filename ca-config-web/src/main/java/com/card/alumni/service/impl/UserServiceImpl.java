@@ -114,6 +114,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void review(Integer id, Integer yn) throws CaConfigException {
+        CaUser user = findById(id);
+        if (Objects.isNull(user)) {
+            throw new CaConfigException("用户不存在");
+        }
+
+        yn = Objects.isNull(yn) ? 1 : yn;
+        user.setYn(yn);
+        user.setUpdateTime(new Date());
+        caUserMapper.updateByPrimaryKeySelective(user);
+    }
+
+    @Override
     public void deleteById(Integer id) throws CaConfigException {
         CaUser user = findById(id);
         if (Objects.isNull(user)) {
@@ -218,6 +231,39 @@ public class UserServiceImpl implements UserService {
         PageInfo<CaUser> pageInfo = new PageInfo<>(userList);
 
         return new PageData<>(pageInfo.getTotal(), convert2ModelList(userList));
+    }
+
+    @Override
+    public void batchSaveUserRoleRel(Integer userId, List<Integer> roleIdList) throws CaConfigException {
+        if (CollectionUtils.isEmpty(roleIdList)) {
+            deleteUserRoleRelByUserId(userId);
+            return;
+        }
+
+        List<Integer> hasExistRoleIdList = listRoleIdsByUserId(userId);
+
+        List<Integer> roleIds = roleIdList.stream().filter(Objects::nonNull).filter(roleId -> !hasExistRoleIdList.contains(roleId)).collect(Collectors.toList());
+
+        Date now = new Date();
+        Integer operatorId = RequestUtil.getUserId();
+        List<CaUserRoleRelation> relationList = Lists.newLinkedList();
+        for (Integer roleId : roleIds) {
+            CaUserRoleRelation relation = new CaUserRoleRelation();
+            relation.setRoleId(roleId);
+            relation.setUserId(userId);
+            relation.setCreateTime(now);
+            relation.setUpdateTime(now);
+            relation.setCreator(operatorId);
+            relation.setUpdater(operatorId);
+            relation.setIsDelete(Boolean.FALSE);
+            relationList.add(relation);
+        }
+
+        if (CollectionUtils.isEmpty(relationList)) {
+            return;
+        }
+
+        caUserRoleRelationMapper.batchInsert(relationList);
     }
 
 

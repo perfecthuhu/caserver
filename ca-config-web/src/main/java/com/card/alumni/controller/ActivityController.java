@@ -82,11 +82,11 @@ public class ActivityController {
     @ApiOperation(value = "撤回活动", notes = "撤回活动")
     public UnifiedResult<Integer> retract(@PathVariable("id") Integer id) throws Exception {
 
-        LOGGER.info("{} publish activity. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
+        LOGGER.info("{} retract activity. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
         try {
             activityService.retract(id);
         } catch (CaException e) {
-            LOGGER.error("{} publish activity error. id = {}", LOGGER_PREFIX, id, e);
+            LOGGER.error("{} retract activity error. id = {}", LOGGER_PREFIX, id, e);
             return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
         return UnifiedResult.success();

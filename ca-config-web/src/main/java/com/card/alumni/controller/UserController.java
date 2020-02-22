@@ -3,6 +3,7 @@ package com.card.alumni.controller;
 import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaConfigException;
+import com.card.alumni.model.RoleModel;
 import com.card.alumni.model.SimpleUserModel;
 import com.card.alumni.model.UserFriendApplyModel;
 import com.card.alumni.model.UserModel;
@@ -10,6 +11,7 @@ import com.card.alumni.request.UserFriendApplyQueryRequest;
 import com.card.alumni.request.UserFriendQueryRequest;
 import com.card.alumni.request.UserQueryRequest;
 import com.card.alumni.request.UserRequest;
+import com.card.alumni.service.RoleService;
 import com.card.alumni.service.UserFriendApplyService;
 import com.card.alumni.service.UserFriendService;
 import com.card.alumni.service.UserService;
@@ -26,7 +28,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author liumingyu
@@ -40,6 +45,9 @@ public class UserController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     private static final String LOGGER_PREFIX = "【用户模块】";
+
+    @Autowired
+    private RoleService roleService;
 
     @Autowired
     private UserService userService;
@@ -75,6 +83,19 @@ public class UserController {
         return UnifiedResult.success();
     }
 
+    @PutMapping("/review/{id}")
+    @ApiOperation(value = "审核用户", notes = "审核用户")
+    public UnifiedResult review(@PathVariable("id") Integer id, @RequestParam Integer yn) throws Exception {
+        LOGGER.info("{} review user. id = {} ,yn = {}, operator = {}", LOGGER_PREFIX, id, yn, RequestUtil.getUserId().toString());
+        try {
+            userService.review(id, yn);
+        } catch (CaConfigException e) {
+            LOGGER.error("{} update user error. id = {}, yn = {}", LOGGER_PREFIX, id, yn, e);
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
+        }
+        return UnifiedResult.success();
+    }
+
     @DeleteMapping("/{id}")
     @ApiOperation(value = "根据ID删除用户", notes = "根据ID删除用户")
     public UnifiedResult deleteById(@PathVariable("id") Integer id) throws Exception {
@@ -90,7 +111,6 @@ public class UserController {
         LOGGER.info("{} find user by id. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
 
         return UnifiedResult.success(userService.findModelById(id));
-
     }
 
     @PostMapping("/page")
@@ -100,6 +120,22 @@ public class UserController {
         LOGGER.info("{} page users by request. request = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
 
         return UnifiedResult.success(userService.pageByRequest(request));
+    }
+
+    @PostMapping("/{id}/roles")
+    @ApiOperation(value = "批量保存用户和角色的关联关系", notes = "批量保存用户和角色的关联关系")
+    public UnifiedResult batchSaveUserRoleRel(@PathVariable("id") Integer id, @RequestBody List<Integer> roleIdList) throws Exception {
+        LOGGER.info("{} batch save user role rel. userId = {}, roleIdList = {}, operatorId = {}", LOGGER_PREFIX, id, roleIdList, RequestUtil.getUserId().toString());
+        userService.batchSaveUserRoleRel(id, roleIdList);
+        return UnifiedResult.success();
+    }
+
+    @GetMapping("/{id}/roles")
+    @ApiOperation(value = "查询用户关联的角色列表", notes = "查询用户关联的角色列表")
+    public UnifiedResult<List<RoleModel>> listRolesByUserId(@PathVariable("id") Integer id) throws Exception {
+        LOGGER.info("{} list roles by userId. userId = {}, operatorId = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
+        List<Integer> roleIds = userService.listRoleIdsByUserId(id);
+        return UnifiedResult.success(roleService.listModelByIdList(roleIds));
     }
 
     @DeleteMapping("/{userId}/friend/{friendId}")

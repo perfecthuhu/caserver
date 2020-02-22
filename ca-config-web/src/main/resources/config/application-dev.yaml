@@ -84,8 +84,8 @@ pagehelper:
 jwt:
   header: Authorization
   secret: mySecret
-  # token 过期时间/毫秒，6小时  1小时 = 3600000 毫秒
-  expiration: 21600000
+  # token 过期时间/毫秒，6小时 = 21600000  1小时 = 3600000 7天 = 604800000
+  expiration: 604800000
   # 在线用户key
   online: config-web-online-token
   # 验证码

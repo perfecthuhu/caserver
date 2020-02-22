@@ -4,10 +4,12 @@ import com.card.alumni.common.UnifiedResult;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 /**
@@ -29,6 +31,12 @@ public class GlobalExceptionHandler {
         LOGGER.error("CaException -> code = {}, message = {}", ex.getCode(), ex.getMessage());
 
         return UnifiedResult.failure(ex.getCode(), ex.getMessage());
+    }
+
+    @ExceptionHandler(value = AccessDeniedException.class)
+    public HttpServletResponse handleAuthException(HttpServletRequest req, HttpServletResponse response, Exception e) {
+        LOGGER.error("AccessDeniedException -> ", e);
+        return response;
     }
 
     @ExceptionHandler(value = Exception.class)

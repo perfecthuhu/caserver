@@ -3,6 +3,7 @@ package com.card.alumni.service.impl;
 import com.card.alumni.common.PageData;
 import com.card.alumni.constant.CaConstants;
 import com.card.alumni.dao.CaActivityMapper;
+import com.card.alumni.dao.CaActivityUserRelationMapper;
 import com.card.alumni.entity.CaActivity;
 import com.card.alumni.entity.CaActivityExample;
 import com.card.alumni.enums.ActivityFlowStatusEnum;
@@ -37,6 +38,9 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Autowired
     private CaActivityMapper caActivityMapper;
+
+    @Autowired
+    private CaActivityUserRelationMapper caActivityUserRelationMapper;
 
     @Override
     public Integer save(ActivityRequest request) throws CaException {

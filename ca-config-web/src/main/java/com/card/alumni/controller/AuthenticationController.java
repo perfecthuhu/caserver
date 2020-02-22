@@ -106,7 +106,6 @@ public class AuthenticationController {
     }
 
     @ApiOperation("退出登录")
-    @IgnoreLogin
     @DeleteMapping(value = "/logout")
     public UnifiedResult logout(HttpServletRequest request) throws Exception {
         onlineUserService.logout(jwtTokenUtil.getToken(request));

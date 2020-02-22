@@ -3,6 +3,7 @@ package com.card.alumni.controller;
 import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaConfigException;
+import com.card.alumni.exception.CaException;
 import com.card.alumni.model.ArticleModel;
 import com.card.alumni.request.ArticleQueryRequest;
 import com.card.alumni.request.ArticleRequest;
@@ -79,6 +80,34 @@ public class ArticleController {
             LOGGER.error("{} delete article by id error. id = {}", LOGGER_PREFIX, id, e);
             return UnifiedResult.failure(e.getCode(), e.getMessage());
         }
+    }
+
+    @PutMapping("/publish/{id}")
+    @ApiOperation(value = "发布文章", notes = "发布文章")
+    public UnifiedResult publish(@PathVariable("id") Integer id) throws Exception {
+
+        LOGGER.info("{} publish article. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
+        try {
+            articleService.publish(id);
+        } catch (CaConfigException e) {
+            LOGGER.error("{} publish article error. id = {}", LOGGER_PREFIX, id, e);
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
+        }
+        return UnifiedResult.success();
+    }
+
+    @PutMapping("/retract/{id}")
+    @ApiOperation(value = "撤回文章", notes = "撤回文章")
+    public UnifiedResult<Integer> retract(@PathVariable("id") Integer id) throws Exception {
+
+        LOGGER.info("{} retract article. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
+        try {
+            articleService.unPublish(id);
+        } catch (CaConfigException e) {
+            LOGGER.error("{} retract article error. id = {}", LOGGER_PREFIX, id, e);
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
+        }
+        return UnifiedResult.success();
     }
 
     @GetMapping("/{id}")
