@@ -234,6 +234,9 @@ public class UserServiceImpl implements UserService {
         if (CollectionUtils.isNotEmpty(userQuery.getIdList())) {
             criteria.andIdCardIn(userQuery.getIdList().stream().map(s -> s.toString()).collect(Collectors.toList()));
         }
+
+        criteria.andNameIsNotNull();
+
         return example;
     }
 
@@ -293,6 +296,14 @@ public class UserServiceImpl implements UserService {
         SimpleUserModel userModel = new SimpleUserModel();
         BeanUtils.copyProperties(user, userModel);
         userModel.setPhotoList(convertStringToList(user.getPhotoList()));
+
+        CaUserTagExample example = new CaUserTagExample();
+        example.createCriteria().andUserIdEqualTo(userId);
+        List<CaUserTag> caUserTags = caUserTagMapper.selectByExample(example);
+        if (CollectionUtils.isNotEmpty(caUserTags)) {
+            userModel.setUserTagList(convert2UserTag(caUserTags.get(0)));
+        }
+
         return userModel;
     }
 
@@ -315,7 +326,31 @@ public class UserServiceImpl implements UserService {
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(user, userVO);
         userVO.setPhotoLists(convertStringToList(user.getPhotoList()));
+
+        CaUserTagExample example = new CaUserTagExample();
+        example.createCriteria().andUserIdEqualTo(userId);
+        List<CaUserTag> caUserTags = caUserTagMapper.selectByExample(example);
+        if (CollectionUtils.isNotEmpty(caUserTags)) {
+            userVO.setUserTagId(convert2UserTag(caUserTags.get(0)));
+        }
         return userVO;
+    }
+
+    private List<Integer> convert2UserTag(CaUserTag caUserTag) {
+        List<Integer> userTagList = new ArrayList<>();
+        if (Objects.nonNull(caUserTag.getFood()) && caUserTag.getFood() == 1) {
+            userTagList.add(UserTagEnum.FOOD.getCode());
+        }
+        if (Objects.nonNull(caUserTag.getGirlFriend()) && caUserTag.getGirlFriend() == 1) {
+            userTagList.add(UserTagEnum.GIRL_FRIEND.getCode());
+        }
+        if (Objects.nonNull(caUserTag.getJob()) && caUserTag.getJob() == 1) {
+            userTagList.add(UserTagEnum.JOB.getCode());
+        }
+        if (Objects.nonNull(caUserTag.getResource()) && caUserTag.getResource() == 1) {
+            userTagList.add(UserTagEnum.RESOURCE.getCode());
+        }
+        return userTagList;
     }
 
     @Override

@@ -9,7 +9,9 @@ import com.card.alumni.model.UserModel;
 import com.card.alumni.model.enums.AlumniAuditStatusEnum;
 import com.card.alumni.request.AlumniAppointAdminRequest;
 import com.card.alumni.request.AlumniRequest;
+import com.card.alumni.request.common.BaseQueryRequest;
 import com.card.alumni.service.AlumniService;
+import com.github.pagehelper.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -108,5 +110,11 @@ public class AlumniController {
     @ApiOperation(value = "更新协会信息", notes = "更新协会信息")
     public UnifiedResult<Boolean> updateAlimni(@RequestBody AlumniModel alumniModel) throws CaException {
         return UnifiedResult.success(alumniService.updateAlimni(alumniModel));
+    }
+
+    @PostMapping("/query/audit/all")
+    @ApiOperation(value = "查询全部协会信息", notes = "查询全部协会信息")
+    public UnifiedResult<PageData<UserModel>> queryAllAlumniAudit(@RequestBody AlumniRequest alumniRequest) {
+        return UnifiedResult.success(alumniService.queryAllAlumniAudit(alumniRequest));
     }
 }

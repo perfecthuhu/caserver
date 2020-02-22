@@ -7,6 +7,7 @@ import com.card.alumni.model.AlumniModel;
 import com.card.alumni.model.UserModel;
 import com.card.alumni.model.enums.AlumniAuditStatusEnum;
 import com.card.alumni.request.AlumniRequest;
+import com.card.alumni.request.common.BaseQueryRequest;
 
 import java.util.List;
 
@@ -69,4 +70,11 @@ public interface AlumniService {
      * @throws CaException
      */
     Boolean updateAlimni(AlumniModel alumniModel) throws CaException;
+
+    /**
+     * 查询所有记录
+     * @param queryRequest
+     * @return
+     */
+    PageData<UserModel> queryAllAlumniAudit(AlumniRequest queryRequest);
 }

@@ -176,7 +176,7 @@ public class AlumniServiceImpl implements AlumniService {
 
     @Override
     public Boolean auidtAlumniRecord(Integer alumniId, AlumniAuditStatusEnum status) throws CaException {
-        validateUserLimit(RequestUtil.getUserId(), alumniId);
+        //validateUserLimit(RequestUtil.getUserId(), alumniId);
 
         CaAlumniAuditLog caAlumniAuditLog = caAlumniAuditLogMapper.selectByPrimaryKey(alumniId);
 
@@ -238,7 +238,7 @@ public class AlumniServiceImpl implements AlumniService {
 
     @Override
     public Boolean appointAdmin(Integer alumniId, Integer userId) throws CaException {
-        validateAppointAdmin(RequestUtil.getUserId(), alumniId);
+        //validateAppointAdmin(RequestUtil.getUserId(), alumniId);
         CaAlumniRole role = new CaAlumniRole();
         role.setRole(AlumniRoleEnum.ADMIN.getCode());
         CaAlumniRoleExample example = new CaAlumniRoleExample();
@@ -297,13 +297,39 @@ public class AlumniServiceImpl implements AlumniService {
     @Override
     public Boolean updateAlimni(AlumniModel alumniModel) throws CaException {
         LOGGER.info("更想协会信息 param:{}", JSON.toJSONString(alumniModel));
-        validateUserLimit(RequestUtil.getUserId(), alumniModel.getId());
+        //validateUserLimit(RequestUtil.getUserId(), alumniModel.getId());
         CaAlumni alumni = convertAlumniVO(alumniModel);
         int count = caAlumniMapper.updateByPrimaryKeySelective(alumni);
         if (count != 1) {
             throw new CaException("协会信息保存失败");
         }
         return true;
+    }
+
+    @Override
+    public PageData<UserModel> queryAllAlumniAudit(AlumniRequest queryRequest) {
+        LOGGER.info("查询所有协会审核信息 param:{}", JSON.toJSONString(queryRequest));
+        CaAlumniAuditLogExample example = new CaAlumniAuditLogExample();
+
+        example.createCriteria()
+                .andAuditStatusEqualTo(queryRequest.getAuditStatus());
+
+        PageHelper.startPage(queryRequest.getPage(), queryRequest.getSize());
+        List<CaAlumniAuditLog> caAlumniAuditLogs = caAlumniAuditLogMapper.selectByExample(example);
+        PageInfo<CaAlumniAuditLog> pageInfo = new PageInfo<>(caAlumniAuditLogs);
+
+        if (!CollectionUtils.isEmpty(caAlumniAuditLogs)) {
+            return null;
+        }
+
+        List<Integer> userIdList = caAlumniAuditLogs.stream().map(CaAlumniAuditLog::getStudentId).collect(Collectors.toList());
+        List<UserModel> userVOList = queryByIdList(userIdList);
+
+        PageData<UserModel> userModelPageData = new PageData<>(pageInfo.getTotal(), userVOList);
+
+        LOGGER.info("查询所有协会审核信息 result:{}", userModelPageData);
+
+        return userModelPageData;
     }
 
     private CaAlumni convertAlumniVO(AlumniModel alumniVO) {

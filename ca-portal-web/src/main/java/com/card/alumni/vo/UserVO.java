@@ -116,7 +116,7 @@ public class UserVO implements Serializable {
     @ApiModelProperty(value = "个人风采")
     private List<String> photoLists;
 
-    @ApiModelProperty(value = "用户标签ID")
+    @ApiModelProperty(value = "用户标签ID, 1:找对象,2:找资源,3:吃喝玩乐,4:找工作")
     private List<Integer> userTagId;
 
     @ApiModelProperty(value = "反馈")
