@@ -113,7 +113,7 @@ public class AlumniController {
     }
 
     @PostMapping("/query/audit/all")
-    @ApiOperation(value = "查询全部协会信息", notes = "查询全部协会信息")
+    @ApiOperation(value = "查询全部协会待审核信息", notes = "查询全部协会待审核信息")
     public UnifiedResult<PageData<UserModel>> queryAllAlumniAudit(@RequestBody AlumniRequest alumniRequest) {
         return UnifiedResult.success(alumniService.queryAllAlumniAudit(alumniRequest));
     }

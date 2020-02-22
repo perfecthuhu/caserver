@@ -29,7 +29,7 @@ public class AlumniRequest extends BaseQueryRequest implements Serializable {
     @ApiModelProperty(value = "组织类型（1：学校组织， 2：校友会，3：协会）")
     private Integer type;
 
-    @ApiModelProperty(value = "审核状态，1：待审核，2：已驳回，3：已通过，4：已退出")
+    @ApiModelProperty(value = "审核状态，1：待审核，2：已驳回，3：已通过，4：已退出 /query/audit/all 这个接口使用")
     private Integer auditStatus;
 
 }
