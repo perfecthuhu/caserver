@@ -190,6 +190,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserModel> listModelByIdList(List<Integer> idList) throws CaConfigException {
+        List<CaUser> userList = listByIdList(idList);
+        if (CollectionUtils.isEmpty(userList)) {
+            return Lists.newArrayList();
+        }
+
+        return convert2ModelList(userList);
+    }
+
+    @Override
     public Map<Integer, CaUser> mapByIdList(List<Integer> idList) throws CaConfigException {
 
         List<CaUser> userList = listByIdList(idList);

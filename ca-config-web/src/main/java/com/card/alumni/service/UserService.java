@@ -35,6 +35,8 @@ public interface UserService {
 
     List<CaUser> listByIdList(List<Integer> idList) throws CaConfigException;
 
+    List<UserModel> listModelByIdList(List<Integer> idList) throws CaConfigException;
+
     Map<Integer, CaUser> mapByIdList(List<Integer> idList) throws CaConfigException;
 
     PageData<UserModel> pageByRequest(UserQueryRequest request) throws CaConfigException;

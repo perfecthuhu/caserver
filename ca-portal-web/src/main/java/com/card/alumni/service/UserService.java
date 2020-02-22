@@ -9,6 +9,8 @@ import com.card.alumni.request.FeedbackRequest;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.query.UserQuery;
 
+import java.util.List;
+
 /**
  * @author sunxiaodong10 2019/12/7
  * @date 3:22 PM
@@ -73,6 +75,14 @@ public interface UserService {
      * @throws CaException e
      */
     SimpleUserModel findUserById(Integer userId) throws CaException;
+
+    /**
+     * 根据用户ID列表查询用户列表
+     *
+     * @param userIdList 用户ID列表
+     * @return 用户列表
+     */
+    List<SimpleUserModel> listSimpleUserModelByIdList(List<Integer> userIdList);
 
     /**
      * 用户退出
