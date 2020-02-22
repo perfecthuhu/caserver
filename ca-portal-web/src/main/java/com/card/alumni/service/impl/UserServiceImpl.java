@@ -196,7 +196,7 @@ public class UserServiceImpl implements UserService {
         return caUsers.stream().filter(Objects::nonNull).map(s -> {
             UserVO userVO = new UserVO();
             BeanUtils.copyProperties(s, userVO);
-            userVO.setIdCard(s.getIdCard().substring(0, 3) + "***************");
+            userVO.setIdCard(StringUtils.isNoneBlank(s.getIdCard()) ? s.getIdCard().substring(0, 3) + "***************" : s.getIdCard());
             userVO.setPwd(null);
             userVO.setPhotoLists(convertStringToList(s.getPhotoList()));
             return userVO;
@@ -277,7 +277,7 @@ public class UserServiceImpl implements UserService {
         }
         CaUser user = caUser.get(0);
         user.setPwd(null);
-        user.setIdCard(user.getIdCard().substring(0, 3) + "***************");
+        user.setIdCard(StringUtils.isNoneBlank(user.getIdCard()) ? user.getIdCard().substring(0, 3) + "***************" : user.getIdCard());
         return user;
     }
 
@@ -320,7 +320,7 @@ public class UserServiceImpl implements UserService {
         CaUser user = caUserMapper.selectByPrimaryKey(userId);
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(user, userVO);
-        userVO.setIdCard(user.getIdCard().substring(0, 3) + "***************");
+        userVO.setIdCard(StringUtils.isNoneBlank(user.getIdCard()) ? user.getIdCard().substring(0, 3) + "***************" : user.getIdCard());
         userVO.setPhotoLists(convertStringToList(user.getPhotoList()));
         return userVO;
     }
