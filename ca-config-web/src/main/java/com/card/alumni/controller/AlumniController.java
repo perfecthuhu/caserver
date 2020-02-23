@@ -4,6 +4,7 @@ import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaConfigException;
 import com.card.alumni.exception.CaException;
+import com.card.alumni.model.AlumniAuditModel;
 import com.card.alumni.model.AlumniModel;
 import com.card.alumni.model.UserModel;
 import com.card.alumni.model.enums.AlumniAuditStatusEnum;
@@ -114,7 +115,7 @@ public class AlumniController {
 
     @PostMapping("/query/audit/all")
     @ApiOperation(value = "查询全部协会待审核信息", notes = "查询全部协会待审核信息")
-    public UnifiedResult<PageData<UserModel>> queryAllAlumniAudit(@RequestBody AlumniRequest alumniRequest) {
+    public UnifiedResult<PageData<AlumniAuditModel>> queryAllAlumniAudit(@RequestBody AlumniRequest alumniRequest) {
         return UnifiedResult.success(alumniService.queryAllAlumniAudit(alumniRequest));
     }
 
