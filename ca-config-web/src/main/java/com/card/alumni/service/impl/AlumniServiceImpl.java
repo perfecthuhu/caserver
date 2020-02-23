@@ -8,6 +8,7 @@ import com.card.alumni.dao.CaAlumniRoleMapper;
 import com.card.alumni.entity.*;
 import com.card.alumni.exception.CaConfigException;
 import com.card.alumni.exception.CaException;
+import com.card.alumni.model.AlumniAuditModel;
 import com.card.alumni.model.AlumniModel;
 import com.card.alumni.model.UserModel;
 import com.card.alumni.model.enums.AlumniAuditStatusEnum;
@@ -31,6 +32,7 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -308,7 +310,7 @@ public class AlumniServiceImpl implements AlumniService {
     }
 
     @Override
-    public PageData<UserModel> queryAllAlumniAudit(AlumniRequest queryRequest) {
+    public PageData<AlumniAuditModel> queryAllAlumniAudit(AlumniRequest queryRequest) {
         LOGGER.info("查询所有协会审核信息 param:{}", JSON.toJSONString(queryRequest));
         CaAlumniAuditLogExample example = new CaAlumniAuditLogExample();
 
@@ -326,11 +328,35 @@ public class AlumniServiceImpl implements AlumniService {
         List<Integer> userIdList = caAlumniAuditLogs.stream().map(CaAlumniAuditLog::getStudentId).collect(Collectors.toList());
         List<UserModel> userVOList = queryByIdList(userIdList);
 
-        PageData<UserModel> userModelPageData = new PageData<>(pageInfo.getTotal(), userVOList);
+        Set<Integer> alumniIdList = caAlumniAuditLogs.stream().map(CaAlumniAuditLog::getAlumniId).collect(Collectors.toSet());
+        List<AlumniModel> alumniModelList = queryAlumniByIdList(alumniIdList);
+        if (alumniModelList == null) {
+            throw new CaConfigException("查询协会失败");
+        }
+        Map<Integer, AlumniModel> alumniModelMap = alumniModelList.stream().collect(Collectors.toMap(AlumniModel::getId, Function.identity()));
+
+        List<AlumniAuditModel> resultList = userVOList.stream().map(s -> {
+            AlumniAuditModel alumniAuditModel = new AlumniAuditModel();
+            alumniAuditModel.setAlumniModel(alumniModelMap.get(s.getAlumniId()));
+            alumniAuditModel.setUserModel(s);
+            return alumniAuditModel;
+        }).collect(Collectors.toList());
+
+        PageData<AlumniAuditModel> userModelPageData = new PageData<>(pageInfo.getTotal(), resultList);
 
         LOGGER.info("查询所有协会审核信息 result:{}", userModelPageData);
 
         return userModelPageData;
+    }
+
+    private List<AlumniModel> queryAlumniByIdList(Set<Integer> alumniIdList) {
+        CaAlumniExample example = new CaAlumniExample();
+        example.createCriteria().andIdIn(Lists.newArrayList(alumniIdList));
+        List<CaAlumni> caAlumni = caAlumniMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(caAlumni)) {
+            return null;
+        }
+        return convertAlumniVOList(caAlumni);
     }
 
     @Override

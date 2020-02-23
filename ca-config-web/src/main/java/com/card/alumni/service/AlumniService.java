@@ -3,6 +3,7 @@ package com.card.alumni.service;
 import com.card.alumni.common.PageData;
 import com.card.alumni.exception.CaConfigException;
 import com.card.alumni.exception.CaException;
+import com.card.alumni.model.AlumniAuditModel;
 import com.card.alumni.model.AlumniModel;
 import com.card.alumni.model.UserModel;
 import com.card.alumni.model.enums.AlumniAuditStatusEnum;
@@ -76,7 +77,7 @@ public interface AlumniService {
      * @param queryRequest
      * @return
      */
-    PageData<UserModel> queryAllAlumniAudit(AlumniRequest queryRequest);
+    PageData<AlumniAuditModel> queryAllAlumniAudit(AlumniRequest queryRequest);
 
     /**
      * 删除协会
