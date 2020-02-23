@@ -117,4 +117,10 @@ public class AlumniController {
     public UnifiedResult<PageData<UserModel>> queryAllAlumniAudit(@RequestBody AlumniRequest alumniRequest) {
         return UnifiedResult.success(alumniService.queryAllAlumniAudit(alumniRequest));
     }
+
+    @PostMapping("/delete/{alumniId}")
+    @ApiOperation(value = "删除协会", notes = "删除协会")
+    public UnifiedResult<Boolean> deleteAlumni(@PathVariable Integer alumniId) {
+        return UnifiedResult.success(alumniService.deleteAlumni(alumniId));
+    }
 }

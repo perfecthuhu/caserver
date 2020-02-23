@@ -77,4 +77,11 @@ public interface AlumniService {
      * @return
      */
     PageData<UserModel> queryAllAlumniAudit(AlumniRequest queryRequest);
+
+    /**
+     * 删除协会
+     * @param alumniId
+     * @return
+     */
+    Boolean deleteAlumni(Integer alumniId);
 }

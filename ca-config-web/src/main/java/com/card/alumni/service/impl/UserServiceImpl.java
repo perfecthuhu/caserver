@@ -29,6 +29,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+    @Resource
     private CaUserMapper caUserMapper;
 
     @Autowired
@@ -54,7 +55,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserFriendService userFriendService;
 
-    @Autowired
+    @Resource
     private CaUserRoleRelationMapper caUserRoleRelationMapper;
 
     @Override
@@ -209,6 +210,16 @@ public class UserServiceImpl implements UserService {
         String orderType = StringUtils.isBlank(request.getOrderType()) ? "desc" : request.getOrderType();
 
         PageHelper.startPage(page, size);
+
+        CaUserExample example = buildCaUserExample(request);
+        example.setOrderByClause(orderField + CaConstants.BLANK + orderType);
+        List<CaUser> userList = caUserMapper.selectByExample(example);
+        PageInfo<CaUser> pageInfo = new PageInfo<>(userList);
+
+        return new PageData<>(pageInfo.getTotal(), convert2ModelList(userList));
+    }
+
+    private CaUserExample buildCaUserExample(UserQueryRequest request) {
         CaUserExample example = new CaUserExample();
         CaUserExample.Criteria criteria = example.createCriteria();
         if (Objects.nonNull(request.getId())) {
@@ -226,11 +237,31 @@ public class UserServiceImpl implements UserService {
         if (Objects.nonNull(request.getYn())) {
             criteria.andYnEqualTo(request.getYn());
         }
-        example.setOrderByClause(orderField + CaConstants.BLANK + orderType);
-        List<CaUser> userList = caUserMapper.selectByExample(example);
-        PageInfo<CaUser> pageInfo = new PageInfo<>(userList);
+        if (Objects.nonNull(request.getSex())) {
+            criteria.andSexEqualTo(request.getSex());
+        }
+        if (Objects.nonNull(request.getClassId())) {
+            criteria.andIdEqualTo(request.getClassId());
+        }
+        if (Objects.nonNull(request.getCollegeId())) {
+            criteria.andCollegeIdEqualTo(request.getCollegeId());
+        }
+        if (Objects.nonNull(request.getFacultyId())) {
+            criteria.andFacultyIdEqualTo(request.getFacultyId());
+        }
+        if (Objects.nonNull(request.getAlumniId())) {
+            criteria.andAlumniIdEqualTo(request.getAlumniId());
+        }
+        if (Objects.nonNull(request.getSchoolId())) {
+            criteria.andSchoolIdEqualTo(request.getSchoolId());
+        }
 
-        return new PageData<>(pageInfo.getTotal(), convert2ModelList(userList));
+        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(request.getUserIdList())) {
+            criteria.andIdCardIn(request.getUserIdList().stream().map(s -> s.toString()).collect(Collectors.toList()));
+        }
+
+        criteria.andNameIsNotNull();
+        return example;
     }
 
     @Override

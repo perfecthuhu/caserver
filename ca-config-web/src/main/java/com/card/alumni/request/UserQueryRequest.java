@@ -33,6 +33,28 @@ public class UserQueryRequest extends BaseQueryRequest implements Serializable {
     @ApiModelProperty(value = "是否可用 1:可用 2:不可用")
     private Integer yn;
 
+    @ApiModelProperty(value = "用户ID集合")
     private List<Integer> userIdList;
+
+    @ApiModelProperty(value = "用户名")
+    private String name;
+
+    @ApiModelProperty(value = "性别")
+    private Integer sex;
+
+    @ApiModelProperty(value = "班级ID")
+    private Integer classId;
+
+    @ApiModelProperty(value = "学院ID")
+    private Integer collegeId;
+
+    @ApiModelProperty(value = "院系ID")
+    private Integer facultyId;
+
+    @ApiModelProperty(value = "隶属校友会ID")
+    private Integer alumniId;
+
+    @ApiModelProperty(value = "学校ID")
+    private Integer schoolId;
 
 }

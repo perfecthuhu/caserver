@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -330,6 +331,22 @@ public class AlumniServiceImpl implements AlumniService {
         LOGGER.info("查询所有协会审核信息 result:{}", userModelPageData);
 
         return userModelPageData;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean deleteAlumni(Integer alumniId) {
+        caAlumniMapper.deleteByPrimaryKey(alumniId);
+
+        CaAlumniRoleExample example = new CaAlumniRoleExample();
+        example.createCriteria().andAlumniIdEqualTo(alumniId);
+        caAlumniRoleMapper.deleteByExample(example);
+
+        CaAlumniAuditLogExample example1 = new CaAlumniAuditLogExample();
+        example1.createCriteria().andAlumniIdEqualTo(alumniId);
+        caAlumniAuditLogMapper.deleteByExample(example1);
+
+        return true;
     }
 
     private CaAlumni convertAlumniVO(AlumniModel alumniVO) {
