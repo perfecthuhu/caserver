@@ -3,15 +3,21 @@ package com.card.alumni.service.impl;
 import com.card.alumni.common.PageData;
 import com.card.alumni.constant.CaConstants;
 import com.card.alumni.dao.CaActivityMapper;
+import com.card.alumni.dao.CaActivityUserRelationMapper;
 import com.card.alumni.entity.CaActivity;
 import com.card.alumni.entity.CaActivityExample;
+import com.card.alumni.entity.CaActivityUserRelation;
+import com.card.alumni.entity.CaActivityUserRelationExample;
 import com.card.alumni.enums.ActivityFlowStatusEnum;
 import com.card.alumni.enums.ActivityStatusEnum;
+import com.card.alumni.enums.ActivityUserStatusEnum;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.model.ActivityModel;
+import com.card.alumni.model.UserModel;
 import com.card.alumni.request.ActivityQueryRequest;
 import com.card.alumni.request.ActivityRequest;
 import com.card.alumni.service.ActivityService;
+import com.card.alumni.service.UserService;
 import com.card.alumni.utils.RequestUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -23,7 +29,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -36,7 +44,13 @@ import java.util.stream.Collectors;
 public class ActivityServiceImpl implements ActivityService {
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private CaActivityMapper caActivityMapper;
+
+    @Autowired
+    private CaActivityUserRelationMapper caActivityUserRelationMapper;
 
     @Override
     public Integer save(ActivityRequest request) throws CaException {
@@ -291,4 +305,120 @@ public class ActivityServiceImpl implements ActivityService {
             throw new CaException("非法的活动时间");
         }
     }
+
+    @Override
+    public Integer saveActivityUserRelation(CaActivityUserRelation relation) {
+        if (Objects.isNull(relation.getActivityId())) {
+            throw new CaException("活动ID不能为空");
+        }
+        if (Objects.isNull(relation.getUserId())) {
+            throw new CaException("用户ID不能为空");
+        }
+
+        Date now = new Date();
+        relation.setCreateTime(now);
+        relation.setUpdateTime(now);
+
+        Integer userId = RequestUtil.getUserId();
+        relation.setUpdater(userId);
+        relation.setCreator(userId);
+
+        relation.setStatus(ActivityUserStatusEnum.JOINED.getCode());
+        relation.setIsDelete(Boolean.FALSE);
+
+        caActivityUserRelationMapper.insert(relation);
+        return relation.getId();
+    }
+
+    @Override
+    public void joinActivity(Integer id, Integer userId) {
+
+        CaActivity activity = findById(id);
+        if (Objects.isNull(activity)) {
+            throw new CaException("活动不存在");
+        }
+
+        CaActivityUserRelation relation = findByActivityIdAndUserId(id, userId);
+        if (Objects.nonNull(relation)) {
+            throw new CaException("已经加入了~");
+        }
+
+        relation = new CaActivityUserRelation();
+        relation.setUserId(userId);
+        relation.setActivityId(id);
+
+        saveActivityUserRelation(relation);
+    }
+
+    @Override
+    public void exitActivity(Integer id, Integer userId) {
+        CaActivityUserRelation relation = findByActivityIdAndUserId(id, userId);
+        if (Objects.isNull(relation)) {
+            return;
+        }
+
+        relation.setStatus(ActivityUserStatusEnum.EXITED.getCode());
+        relation.setUpdater(userId);
+        relation.setUpdateTime(new Date());
+
+        caActivityUserRelationMapper.updateByPrimaryKeySelective(relation);
+    }
+
+    @Override
+    public CaActivityUserRelation findByActivityIdAndUserId(Integer id, Integer userId) {
+        CaActivityUserRelationExample example = new CaActivityUserRelationExample();
+        CaActivityUserRelationExample.Criteria criteria = example.createCriteria();
+        criteria.andUserIdEqualTo(userId);
+        criteria.andActivityIdEqualTo(id);
+        criteria.andIsDeleteEqualTo(Boolean.FALSE);
+        List<CaActivityUserRelation> relationList = caActivityUserRelationMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(relationList)) {
+            return null;
+        }
+        return relationList.get(0);
+    }
+
+    @Override
+    public List<Integer> listUserIdByActivityId(Integer id) {
+        if (Objects.isNull(id)) {
+            throw new CaException("活动ID不能为空");
+        }
+        CaActivityUserRelationExample example = new CaActivityUserRelationExample();
+        CaActivityUserRelationExample.Criteria criteria = example.createCriteria();
+        criteria.andActivityIdEqualTo(id);
+        criteria.andIsDeleteEqualTo(Boolean.FALSE);
+        criteria.andStatusEqualTo(ActivityUserStatusEnum.JOINED.getCode());
+        example.setOrderByClause("create_time desc");
+        List<CaActivityUserRelation> relationList = caActivityUserRelationMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(relationList)) {
+            return Lists.newArrayList();
+        }
+
+        return relationList.stream().filter(Objects::nonNull)
+                .map(CaActivityUserRelation::getUserId).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserModel> listUserByActivityId(Integer id) {
+        List<Integer> userIdList = listUserIdByActivityId(id);
+        if (CollectionUtils.isEmpty(userIdList)) {
+            return Lists.newArrayList();
+        }
+
+        List<UserModel> userModelList = userService.listModelByIdList(userIdList);
+        Map<Integer, UserModel> userModelMap = userModelList.stream().filter(Objects::nonNull)
+                .collect(Collectors.toMap(UserModel::getId, Function.identity(), (k1, k2) -> k2));
+
+        List<UserModel> returnList = Lists.newLinkedList();
+        for (Integer userId : userIdList) {
+            UserModel userModel = userModelMap.get(userId);
+            if (Objects.isNull(userModel)) {
+                continue;
+            }
+            returnList.add(userModel);
+        }
+
+        return returnList;
+    }
+
 }

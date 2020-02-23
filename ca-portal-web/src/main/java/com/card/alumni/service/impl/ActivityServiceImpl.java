@@ -6,13 +6,19 @@ import com.card.alumni.dao.CaActivityMapper;
 import com.card.alumni.dao.CaActivityUserRelationMapper;
 import com.card.alumni.entity.CaActivity;
 import com.card.alumni.entity.CaActivityExample;
+import com.card.alumni.entity.CaActivityUserRelation;
+import com.card.alumni.entity.CaActivityUserRelationExample;
 import com.card.alumni.enums.ActivityFlowStatusEnum;
 import com.card.alumni.enums.ActivityStatusEnum;
+import com.card.alumni.enums.ActivityUserStatusEnum;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.model.ActivityModel;
+import com.card.alumni.model.SimpleUserModel;
 import com.card.alumni.request.ActivityQueryRequest;
 import com.card.alumni.request.ActivityRequest;
+import com.card.alumni.request.ActivityUserQueryRequest;
 import com.card.alumni.service.ActivityService;
+import com.card.alumni.service.UserService;
 import com.card.alumni.utils.RequestUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -24,7 +30,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -35,6 +43,9 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ActivityServiceImpl implements ActivityService {
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private CaActivityMapper caActivityMapper;
@@ -183,6 +194,27 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    public List<CaActivity> listByIdList(List<Integer> idList) throws CaException {
+        if (CollectionUtils.isEmpty(idList)) {
+            return Lists.newArrayList();
+        }
+        CaActivityExample example = new CaActivityExample();
+        CaActivityExample.Criteria criteria = example.createCriteria();
+        criteria.andIdIn(idList);
+        return caActivityMapper.selectByExample(example);
+    }
+
+    @Override
+    public List<ActivityModel> listModelByIdList(List<Integer> idList) throws CaException {
+        List<CaActivity> activityList = listByIdList(idList);
+        if (CollectionUtils.isEmpty(activityList)) {
+            return Lists.newArrayList();
+        }
+
+        return convert2ModelList(activityList);
+    }
+
+    @Override
     public PageData<ActivityModel> pageByRequest(ActivityQueryRequest request) throws CaException {
         if (Objects.isNull(request)) {
             throw new CaException("查询请求不能为空");
@@ -243,6 +275,167 @@ public class ActivityServiceImpl implements ActivityService {
         PageInfo<CaActivity> pageInfo = new PageInfo<>(activities);
 
         return new PageData<>(pageInfo.getTotal(), convert2ModelList(activities));
+    }
+
+
+    @Override
+    public Integer saveActivityUserRelation(CaActivityUserRelation relation) {
+        if (Objects.isNull(relation.getActivityId())) {
+            throw new CaException("活动ID不能为空");
+        }
+        if (Objects.isNull(relation.getUserId())) {
+            throw new CaException("用户ID不能为空");
+        }
+
+        Date now = new Date();
+        relation.setCreateTime(now);
+        relation.setUpdateTime(now);
+
+        Integer userId = RequestUtil.getUserId();
+        relation.setCreator(userId);
+        relation.setUpdater(userId);
+
+        relation.setStatus(ActivityUserStatusEnum.JOINED.getCode());
+        relation.setIsDelete(Boolean.FALSE);
+
+        caActivityUserRelationMapper.insert(relation);
+        return relation.getId();
+    }
+
+    @Override
+    public void joinActivity(Integer id) {
+
+        CaActivity activity = findById(id);
+        if (Objects.isNull(activity)) {
+            throw new CaException("活动不存在");
+        }
+
+        Integer userId = RequestUtil.getUserId();
+        CaActivityUserRelation relation = findByActivityIdAndUserId(id, userId);
+        if (Objects.nonNull(relation)) {
+            throw new CaException("已经加入了~");
+        }
+
+        relation = new CaActivityUserRelation();
+        relation.setUserId(userId);
+        relation.setActivityId(id);
+
+        saveActivityUserRelation(relation);
+    }
+
+    @Override
+    public void exitActivity(Integer id) {
+        Integer userId = RequestUtil.getUserId();
+        CaActivityUserRelation relation = findByActivityIdAndUserId(id, userId);
+        if (Objects.isNull(relation)) {
+            return;
+        }
+
+        relation.setStatus(ActivityUserStatusEnum.EXITED.getCode());
+        relation.setUpdater(userId);
+        relation.setUpdateTime(new Date());
+
+        caActivityUserRelationMapper.updateByPrimaryKeySelective(relation);
+    }
+
+    @Override
+    public CaActivityUserRelation findByActivityIdAndUserId(Integer id, Integer userId) {
+        CaActivityUserRelationExample example = new CaActivityUserRelationExample();
+        CaActivityUserRelationExample.Criteria criteria = example.createCriteria();
+        criteria.andActivityIdEqualTo(id);
+        criteria.andUserIdEqualTo(userId);
+        criteria.andIsDeleteEqualTo(Boolean.FALSE);
+        List<CaActivityUserRelation> relationList = caActivityUserRelationMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(relationList)) {
+            return null;
+        }
+        return relationList.get(0);
+    }
+
+    @Override
+    public List<Integer> listUserIdByActivityId(Integer id) {
+        if (Objects.isNull(id)) {
+            throw new CaException("活动ID不能为空");
+        }
+        CaActivityUserRelationExample example = new CaActivityUserRelationExample();
+        CaActivityUserRelationExample.Criteria criteria = example.createCriteria();
+        criteria.andActivityIdEqualTo(id);
+        criteria.andStatusEqualTo(ActivityUserStatusEnum.JOINED.getCode());
+        criteria.andIsDeleteEqualTo(Boolean.FALSE);
+        example.setOrderByClause("create_time desc");
+        List<CaActivityUserRelation> relationList = caActivityUserRelationMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(relationList)) {
+            return Lists.newArrayList();
+        }
+
+        return relationList.stream().filter(Objects::nonNull)
+                .map(CaActivityUserRelation::getUserId).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SimpleUserModel> listUserByActivityId(Integer id) {
+        List<Integer> userIdList = listUserIdByActivityId(id);
+        if (CollectionUtils.isEmpty(userIdList)) {
+            return Lists.newArrayList();
+        }
+
+        List<SimpleUserModel> userModelList = userService.listSimpleUserModelByIdList(userIdList);
+        Map<Integer, SimpleUserModel> userModelMap = userModelList.stream().filter(Objects::nonNull)
+                .collect(Collectors.toMap(SimpleUserModel::getId, Function.identity(), (k1, k2) -> k2));
+
+        List<SimpleUserModel> returnList = Lists.newLinkedList();
+        for (Integer userId : userIdList) {
+            SimpleUserModel userModel = userModelMap.get(userId);
+            if (Objects.isNull(userModel)) {
+                continue;
+            }
+            returnList.add(userModel);
+        }
+
+        return returnList;
+    }
+
+    @Override
+    public PageData<ActivityModel> pageMyJoinActivity(ActivityUserQueryRequest request) {
+        if (Objects.isNull(request)) {
+            throw new CaException("查询请求不能为空");
+        }
+        int page = Objects.isNull(request.getPage()) || request.getPage() <= 0 ? 1 : request.getPage();
+        int size = Objects.isNull(request.getSize()) || request.getSize() <= 0 ? 20 : request.getSize();
+        String orderField = StringUtils.isBlank(request.getOrderField()) ? "create_time" : request.getOrderField();
+        String orderType = StringUtils.isBlank(request.getOrderType()) ? "desc" : request.getOrderType();
+
+        Integer userId = RequestUtil.getUserId();
+        PageHelper.startPage(page, size);
+        CaActivityUserRelationExample example = new CaActivityUserRelationExample();
+        CaActivityUserRelationExample.Criteria criteria = example.createCriteria();
+        criteria.andUserIdEqualTo(userId);
+        criteria.andIsDeleteEqualTo(Boolean.FALSE);
+        if (Objects.nonNull(request.getStatus()) && request.getStatus() > 0) {
+            criteria.andStatusEqualTo(request.getStatus());
+        }
+        example.setOrderByClause(orderField + CaConstants.BLANK + orderType);
+        List<CaActivityUserRelation> relationList = caActivityUserRelationMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(relationList)) {
+            return new PageData<>(0, Lists.newArrayList());
+        }
+        PageInfo<CaActivityUserRelation> pageInfo = new PageInfo<>(relationList);
+
+        List<Integer> activityIdList = relationList.stream().filter(Objects::nonNull).map(CaActivityUserRelation::getActivityId).collect(Collectors.toList());
+        List<ActivityModel> activityModelList = listModelByIdList(activityIdList);
+        Map<Integer, ActivityModel> activityModelMap = activityModelList.stream().filter(Objects::nonNull)
+                .collect(Collectors.toMap(ActivityModel::getId, Function.identity(), (k1, k2) -> k2));
+
+        List<ActivityModel> returnList = Lists.newLinkedList();
+        for (Integer activityId : activityIdList) {
+            ActivityModel activityModel = activityModelMap.get(activityId);
+            if (Objects.isNull(activityModel)) {
+                continue;
+            }
+            returnList.add(activityModel);
+        }
+
+        return new PageData<>(pageInfo.getTotal(), returnList);
     }
 
     private void initFlowStatusCriteria(CaActivityExample.Criteria criteria, ActivityQueryRequest request) {

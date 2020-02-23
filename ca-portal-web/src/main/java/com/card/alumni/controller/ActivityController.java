@@ -4,6 +4,7 @@ import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.model.ActivityModel;
+import com.card.alumni.model.SimpleUserModel;
 import com.card.alumni.request.ActivityQueryRequest;
 import com.card.alumni.request.ActivityRequest;
 import com.card.alumni.service.ActivityService;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author liumingyu
@@ -147,4 +150,40 @@ public class ActivityController {
         return UnifiedResult.success(activityService.pageMyByRequest(request));
     }
 
+    @PostMapping("/{id}/users")
+    @ApiOperation(value = "根据活动ID查询加入的全部用户列表", notes = "根据活动ID查询加入的全部用户列表")
+    public UnifiedResult<List<SimpleUserModel>> listUserByActivityId(@PathVariable("id") Integer id) throws Exception {
+
+        LOGGER.info("{} list users my by activity id. id = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
+
+        return UnifiedResult.success(activityService.listUserByActivityId(id));
+    }
+
+    @PostMapping("/{id}/join")
+    @ApiOperation(value = "加入活动", notes = "加入活动")
+    public UnifiedResult joinActivity(@PathVariable("id") Integer id) throws Exception {
+
+        LOGGER.info("{} join activity. request = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
+        try {
+            activityService.joinActivity(id);
+            return UnifiedResult.success();
+        } catch (CaException e) {
+            LOGGER.error("{} join activity error. request = {}", LOGGER_PREFIX, id, e);
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/exit")
+    @ApiOperation(value = "退出活动", notes = "退出活动")
+    public UnifiedResult exitActivity(@PathVariable("id") Integer id) throws Exception {
+
+        LOGGER.info("{} exit activity. request = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
+        try {
+            activityService.exitActivity(id);
+            return UnifiedResult.success();
+        } catch (CaException e) {
+            LOGGER.error("{} exit activity error. request = {}", LOGGER_PREFIX, id, e);
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
+        }
+    }
 }

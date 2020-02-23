@@ -16,6 +16,7 @@ import com.card.alumni.enums.UserTagEnum;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.model.SimpleUserModel;
 import com.card.alumni.request.FeedbackRequest;
+import com.card.alumni.service.UserLocalService;
 import com.card.alumni.service.UserService;
 import com.card.alumni.utils.EncryptUtils;
 import com.card.alumni.utils.PinyinUtils;
@@ -32,6 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +60,9 @@ public class UserServiceImpl implements UserService {
     private CaUserTagMapper caUserTagMapper;
     @Resource
     private UserFeedbackMapper userFeedbackMapper;
+
+    @Autowired
+    private UserLocalService userLocalService;
 
     @Resource
     private RedisUtils redisUtils;
@@ -314,6 +319,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<SimpleUserModel> listSimpleUserModelByIdList(List<Integer> userIdList) {
+        if (CollectionUtils.isEmpty(userIdList)) {
+            return Lists.newArrayList();
+        }
+        List<CaUser> userList = userLocalService.listByIdList(userIdList);
+        return convert2SimpleUserModelList(userList);
+    }
+
+    @Override
     public void loginOut(Integer userId) throws CaException {
         LOGGER.info("UserServiceImpl.loginOut param : {}", userId);
         try {
@@ -401,5 +415,25 @@ public class UserServiceImpl implements UserService {
 
     private List<String> convertStringToList(String str) {
         return StringUtils.isNotBlank(str) ? Lists.newArrayList(str.split(",")) : new ArrayList<>();
+    }
+
+    private List<SimpleUserModel> convert2SimpleUserModelList(List<CaUser> userList) {
+        if (CollectionUtils.isEmpty(userList)) {
+            return Lists.newArrayList();
+        }
+
+        return userList.stream().filter(Objects::nonNull)
+                .map(this::convert2SimpleUserModel).collect(Collectors.toList());
+    }
+
+    private SimpleUserModel convert2SimpleUserModel(CaUser user) {
+        if (Objects.isNull(user)) {
+            return null;
+        }
+
+        SimpleUserModel model = new SimpleUserModel();
+        BeanUtils.copyProperties(user, model);
+        model.setPhotoList(convertStringToList(user.getPhotoList()));
+        return model;
     }
 }

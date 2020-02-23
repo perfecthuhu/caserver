@@ -4,8 +4,11 @@ import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.entity.CaUser;
 import com.card.alumni.exception.CaException;
+import com.card.alumni.model.ActivityModel;
 import com.card.alumni.model.SimpleUserModel;
+import com.card.alumni.request.ActivityUserQueryRequest;
 import com.card.alumni.request.FeedbackRequest;
+import com.card.alumni.service.ActivityService;
 import com.card.alumni.service.UserService;
 import com.card.alumni.utils.AESUtil;
 import com.card.alumni.utils.CookieUtils;
@@ -18,7 +21,13 @@ import com.card.alumni.vo.query.UserPhoneCodeVO;
 import com.card.alumni.vo.query.UserQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +47,9 @@ public class UserController {
 
     @Resource
     private RedisUtils redisUtils;
+
+    @Autowired
+    private ActivityService activityService;
 
     /**
      * 登陆
@@ -122,5 +134,11 @@ public class UserController {
     public UnifiedResult<Boolean> saveFeedBack(@RequestBody FeedbackRequest request) throws CaException {
         userService.saveFeedBack(request);
         return UnifiedResult.success(true);
+    }
+
+    @PostMapping("/my/activity")
+    @ApiOperation(value = "分页查询我加入过的活动列表", notes = "分页查询我加入过的活动列表")
+    public UnifiedResult<PageData<ActivityModel>> pageMyJoinActivityByRequest(@RequestBody ActivityUserQueryRequest request) throws Exception {
+        return UnifiedResult.success(activityService.pageMyJoinActivity(request));
     }
 }
