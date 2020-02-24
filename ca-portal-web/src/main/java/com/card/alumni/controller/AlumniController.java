@@ -3,9 +3,12 @@ package com.card.alumni.controller;
 import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaException;
+import com.card.alumni.request.UserSchoolAlumniRequest;
 import com.card.alumni.service.AlumniService;
+import com.card.alumni.service.UserService;
 import com.card.alumni.utils.RequestUtil;
 import com.card.alumni.vo.AlumniVO;
+import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.enums.AlumniAuditStatusEnum;
 import com.card.alumni.vo.query.AlumniQuery;
 import io.swagger.annotations.Api;
@@ -31,6 +34,9 @@ public class AlumniController {
 
     @Resource
     private AlumniService alumniService;
+
+    @Resource
+    private UserService userService;
 
     /**
      * 查询协会校友会
@@ -84,8 +90,13 @@ public class AlumniController {
     @GetMapping("/my")
     @ApiOperation(value = "我加入的协会", notes = "我加入的协会")
     public UnifiedResult<List<AlumniVO>> queryMyAlumni() {
-
         return UnifiedResult.success(alumniService.queryMyAlumni(RequestUtil.getUserId()));
+    }
+
+    @GetMapping("/school")
+    @ApiOperation(value = "查询学校组织校友会成员接口", notes = "查询学校组织校友会成员接口")
+    public UnifiedResult<PageData<UserVO>> querySchoolAlumni(@RequestBody UserSchoolAlumniRequest request) {
+        return UnifiedResult.success(userService.querySchoolAlumni(request));
     }
 
 }

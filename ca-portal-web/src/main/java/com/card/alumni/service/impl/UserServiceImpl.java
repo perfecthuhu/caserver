@@ -3,19 +3,17 @@ package com.card.alumni.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.card.alumni.common.PageData;
 import com.card.alumni.context.User;
+import com.card.alumni.dao.CaAlumniRoleMapper;
 import com.card.alumni.dao.CaUserMapper;
 import com.card.alumni.dao.CaUserTagMapper;
 import com.card.alumni.dao.UserFeedbackMapper;
-import com.card.alumni.entity.CaUser;
-import com.card.alumni.entity.CaUserExample;
-import com.card.alumni.entity.CaUserTag;
-import com.card.alumni.entity.CaUserTagExample;
-import com.card.alumni.entity.UserFeedback;
+import com.card.alumni.entity.*;
 import com.card.alumni.enums.StatusEnum;
 import com.card.alumni.enums.UserTagEnum;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.model.SimpleUserModel;
 import com.card.alumni.request.FeedbackRequest;
+import com.card.alumni.request.UserSchoolAlumniRequest;
 import com.card.alumni.service.UserLocalService;
 import com.card.alumni.service.UserService;
 import com.card.alumni.utils.EncryptUtils;
@@ -24,10 +22,12 @@ import com.card.alumni.utils.RedisUtils;
 import com.card.alumni.utils.RequestUtil;
 import com.card.alumni.utils.VerificationCodeUtils;
 import com.card.alumni.vo.UserVO;
+import com.card.alumni.vo.enums.AlumniRoleEnum;
 import com.card.alumni.vo.query.UserQuery;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import io.swagger.models.auth.In;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -66,6 +66,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private RedisUtils redisUtils;
+
+    @Resource
+    private CaAlumniRoleMapper caAlumniRoleMapper;
 
     @Override
     public CaUser login(UserVO userVO, String verificatioCode) throws Exception {
@@ -114,6 +117,30 @@ public class UserServiceImpl implements UserService {
         if (Objects.isNull(userVO) || Objects.isNull(userVO.getId())) {
             userVO.setId(RequestUtil.getUserId());
         }
+
+        CaUser caUserNow = caUserMapper.selectByPrimaryKey(RequestUtil.getUserId());
+
+        if (Objects.nonNull(userVO.getClassId()) && !userVO.getClassId().equals(caUserNow.getClassId())) {
+            if (Objects.isNull(caUserNow.getClassId()) || deleteAlumniRole(caUserNow.getClassId())) {
+                caAlumniRoleMapper.insert(buildCaAlumniRole(userVO.getClassId()));
+            }
+        }
+        if (Objects.nonNull(userVO.getCollegeId()) && !userVO.getCollegeId().equals(caUserNow.getCollegeId())) {
+            if (Objects.isNull(caUserNow.getCollegeId()) || deleteAlumniRole(caUserNow.getCollegeId())) {
+                caAlumniRoleMapper.insert(buildCaAlumniRole(userVO.getCollegeId()));
+            }
+        }
+        if (Objects.nonNull(userVO.getFacultyId()) && !userVO.getFacultyId().equals(caUserNow.getFacultyId())) {
+            if (Objects.isNull(caUserNow.getFacultyId()) || deleteAlumniRole(caUserNow.getFacultyId())) {
+                caAlumniRoleMapper.insert(buildCaAlumniRole(userVO.getFacultyId()));
+            }
+        }
+        if (Objects.nonNull(userVO.getAlumniId()) && !userVO.getAlumniId().equals(caUserNow.getAlumniId())) {
+            if (Objects.isNull(caUserNow.getAlumniId()) || deleteAlumniRole(caUserNow.getAlumniId())) {
+                caAlumniRoleMapper.insert(buildCaAlumniRole(userVO.getAlumniId()));
+            }
+        }
+
         CaUser caUser = convert2CaUser(userVO);
         int count = caUserMapper.updateByPrimaryKeySelective(caUser);
         if (count != 1) {
@@ -132,6 +159,33 @@ public class UserServiceImpl implements UserService {
             UserFeedback userFeedback = buildUserFeedBack(userVO.getOtherDesc());
             userFeedbackMapper.insert(userFeedback);
         }
+
+    }
+
+    private boolean deleteAlumniRole(Integer alumniId) {
+        try {
+            CaAlumniRoleExample example = new CaAlumniRoleExample();
+            example.createCriteria()
+                    .andAlumniIdEqualTo(alumniId)
+                    .andStudentIdEqualTo(RequestUtil.getUserId());
+            caAlumniRoleMapper.deleteByExample(example);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    private CaAlumniRole buildCaAlumniRole(Integer alumniId) {
+        CaAlumniRole alumniRole = new CaAlumniRole();
+
+        alumniRole.setAlumniId(alumniId);
+        alumniRole.setStudentId(RequestUtil.getUserId());
+        Date now = new Date(System.currentTimeMillis());
+        alumniRole.setCreateTime(now);
+        alumniRole.setUpdateTime(now);
+        alumniRole.setRole(AlumniRoleEnum.MEMBER.getCode());
+
+        return alumniRole;
     }
 
     private CaUser convert2CaUser(UserVO userVO) {
@@ -387,6 +441,40 @@ public class UserServiceImpl implements UserService {
         if (count != 1) {
             throw new CaException("问题反馈填写异常");
         }
+    }
+
+    @Override
+    public PageData<UserVO> querySchoolAlumni(UserSchoolAlumniRequest request) {
+        CaUserExample example = buildCaUserExample(request.getAlumniId(), request.getType());
+
+        PageHelper.startPage(request.getPage(), request.getSize());
+        List<CaUser> caUsers = caUserMapper.selectByExample(example);
+        PageInfo<CaUser> pageInfo = new PageInfo<>(caUsers);
+
+        PageData<UserVO> userVOPageData = new PageData<>(pageInfo.getTotal(), convertUserVOList(caUsers));
+
+        return userVOPageData;
+    }
+
+    private CaUserExample buildCaUserExample(Integer alumniId, Integer type) {
+        CaUserExample example = new CaUserExample();
+        CaUserExample.Criteria criteria = example.createCriteria();
+
+        switch (type) {
+            case 1:
+                criteria.andClassIdEqualTo(alumniId);
+                break;
+            case 2:
+                criteria.andCollegeIdEqualTo(alumniId);
+                break;
+            case 3:
+                criteria.andFacultyIdEqualTo(alumniId);
+                break;
+            case 4:
+                criteria.andAlumniIdEqualTo(alumniId);
+                break;
+        }
+        return example;
     }
 
     private boolean validateVerificatioCode(UserVO userVO, String verificatioCode) {

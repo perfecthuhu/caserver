@@ -17,4 +17,16 @@ public enum AlumniAuditStatusEnum {
     ;
     private Integer code;
     private String desc;
+
+    public static AlumniAuditStatusEnum getEnum(Integer code) {
+        if (code == null) {
+            return null;
+        }
+        for (AlumniAuditStatusEnum statusEnum : values()) {
+            if (statusEnum.getCode().equals(code)) {
+                return statusEnum;
+            }
+        }
+        return null;
+    }
 }

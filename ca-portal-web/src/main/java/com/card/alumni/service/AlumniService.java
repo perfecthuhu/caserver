@@ -54,4 +54,5 @@ public interface AlumniService {
      * @return
      */
     List<AlumniVO> queryMyAlumni(Integer userId);
+
 }

@@ -179,13 +179,15 @@ public class AlumniServiceImpl implements AlumniService {
 
     @Override
     public Boolean auidtAlumniRecord(Integer alumniId, AlumniAuditStatusEnum status) throws CaException {
-        //validateUserLimit(RequestUtil.getUserId(), alumniId);
 
         CaAlumniAuditLog caAlumniAuditLog = caAlumniAuditLogMapper.selectByPrimaryKey(alumniId);
 
         switch (status) {
             case PASS:
                 insertAlumniRole(caAlumniAuditLog);
+                break;
+            case EXIT:
+                deleteAlumniRole(caAlumniAuditLog);
                 break;
             default:
         }
@@ -194,16 +196,27 @@ public class AlumniServiceImpl implements AlumniService {
         alumniAuditLog.setAuditStatus(status.getCode());
         int count = caAlumniAuditLogMapper.updateByPrimaryKeySelective(alumniAuditLog);
         if (count != 1) {
-            throw new CaException("审核失败");
+            throw new CaConfigException("审核失败");
         }
         return true;
+    }
+
+    private void deleteAlumniRole(CaAlumniAuditLog caAlumniAuditLog) {
+        CaAlumniRoleExample example = new CaAlumniRoleExample();
+        example.createCriteria()
+                .andAlumniIdEqualTo(caAlumniAuditLog.getAlumniId())
+                .andStudentIdEqualTo(caAlumniAuditLog.getStudentId());
+        int count = caAlumniRoleMapper.deleteByExample(example);
+        if (count != 1) {
+            throw new CaConfigException("审核失败");
+        }
     }
 
     private void insertAlumniRole(CaAlumniAuditLog caAlumniAuditLog) throws CaException  {
         CaAlumniRole alumniRole = convertCaAlumniRole(caAlumniAuditLog);
         int count = caAlumniRoleMapper.insert(alumniRole);
         if (count != 1) {
-            throw new CaException("审核失败");
+            throw new CaConfigException("审核失败");
         }
     }
 
@@ -248,7 +261,7 @@ public class AlumniServiceImpl implements AlumniService {
         example.createCriteria().andAlumniIdEqualTo(alumniId).andStudentIdEqualTo(userId);
         int count = caAlumniRoleMapper.updateByExampleSelective(role, example);
         if (count != 1) {
-            throw new CaException("分配管理员失败");
+            throw new CaConfigException("分配管理员失败");
         }
         return true;
     }
@@ -277,17 +290,17 @@ public class AlumniServiceImpl implements AlumniService {
         caAlumniRole.setUpdateTime(new Date(System.currentTimeMillis()));
         count = caAlumniRoleMapper.insert(caAlumniRole);
         if (count != 1) {
-            throw new CaException("创建协会失败");
+            throw new CaConfigException("创建协会失败");
         }
         return true;
     }
 
     private void validateAlimniVO(AlumniModel alumniVO) throws CaException {
         if (Objects.isNull(alumniVO)) {
-            throw new CaException("协会信息为空");
+            throw new CaConfigException("协会信息为空");
         }
         if (Objects.isNull(alumniVO.getName()))  {
-            throw new CaException("协会名称为空");
+            throw new CaConfigException("协会名称为空");
         }
     }
 
@@ -304,7 +317,7 @@ public class AlumniServiceImpl implements AlumniService {
         CaAlumni alumni = convertAlumniVO(alumniModel);
         int count = caAlumniMapper.updateByPrimaryKeySelective(alumni);
         if (count != 1) {
-            throw new CaException("协会信息保存失败");
+            throw new CaConfigException("协会信息保存失败");
         }
         return true;
     }
@@ -328,17 +341,25 @@ public class AlumniServiceImpl implements AlumniService {
         List<Integer> userIdList = caAlumniAuditLogs.stream().map(CaAlumniAuditLog::getStudentId).collect(Collectors.toList());
         List<UserModel> userVOList = queryByIdList(userIdList);
 
+        if (Objects.isNull(userVOList)) {
+            throw new CaConfigException("查询用户信息失败");
+        }
+
         Set<Integer> alumniIdList = caAlumniAuditLogs.stream().map(CaAlumniAuditLog::getAlumniId).collect(Collectors.toSet());
         List<AlumniModel> alumniModelList = queryAlumniByIdList(alumniIdList);
         if (alumniModelList == null) {
             throw new CaConfigException("查询协会失败");
         }
+
+        Map<Integer, UserModel> userModelMap = userVOList.stream().collect(Collectors.toMap(UserModel::getId, Function.identity()));
+
         Map<Integer, AlumniModel> alumniModelMap = alumniModelList.stream().collect(Collectors.toMap(AlumniModel::getId, Function.identity()));
 
-        List<AlumniAuditModel> resultList = userVOList.stream().map(s -> {
+        List<AlumniAuditModel> resultList = caAlumniAuditLogs.stream().map(s -> {
             AlumniAuditModel alumniAuditModel = new AlumniAuditModel();
+            alumniAuditModel.setId(s.getId());
             alumniAuditModel.setAlumniModel(alumniModelMap.get(s.getAlumniId()));
-            alumniAuditModel.setUserModel(s);
+            alumniAuditModel.setUserModel(userModelMap.get(s.getStudentId()));
             return alumniAuditModel;
         }).collect(Collectors.toList());
 
@@ -372,6 +393,16 @@ public class AlumniServiceImpl implements AlumniService {
         example1.createCriteria().andAlumniIdEqualTo(alumniId);
         caAlumniAuditLogMapper.deleteByExample(example1);
 
+        return true;
+    }
+
+    @Override
+    public Boolean exitAlumni(Integer alumniId, Integer id, AlumniAuditStatusEnum exit) {
+        CaAlumniRoleExample example = new CaAlumniRoleExample();
+        example.createCriteria()
+                .andStudentIdEqualTo(id)
+                .andAlumniIdEqualTo(alumniId);
+        caAlumniRoleMapper.deleteByExample(example);
         return true;
     }
 

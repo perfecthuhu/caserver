@@ -6,6 +6,7 @@ import com.card.alumni.entity.CaUser;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.model.SimpleUserModel;
 import com.card.alumni.request.FeedbackRequest;
+import com.card.alumni.request.UserSchoolAlumniRequest;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.query.UserQuery;
 
@@ -103,4 +104,11 @@ public interface UserService {
      * @param request
      */
     void saveFeedBack(FeedbackRequest request) throws CaException;
+
+    /**
+     * 查询学校组织校友会成员接口
+     * @param request
+     * @return
+     */
+    PageData<UserVO> querySchoolAlumni(UserSchoolAlumniRequest request);
 }

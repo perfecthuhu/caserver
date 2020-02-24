@@ -18,6 +18,9 @@ import java.io.Serializable;
 @ApiModel(value = "组织待审核Model", description = "组织待审核Model")
 public class AlumniAuditModel implements Serializable {
 
+    @ApiModelProperty(value = "待审核记录ID")
+    private Integer id;
+
     @ApiModelProperty(value = "协会信息")
     private AlumniModel alumniModel;
 

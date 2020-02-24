@@ -15,6 +15,7 @@ import com.card.alumni.service.AlumniService;
 import com.github.pagehelper.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -68,14 +69,36 @@ public class AlumniController {
 
 
     /**
-     * 退出协会
+     * 驳回加入协会申请
      * @param id
      * @return
      */
     @GetMapping("/audit/exit/{id}")
-    @ApiOperation(value = "退出协会", notes = "退出协会")
-    public UnifiedResult<Boolean> exitAlumn(@PathVariable Integer id) throws Exception {
-        return UnifiedResult.success(alumniService.auidtAlumniRecord(id, AlumniAuditStatusEnum.EXIT));
+    @ApiOperation(value = "驳回加入协会申请（id为待审核记录ID）", notes = "驳回加入协会申请（id为待审核记录ID）")
+    public UnifiedResult<Boolean> rejectAlumni(@PathVariable Integer id) throws Exception {
+        return UnifiedResult.success(alumniService.auidtAlumniRecord(id, AlumniAuditStatusEnum.REJECT));
+    }
+
+    /**
+     * 将用户踢出协会
+     * @param id
+     * @return
+     */
+    @GetMapping("/audit/exit/{alumniId}/{id}")
+    @ApiOperation(value = "将用户踢出协会（第一个为协会ID，第二个为用户ID）", notes = "将用户踢出协会（id为待审核记录ID）")
+    public UnifiedResult<Boolean> exitAlumni(@PathVariable Integer alumniId, @PathVariable Integer id) throws Exception {
+        return UnifiedResult.success(alumniService.exitAlumni(alumniId, id, AlumniAuditStatusEnum.EXIT));
+    }
+
+    /**
+     * 审核通过加入协会
+     * @param id
+     * @return
+     */
+    @GetMapping("/audit/pass/{id}")
+    @ApiOperation(value = "审核通过加入协会（id为待审核记录ID）", notes = "审核通过加入协会")
+    public UnifiedResult<Boolean> passAlumni(@PathVariable Integer id) throws Exception {
+        return UnifiedResult.success(alumniService.auidtAlumniRecord(id, AlumniAuditStatusEnum.PASS));
     }
 
     /**

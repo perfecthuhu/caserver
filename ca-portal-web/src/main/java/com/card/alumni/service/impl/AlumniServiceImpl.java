@@ -228,6 +228,7 @@ public class AlumniServiceImpl implements AlumniService {
         if (count != 1) {
             throw new CaException("申请失败");
         }
+
         return true;
     }
 

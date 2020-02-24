@@ -85,4 +85,13 @@ public interface AlumniService {
      * @return
      */
     Boolean deleteAlumni(Integer alumniId);
+
+    /**
+     * 将用户踢出协会
+     * @param alumniId
+     * @param id
+     * @param exit
+     * @return
+     */
+    Boolean exitAlumni(Integer alumniId, Integer id, AlumniAuditStatusEnum exit);
 }
