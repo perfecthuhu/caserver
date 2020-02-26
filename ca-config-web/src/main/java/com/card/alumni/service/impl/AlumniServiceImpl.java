@@ -150,6 +150,7 @@ public class AlumniServiceImpl implements AlumniService {
     }
 
     private List<UserModel> queryByIdList(List<Integer> idList) throws CaConfigException {
+
         UserQueryRequest userQuery = new UserQueryRequest();
         userQuery.setUserIdList(idList);
         PageData<UserModel> userModelPageData = userService.pageByRequest(userQuery);
@@ -334,7 +335,7 @@ public class AlumniServiceImpl implements AlumniService {
         List<CaAlumniAuditLog> caAlumniAuditLogs = caAlumniAuditLogMapper.selectByExample(example);
         PageInfo<CaAlumniAuditLog> pageInfo = new PageInfo<>(caAlumniAuditLogs);
 
-        if (!CollectionUtils.isEmpty(caAlumniAuditLogs)) {
+        if (CollectionUtils.isEmpty(caAlumniAuditLogs)) {
             return null;
         }
 

@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value = "用户好友查询请求", description = "用户好友查询请求")
+@ApiModel(value = "查询学校组织校友会成员", description = "查询学校组织校友会成员")
 public class UserSchoolAlumniRequest extends BaseQueryRequest implements Serializable {
 
     @ApiModelProperty(value = "组织ID")

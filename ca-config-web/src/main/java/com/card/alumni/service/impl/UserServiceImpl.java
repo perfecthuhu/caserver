@@ -267,7 +267,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (org.apache.commons.collections.CollectionUtils.isNotEmpty(request.getUserIdList())) {
-            criteria.andIdCardIn(request.getUserIdList().stream().map(s -> s.toString()).collect(Collectors.toList()));
+            criteria.andIdIn(request.getUserIdList());
         }
 
         criteria.andNameIsNotNull();
@@ -347,7 +347,6 @@ public class UserServiceImpl implements UserService {
         return relations.stream().filter(Objects::nonNull)
                 .map(CaUserRoleRelation::getRoleId).collect(Collectors.toList());
     }
-
 
     private void checkParam(UserRequest request) throws CaConfigException {
         if (Objects.isNull(request)) {
