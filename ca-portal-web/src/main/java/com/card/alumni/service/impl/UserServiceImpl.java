@@ -199,9 +199,9 @@ public class UserServiceImpl implements UserService {
             }
             caUser.setPhotoList(sb.substring(0, sb.length() - 1));
         }
-        if (userVO.getIdCard().contains("*")) {
-            caUser.setIdCard(null);
-        }
+//        if (userVO.getIdCard().contains("*")) {
+//            caUser.setIdCard(null);
+//        }
         caUser.setYn(1);
         caUser.setUpdateTime(new Date(System.currentTimeMillis()));
         caUser.setCreateTime(new Date(System.currentTimeMillis()));
