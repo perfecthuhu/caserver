@@ -296,7 +296,7 @@ public class UserServiceImpl implements UserService {
             criteria.andSchoolIdEqualTo(userQuery.getSchoolId());
         }
         if (CollectionUtils.isNotEmpty(userQuery.getIdList())) {
-            criteria.andIdCardIn(userQuery.getIdList().stream().map(s -> s.toString()).collect(Collectors.toList()));
+            criteria.andIdIn(userQuery.getIdList());
         }
 
         criteria.andNameIsNotNull();
