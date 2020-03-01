@@ -5,7 +5,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://47.105.149.158:3306/ca?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
+      url: jdbc:mysql://47.105.149.158:3306/ca?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&serverTimezone=Asia/Shanghai
       username: ca
       password: 853zaSSGB7SPkAfM
       initialSize: 1
