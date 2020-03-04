@@ -275,7 +275,8 @@ public class UserServiceImpl implements UserService {
             criteria.andPhoneEqualTo(userQuery.getPhone());
         }
         if (Objects.nonNull(userQuery.getName())) {
-            criteria.andNameEqualTo(userQuery.getName());
+            criteria.andNameLike('%'+userQuery.getName()+'%');
+//            criteria.andNameEqualTo(userQuery.getName());
         }
         if (Objects.nonNull(userQuery.getSex())) {
             criteria.andSexEqualTo(userQuery.getSex());
