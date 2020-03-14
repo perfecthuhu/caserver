@@ -107,6 +107,19 @@ public class ProjectController {
         return UnifiedResult.success();
     }
 
+    @PutMapping("/{id}/view")
+    @ApiOperation(value = "递增项目的浏览次数", notes = "递增项目的浏览次数")
+    public UnifiedResult<Long> increaseViewCount(@PathVariable("id") Integer id) throws Exception {
+
+        LOGGER.info("{} increase project view count. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
+        try {
+            return UnifiedResult.success(projectService.increaseViewCount(id));
+        } catch (CaException e) {
+            LOGGER.error("{} increase project view count error. id = {}", LOGGER_PREFIX, id, e);
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
+        }
+    }
+
     @GetMapping("/{id}")
     @ApiOperation(value = "根据ID查询项目", notes = "根据ID查询项目")
     public UnifiedResult<ProjectModel> findById(@PathVariable("id") Integer id) throws Exception {

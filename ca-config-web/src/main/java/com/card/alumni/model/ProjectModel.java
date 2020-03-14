@@ -8,6 +8,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author liumingyu
@@ -54,4 +55,10 @@ public class ProjectModel implements Serializable {
 
     @ApiModelProperty(value = "内容")
     private String content;
+
+    @ApiModelProperty(value = "浏览次数")
+    private Long viewCount;
+
+    @ApiModelProperty(value = "图片列表")
+    private List<String> pictures;
 }

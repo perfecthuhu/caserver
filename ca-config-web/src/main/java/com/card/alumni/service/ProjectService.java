@@ -16,6 +16,8 @@ public interface ProjectService {
 
     void update(ProjectRequest request);
 
+    void updateViewCount(Integer id, Long viewCount);
+
     void update(CaProject article);
 
     void deleteById(Integer id);

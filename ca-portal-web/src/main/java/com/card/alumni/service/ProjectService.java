@@ -24,6 +24,8 @@ public interface ProjectService {
 
     void unPublish(Integer id);
 
+    Long increaseViewCount(Integer id);
+
     CaProject findById(Integer id);
 
     ProjectModel findModelById(Integer id);

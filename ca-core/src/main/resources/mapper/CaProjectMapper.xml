@@ -10,6 +10,8 @@
       <arg column="is_publish" jdbcType="BIT" javaType="java.lang.Boolean" />
       <arg column="publisher" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="publish_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="view_count" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="picture" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="creator" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="updater" jdbcType="INTEGER" javaType="java.lang.Integer" />
@@ -26,6 +28,8 @@
       <arg column="is_publish" jdbcType="BIT" javaType="java.lang.Boolean" />
       <arg column="publisher" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="publish_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="view_count" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="picture" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="creator" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="updater" jdbcType="INTEGER" javaType="java.lang.Integer" />
@@ -93,8 +97,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, title, sub_title, type, is_publish, publisher, publish_time, creator, create_time, 
-    updater, update_time, is_delete
+    id, title, sub_title, type, is_publish, publisher, publish_time, view_count, picture, 
+    creator, create_time, updater, update_time, is_delete
   </sql>
   <sql id="Blob_Column_List" >
     content
@@ -152,14 +156,16 @@
   <insert id="insert" parameterType="com.card.alumni.entity.CaProject" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_project (id, title, sub_title, 
       type, is_publish, publisher, 
-      publish_time, creator, create_time, 
-      updater, update_time, is_delete, 
-      content)
+      publish_time, view_count, picture, 
+      creator, create_time, updater, 
+      update_time, is_delete, content
+      )
     values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{subTitle,jdbcType=VARCHAR}, 
       #{type,jdbcType=INTEGER}, #{isPublish,jdbcType=BIT}, #{publisher,jdbcType=INTEGER}, 
-      #{publishTime,jdbcType=TIMESTAMP}, #{creator,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updater,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=BIT}, 
-      #{content,jdbcType=LONGVARCHAR})
+      #{publishTime,jdbcType=TIMESTAMP}, #{viewCount,jdbcType=BIGINT}, #{picture,jdbcType=VARCHAR}, 
+      #{creator,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updater,jdbcType=INTEGER}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=BIT}, #{content,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.card.alumni.entity.CaProject" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_project
@@ -184,6 +190,12 @@
       </if>
       <if test="publishTime != null" >
         publish_time,
+      </if>
+      <if test="viewCount != null" >
+        view_count,
+      </if>
+      <if test="picture != null" >
+        picture,
       </if>
       <if test="creator != null" >
         creator,
@@ -225,6 +237,12 @@
       </if>
       <if test="publishTime != null" >
         #{publishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="viewCount != null" >
+        #{viewCount,jdbcType=BIGINT},
+      </if>
+      <if test="picture != null" >
+        #{picture,jdbcType=VARCHAR},
       </if>
       <if test="creator != null" >
         #{creator,jdbcType=INTEGER},
@@ -276,6 +294,12 @@
       <if test="record.publishTime != null" >
         publish_time = #{record.publishTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.viewCount != null" >
+        view_count = #{record.viewCount,jdbcType=BIGINT},
+      </if>
+      <if test="record.picture != null" >
+        picture = #{record.picture,jdbcType=VARCHAR},
+      </if>
       <if test="record.creator != null" >
         creator = #{record.creator,jdbcType=INTEGER},
       </if>
@@ -308,6 +332,8 @@
       is_publish = #{record.isPublish,jdbcType=BIT},
       publisher = #{record.publisher,jdbcType=INTEGER},
       publish_time = #{record.publishTime,jdbcType=TIMESTAMP},
+      view_count = #{record.viewCount,jdbcType=BIGINT},
+      picture = #{record.picture,jdbcType=VARCHAR},
       creator = #{record.creator,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       updater = #{record.updater,jdbcType=INTEGER},
@@ -327,6 +353,8 @@
       is_publish = #{record.isPublish,jdbcType=BIT},
       publisher = #{record.publisher,jdbcType=INTEGER},
       publish_time = #{record.publishTime,jdbcType=TIMESTAMP},
+      view_count = #{record.viewCount,jdbcType=BIGINT},
+      picture = #{record.picture,jdbcType=VARCHAR},
       creator = #{record.creator,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       updater = #{record.updater,jdbcType=INTEGER},
@@ -357,6 +385,12 @@
       <if test="publishTime != null" >
         publish_time = #{publishTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="viewCount != null" >
+        view_count = #{viewCount,jdbcType=BIGINT},
+      </if>
+      <if test="picture != null" >
+        picture = #{picture,jdbcType=VARCHAR},
+      </if>
       <if test="creator != null" >
         creator = #{creator,jdbcType=INTEGER},
       </if>
@@ -386,6 +420,8 @@
       is_publish = #{isPublish,jdbcType=BIT},
       publisher = #{publisher,jdbcType=INTEGER},
       publish_time = #{publishTime,jdbcType=TIMESTAMP},
+      view_count = #{viewCount,jdbcType=BIGINT},
+      picture = #{picture,jdbcType=VARCHAR},
       creator = #{creator,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       updater = #{updater,jdbcType=INTEGER},
@@ -402,6 +438,8 @@
       is_publish = #{isPublish,jdbcType=BIT},
       publisher = #{publisher,jdbcType=INTEGER},
       publish_time = #{publishTime,jdbcType=TIMESTAMP},
+      view_count = #{viewCount,jdbcType=BIGINT},
+      picture = #{picture,jdbcType=VARCHAR},
       creator = #{creator,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       updater = #{updater,jdbcType=INTEGER},

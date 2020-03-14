@@ -65,6 +65,21 @@ public class ProjectController {
         return UnifiedResult.success();
     }
 
+    @PutMapping("/{id}/view-count/{viewCount}")
+    @ApiOperation(value = "更新项目", notes = "更新项目")
+    public UnifiedResult updateViewCount(@PathVariable("id") Integer id,
+                                         @PathVariable("id") Long viewCount) throws Exception {
+
+        LOGGER.info("{} update project view count. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
+        try {
+            projectService.updateViewCount(id, viewCount);
+        } catch (CaException e) {
+            LOGGER.error("{} update project view count error. id = {}", LOGGER_PREFIX, id, e);
+            return UnifiedResult.failure(e.getCode(), e.getMessage());
+        }
+        return UnifiedResult.success();
+    }
+
     @DeleteMapping("/{id}")
     @ApiOperation(value = "根据ID删除项目", notes = "根据ID删除项目")
     public UnifiedResult deleteById(@PathVariable("id") Integer id) throws Exception {

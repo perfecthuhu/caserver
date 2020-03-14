@@ -15,6 +15,8 @@ import com.card.alumni.service.ProjectService;
 import com.card.alumni.utils.RequestUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -66,6 +68,20 @@ public class ProjectServiceImpl implements ProjectService {
         checkParam(request);
 
         CaProject project = convert(request);
+
+        update(project);
+    }
+
+    @Override
+    public void updateViewCount(Integer id, Long viewCount) {
+        CaProject project = findById(id);
+        if (Objects.isNull(project) || project.getIsDelete()) {
+            throw new CaException("当前项目不存在或已删除");
+        }
+        if (Objects.isNull(viewCount) || viewCount < 0) {
+            throw new CaException("非法的浏览次数");
+        }
+        project.setViewCount(viewCount);
 
         update(project);
     }
@@ -228,6 +244,12 @@ public class ProjectServiceImpl implements ProjectService {
         model.setUpdater(entity.getUpdater());
         model.setCreateTime(entity.getCreateTime());
         model.setUpdateTime(entity.getUpdateTime());
+        model.setViewCount(entity.getViewCount());
+        List<String> pictures = Lists.newArrayList();
+        if (StringUtils.isNotBlank(entity.getPicture())) {
+            pictures = Splitter.on(CaConstants.COMMA).omitEmptyStrings().trimResults().splitToList(entity.getPicture());
+        }
+        model.setPictures(pictures);
         return model;
     }
 
@@ -238,6 +260,9 @@ public class ProjectServiceImpl implements ProjectService {
         entity.setType(request.getType());
         entity.setSubTitle(request.getSubTitle());
         entity.setContent(request.getContent());
+        if (CollectionUtils.isNotEmpty(request.getPictures())) {
+            entity.setPicture(Joiner.on(CaConstants.COMMA).skipNulls().join(request.getPictures()));
+        }
         return entity;
     }
 }

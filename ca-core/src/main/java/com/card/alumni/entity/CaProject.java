@@ -17,6 +17,10 @@ public class CaProject {
 
     private Date publishTime;
 
+    private Long viewCount;
+
+    private String picture;
+
     private Integer creator;
 
     private Date createTime;
@@ -29,7 +33,7 @@ public class CaProject {
 
     private String content;
 
-    public CaProject(Integer id, String title, String subTitle, Integer type, Boolean isPublish, Integer publisher, Date publishTime, Integer creator, Date createTime, Integer updater, Date updateTime, Boolean isDelete, String content) {
+    public CaProject(Integer id, String title, String subTitle, Integer type, Boolean isPublish, Integer publisher, Date publishTime, Long viewCount, String picture, Integer creator, Date createTime, Integer updater, Date updateTime, Boolean isDelete, String content) {
         this.id = id;
         this.title = title;
         this.subTitle = subTitle;
@@ -37,6 +41,8 @@ public class CaProject {
         this.isPublish = isPublish;
         this.publisher = publisher;
         this.publishTime = publishTime;
+        this.viewCount = viewCount;
+        this.picture = picture;
         this.creator = creator;
         this.createTime = createTime;
         this.updater = updater;
@@ -103,6 +109,22 @@ public class CaProject {
 
     public void setPublishTime(Date publishTime) {
         this.publishTime = publishTime;
+    }
+
+    public Long getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(Long viewCount) {
+        this.viewCount = viewCount;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture == null ? null : picture.trim();
     }
 
     public Integer getCreator() {

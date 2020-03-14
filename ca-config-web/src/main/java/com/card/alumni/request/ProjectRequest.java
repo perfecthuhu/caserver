@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author liumingyu
@@ -30,4 +31,7 @@ public class ProjectRequest implements Serializable {
 
     @ApiModelProperty(value = "文章内容", required = true)
     private String content;
+
+    @ApiModelProperty(value = "图片列表")
+    private List<String> pictures;
 }
