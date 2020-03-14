@@ -3,17 +3,17 @@ package com.card.alumni.entity;
 public class CaConfig {
     private Integer id;
 
-    private String key;
+    private String configKey;
 
-    private String value;
+    private String configValue;
 
-    private String info;
+    private String configInfo;
 
-    public CaConfig(Integer id, String key, String value, String info) {
+    public CaConfig(Integer id, String configKey, String configValue, String configInfo) {
         this.id = id;
-        this.key = key;
-        this.value = value;
-        this.info = info;
+        this.configKey = configKey;
+        this.configValue = configValue;
+        this.configInfo = configInfo;
     }
 
     public CaConfig() {
@@ -28,27 +28,27 @@ public class CaConfig {
         this.id = id;
     }
 
-    public String getKey() {
-        return key;
+    public String getConfigKey() {
+        return configKey;
     }
 
-    public void setKey(String key) {
-        this.key = key == null ? null : key.trim();
+    public void setConfigKey(String configKey) {
+        this.configKey = configKey == null ? null : configKey.trim();
     }
 
-    public String getValue() {
-        return value;
+    public String getConfigValue() {
+        return configValue;
     }
 
-    public void setValue(String value) {
-        this.value = value == null ? null : value.trim();
+    public void setConfigValue(String configValue) {
+        this.configValue = configValue == null ? null : configValue.trim();
     }
 
-    public String getInfo() {
-        return info;
+    public String getConfigInfo() {
+        return configInfo;
     }
 
-    public void setInfo(String info) {
-        this.info = info == null ? null : info.trim();
+    public void setConfigInfo(String configInfo) {
+        this.configInfo = configInfo == null ? null : configInfo.trim();
     }
 }

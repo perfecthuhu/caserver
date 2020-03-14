@@ -4,9 +4,9 @@
   <resultMap id="BaseResultMap" type="com.card.alumni.entity.CaConfig" >
     <constructor >
       <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="key" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="value" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="info" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="config_key" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="config_value" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="config_info" jdbcType="VARCHAR" javaType="java.lang.String" />
     </constructor>
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -68,7 +68,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, key, value, info
+    id, config_key, config_value, config_info
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.card.alumni.entity.CaConfigExample" >
     select
@@ -101,11 +101,11 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.card.alumni.entity.CaConfig" useGeneratedKeys="true" keyProperty="id" >
-    insert into ca_config (id, key, value, 
-      info)
-    values (#{id,jdbcType=INTEGER}, #{key,jdbcType=VARCHAR}, #{value,jdbcType=VARCHAR}, 
-      #{info,jdbcType=VARCHAR})
+  <insert id="insert" parameterType="com.card.alumni.entity.CaConfig" useGeneratedKeys="true" keyProperty="id">
+    insert into ca_config (id, config_key, config_value, 
+      config_info)
+    values (#{id,jdbcType=INTEGER}, #{configKey,jdbcType=VARCHAR}, #{configValue,jdbcType=VARCHAR}, 
+      #{configInfo,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.card.alumni.entity.CaConfig" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_config
@@ -113,28 +113,28 @@
       <if test="id != null" >
         id,
       </if>
-      <if test="key != null" >
-        key,
+      <if test="configKey != null" >
+        config_key,
       </if>
-      <if test="value != null" >
-        value,
+      <if test="configValue != null" >
+        config_value,
       </if>
-      <if test="info != null" >
-        info,
+      <if test="configInfo != null" >
+        config_info,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="key != null" >
-        #{key,jdbcType=VARCHAR},
+      <if test="configKey != null" >
+        #{configKey,jdbcType=VARCHAR},
       </if>
-      <if test="value != null" >
-        #{value,jdbcType=VARCHAR},
+      <if test="configValue != null" >
+        #{configValue,jdbcType=VARCHAR},
       </if>
-      <if test="info != null" >
-        #{info,jdbcType=VARCHAR},
+      <if test="configInfo != null" >
+        #{configInfo,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -150,14 +150,14 @@
       <if test="record.id != null" >
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.key != null" >
-        key = #{record.key,jdbcType=VARCHAR},
+      <if test="record.configKey != null" >
+        config_key = #{record.configKey,jdbcType=VARCHAR},
       </if>
-      <if test="record.value != null" >
-        value = #{record.value,jdbcType=VARCHAR},
+      <if test="record.configValue != null" >
+        config_value = #{record.configValue,jdbcType=VARCHAR},
       </if>
-      <if test="record.info != null" >
-        info = #{record.info,jdbcType=VARCHAR},
+      <if test="record.configInfo != null" >
+        config_info = #{record.configInfo,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -167,9 +167,9 @@
   <update id="updateByExample" parameterType="map" >
     update ca_config
     set id = #{record.id,jdbcType=INTEGER},
-      key = #{record.key,jdbcType=VARCHAR},
-      value = #{record.value,jdbcType=VARCHAR},
-      info = #{record.info,jdbcType=VARCHAR}
+      config_key = #{record.configKey,jdbcType=VARCHAR},
+      config_value = #{record.configValue,jdbcType=VARCHAR},
+      config_info = #{record.configInfo,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -177,23 +177,23 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.card.alumni.entity.CaConfig" >
     update ca_config
     <set >
-      <if test="key != null" >
-        key = #{key,jdbcType=VARCHAR},
+      <if test="configKey != null" >
+        config_key = #{configKey,jdbcType=VARCHAR},
       </if>
-      <if test="value != null" >
-        value = #{value,jdbcType=VARCHAR},
+      <if test="configValue != null" >
+        config_value = #{configValue,jdbcType=VARCHAR},
       </if>
-      <if test="info != null" >
-        info = #{info,jdbcType=VARCHAR},
+      <if test="configInfo != null" >
+        config_info = #{configInfo,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.card.alumni.entity.CaConfig" >
     update ca_config
-    set key = #{key,jdbcType=VARCHAR},
-      value = #{value,jdbcType=VARCHAR},
-      info = #{info,jdbcType=VARCHAR}
+    set config_key = #{configKey,jdbcType=VARCHAR},
+      config_value = #{configValue,jdbcType=VARCHAR},
+      config_info = #{configInfo,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

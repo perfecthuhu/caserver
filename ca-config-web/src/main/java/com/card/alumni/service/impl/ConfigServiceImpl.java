@@ -90,7 +90,7 @@ public class ConfigServiceImpl implements ConfigService {
         }
         CaConfigExample example = new CaConfigExample();
         CaConfigExample.Criteria criteria = example.createCriteria();
-        criteria.andKeyEqualTo(key);
+        criteria.andConfigKeyEqualTo(key);
         List<CaConfig> configList = caConfigMapper.selectByExample(example);
 
         return CollectionUtils.isEmpty(configList) ? null : configList.get(0);
@@ -117,7 +117,7 @@ public class ConfigServiceImpl implements ConfigService {
         CaConfigExample example = new CaConfigExample();
         CaConfigExample.Criteria criteria = example.createCriteria();
         if (StringUtils.isNotBlank(key)) {
-            criteria.andKeyEqualTo(key);
+            criteria.andConfigKeyEqualTo(key);
         }
 
         List<CaConfig> configList = caConfigMapper.selectByExample(example);
@@ -140,9 +140,9 @@ public class ConfigServiceImpl implements ConfigService {
     private CaConfig convert(ConfigRequest request) {
         CaConfig entity = new CaConfig();
         entity.setId(request.getId());
-        entity.setKey(request.getKey());
-        entity.setValue(request.getValue());
-        entity.setInfo(request.getInfo());
+        entity.setConfigKey(request.getKey());
+        entity.setConfigValue(request.getValue());
+        entity.setConfigInfo(request.getInfo());
         return entity;
     }
 
@@ -161,9 +161,9 @@ public class ConfigServiceImpl implements ConfigService {
         }
         ConfigModel model = new ConfigModel();
         model.setId(entity.getId());
-        model.setKey(entity.getKey());
-        model.setValue(entity.getValue());
-        model.setInfo(entity.getInfo());
+        model.setKey(entity.getConfigKey());
+        model.setValue(entity.getConfigValue());
+        model.setInfo(entity.getConfigInfo());
         return model;
     }
 }
