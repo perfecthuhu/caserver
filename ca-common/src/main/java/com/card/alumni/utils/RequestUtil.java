@@ -43,8 +43,16 @@ public class RequestUtil {
     public static String getUserName() {
         User user = getUser();
         if (Objects.isNull(user)) {
-            return "匿名";
+            return "系统";
         }
         return user.getName();
+    }
+
+    public static String getUserAvatar() {
+        User user = getUser();
+        if (Objects.isNull(user)) {
+            return "";
+        }
+        return user.getPhotoImg();
     }
 }
