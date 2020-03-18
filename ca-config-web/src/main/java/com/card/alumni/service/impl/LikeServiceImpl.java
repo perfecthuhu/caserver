@@ -36,12 +36,7 @@ public class LikeServiceImpl implements LikeService {
         checkRequest(request);
         Integer userId = RequestUtil.getUserId();
 
-        CaLike like = findByTenantIdAndTargetIdAndUserId(request.getTenantId(), request.getTargetId(), userId);
-        if (Objects.nonNull(like)) {
-            throw new CaException("已经点赞过了,请勿重复操作~");
-        }
-
-        like = new CaLike();
+        CaLike like = new CaLike();
         like.setTenantId(request.getTenantId());
         like.setTargetId(request.getTargetId());
 
