@@ -3,6 +3,7 @@ package com.card.alumni.controller;
 import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.request.LikeRequest;
 import com.card.alumni.service.LikeService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/like")
+@Api(value = "点赞模块", tags = "点赞模块")
 public class LikeController {
 
     @Autowired
