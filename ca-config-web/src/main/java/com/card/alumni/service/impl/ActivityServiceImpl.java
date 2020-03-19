@@ -89,7 +89,7 @@ public class ActivityServiceImpl implements ActivityService {
         activity.setUpdater(RequestUtil.getUserId());
         activity.setUpdateTime(new Date());
 
-        caActivityMapper.updateByPrimaryKeyWithBLOBs(activity);
+        caActivityMapper.updateByPrimaryKeySelective(activity);
     }
 
     @Override
