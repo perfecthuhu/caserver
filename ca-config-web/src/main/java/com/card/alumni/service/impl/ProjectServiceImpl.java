@@ -57,6 +57,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         entity.setIsPublish(Boolean.FALSE);
         entity.setIsDelete(Boolean.FALSE);
+        entity.setViewCount(0L);
 
         caProjectMapper.insert(entity);
 

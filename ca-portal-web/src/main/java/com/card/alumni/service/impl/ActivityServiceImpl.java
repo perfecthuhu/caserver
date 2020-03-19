@@ -265,7 +265,7 @@ public class ActivityServiceImpl implements ActivityService {
         if (Objects.nonNull(request.getFlowStatus())) {
             initFlowStatusCriteria(criteria, request);
         }
-        if (Objects.nonNull(request.getStatus()) || request.getStatus() > 0) {
+        if (Objects.nonNull(request.getStatus()) && request.getStatus() > 0) {
             criteria.andStatusEqualTo(request.getStatus());
         }
         criteria.andCreatorEqualTo(RequestUtil.getUserId());
