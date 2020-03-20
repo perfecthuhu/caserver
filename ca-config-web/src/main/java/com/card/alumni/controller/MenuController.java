@@ -15,7 +15,6 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -123,7 +122,6 @@ public class MenuController {
     }
 
     @PostMapping("/list")
-    @PreAuthorize("@ca.check('menu:list')")
     @ApiOperation(value = "查询全部菜单树", notes = "查询全部菜单树")
     public UnifiedResult<List<MenuModel>> list(@RequestBody MenuQueryRequest request) throws Exception {
         List<MenuModel> modelList = menuService.listRankModelByRequest(request);
@@ -131,7 +129,6 @@ public class MenuController {
     }
 
     @GetMapping("/tree")
-    @PreAuthorize("@ca.check('menu:list', 'role:list')")
     @ApiOperation(value = "角色页查询全部菜单树", notes = "查询全部菜单树")
     public UnifiedResult<List<MenuModel>> tree() throws Exception {
         List<MenuModel> modelList = menuService.listAll();
