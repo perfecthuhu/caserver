@@ -73,7 +73,7 @@ public class FeedBackServiceImpl implements FeedBackService {
     @Override
     public FeedBackModel findModeById(Integer id) {
 
-        UserFeedback feedback = new UserFeedback();
+        UserFeedback feedback = findById(id);
 
         FeedBackModel model = convert2FeedBackModel(feedback);
 
