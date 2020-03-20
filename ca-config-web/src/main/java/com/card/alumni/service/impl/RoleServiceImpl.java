@@ -111,6 +111,8 @@ public class RoleServiceImpl implements RoleService {
         role.setIsDelete(Boolean.TRUE);
         role.setUpdateTime(new Date());
         role.setUpdater(RequestUtil.getUserId());
+
+        caRoleMapper.updateByPrimaryKeySelective(role);
     }
 
     @Override
