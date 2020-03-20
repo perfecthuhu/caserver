@@ -220,7 +220,7 @@ public class MenuServiceImpl implements MenuService {
         criteria.andPidEqualTo(parentId);
         criteria.andIsDeleteEqualTo(Boolean.FALSE);
 
-        example.setOrderByClause("rank asc");
+        example.setOrderByClause("sort asc");
 
         return caMenuMapper.selectByExample(example);
     }
@@ -236,7 +236,7 @@ public class MenuServiceImpl implements MenuService {
         criteria.andIdIn(idList);
         criteria.andIsDeleteEqualTo(Boolean.FALSE);
 
-        example.setOrderByClause("rank asc");
+        example.setOrderByClause("sort asc");
 
         return caMenuMapper.selectByExample(example);
     }
@@ -275,7 +275,7 @@ public class MenuServiceImpl implements MenuService {
         }
         criteria.andIsDeleteEqualTo(Boolean.FALSE);
 
-        example.setOrderByClause("rank asc");
+        example.setOrderByClause("sort asc");
 
         List<CaMenu> menuList = caMenuMapper.selectByExample(example);
 
