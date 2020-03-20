@@ -371,7 +371,7 @@
 
   <select id="getMaxRankByParentId" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
     select
-    MAX(rank)
+    MAX(sort)
     from ca_menu
     where pid = #{pid,jdbcType=INTEGER} and is_delete = 0
   </select>
