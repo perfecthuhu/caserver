@@ -3,12 +3,14 @@ package com.card.alumni.service.impl;
 import com.card.alumni.common.PageData;
 import com.card.alumni.constant.CaConstants;
 import com.card.alumni.dao.UserFeedbackMapper;
+import com.card.alumni.entity.CaUser;
 import com.card.alumni.entity.UserFeedback;
 import com.card.alumni.entity.UserFeedbackExample;
 import com.card.alumni.exception.CaConfigException;
 import com.card.alumni.model.FeedBackModel;
 import com.card.alumni.request.FeedBackRequest;
 import com.card.alumni.service.FeedBackService;
+import com.card.alumni.service.UserService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.collections4.CollectionUtils;
@@ -20,7 +22,9 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +33,9 @@ import java.util.stream.Collectors;
  */
 @Service
 public class FeedBackServiceImpl implements FeedBackService {
+
+    @Resource
+    private UserService userService;
 
     @Resource
     private UserFeedbackMapper userFeedbackMapper;
@@ -45,13 +52,16 @@ public class FeedBackServiceImpl implements FeedBackService {
         String orderType = StringUtils.isBlank(request.getOrderType()) ? "desc" : request.getOrderType();
 
         PageHelper.startPage(page, size);
-        UserFeedbackExample example =  buildUserFeedbackExample(request);
+        UserFeedbackExample example = buildUserFeedbackExample(request);
         example.setOrderByClause(orderField + CaConstants.BLANK + orderType);
 
         List<UserFeedback> userFeedbacks = userFeedbackMapper.selectByExample(example);
         PageInfo<UserFeedback> pageInfo = new PageInfo<>(userFeedbacks);
 
-        return new PageData<>(pageInfo.getTotal(), convert2ModelList(pageInfo));
+        List<FeedBackModel> modelList = convert2ModelList(pageInfo);
+        populateUserList(modelList);
+
+        return new PageData<>(pageInfo.getTotal(), modelList);
 
     }
 
@@ -65,7 +75,47 @@ public class FeedBackServiceImpl implements FeedBackService {
 
         UserFeedback feedback = new UserFeedback();
 
-        return convert2FeedBackModel(feedback);
+        FeedBackModel model = convert2FeedBackModel(feedback);
+
+        populateUserInfo(model);
+
+        return model;
+    }
+
+    private void populateUserList(List<FeedBackModel> modelList) {
+        if (CollectionUtils.isEmpty(modelList)) {
+            return;
+        }
+
+        List<Integer> userIdList = modelList.stream().filter(Objects::nonNull).map(FeedBackModel::getUserId).collect(Collectors.toList());
+
+        List<CaUser> userList = userService.listByIdList(userIdList);
+        if (CollectionUtils.isEmpty(userIdList)) {
+            return;
+        }
+
+        Map<Integer, CaUser> userMap = userList.stream().filter(Objects::nonNull).collect(Collectors.toMap(CaUser::getId, Function.identity(), (k1, k2) -> k2));
+        modelList.forEach(feedBackModel -> {
+            if (Objects.nonNull(feedBackModel.getUserId())) {
+                CaUser user = userMap.get(feedBackModel.getUserId());
+                if (Objects.nonNull(user)) {
+                    feedBackModel.setUserName(user.getName());
+                }
+            }
+        });
+    }
+
+    private void populateUserInfo(FeedBackModel model) {
+        if (Objects.isNull(model) || Objects.isNull(model.getUserId())) {
+            return;
+        }
+
+        CaUser user = userService.findById(model.getUserId());
+        if (Objects.isNull(user)) {
+            return;
+        }
+
+        model.setUserName(user.getName());
     }
 
     private List<FeedBackModel> convert2ModelList(PageInfo<UserFeedback> pageInfo) {

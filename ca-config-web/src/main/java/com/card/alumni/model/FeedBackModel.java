@@ -23,6 +23,9 @@ public class FeedBackModel implements Serializable {
     @ApiModelProperty(value = "用户ID")
     private Integer userId;
 
+    @ApiModelProperty(value = "用户名称")
+    private String userName;
+
     @ApiModelProperty(value = "反馈信息")
     private String feedbackDesc;
 
