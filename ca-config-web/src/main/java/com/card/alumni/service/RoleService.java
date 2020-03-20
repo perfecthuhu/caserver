@@ -5,6 +5,7 @@ import com.card.alumni.entity.CaRole;
 import com.card.alumni.entity.CaRoleMenuRelation;
 import com.card.alumni.exception.CaConfigException;
 import com.card.alumni.model.RoleModel;
+import com.card.alumni.model.UserModel;
 import com.card.alumni.request.RoleQueryRequest;
 import com.card.alumni.request.RoleRequest;
 
@@ -50,5 +51,7 @@ public interface RoleService {
     void deleteUserRoleRelByRoleId(Integer roleId) throws CaConfigException;
 
     List<Integer> listUserIdsByRoleId(Integer roleId) throws CaConfigException;
+
+    List<UserModel> listUserByRoleId(Integer roleId);
 
 }

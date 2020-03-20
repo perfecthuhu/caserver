@@ -5,6 +5,7 @@ import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.exception.CaConfigException;
 import com.card.alumni.model.MenuModel;
 import com.card.alumni.model.RoleModel;
+import com.card.alumni.model.UserModel;
 import com.card.alumni.request.RoleQueryRequest;
 import com.card.alumni.request.RoleRequest;
 import com.card.alumni.service.MenuService;
@@ -93,6 +94,15 @@ public class RoleController {
         LOGGER.info("{} find role by id. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
 
         return UnifiedResult.success(roleService.findModelById(id));
+    }
+
+    @GetMapping("/{id}/users")
+    @ApiOperation(value = "根据角色ID查询关联的用户列表", notes = "根据角色ID查询关联的用户列表")
+    public UnifiedResult<List<UserModel>> listUserByRoleId(@PathVariable("id") Integer id) throws Exception {
+
+        LOGGER.info("{} list user by role id. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
+
+        return UnifiedResult.success(roleService.listUserByRoleId(id));
     }
 
     @GetMapping("/all")

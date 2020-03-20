@@ -9,15 +9,18 @@ import com.card.alumni.entity.CaRole;
 import com.card.alumni.entity.CaRoleExample;
 import com.card.alumni.entity.CaRoleMenuRelation;
 import com.card.alumni.entity.CaRoleMenuRelationExample;
+import com.card.alumni.entity.CaUser;
 import com.card.alumni.entity.CaUserRoleRelation;
 import com.card.alumni.entity.CaUserRoleRelationExample;
 import com.card.alumni.exception.CaConfigException;
 import com.card.alumni.model.MenuModel;
 import com.card.alumni.model.RoleModel;
+import com.card.alumni.model.UserModel;
 import com.card.alumni.request.RoleQueryRequest;
 import com.card.alumni.request.RoleRequest;
 import com.card.alumni.service.MenuService;
 import com.card.alumni.service.RoleService;
+import com.card.alumni.service.UserService;
 import com.card.alumni.utils.RequestUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -25,6 +28,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +46,9 @@ import java.util.stream.Collectors;
 public class RoleServiceImpl implements RoleService {
 
     private static final int ROLE_NAME_MAX_LEN = 50;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private MenuService menuService;
@@ -334,6 +341,33 @@ public class RoleServiceImpl implements RoleService {
 
         return relationList.stream().filter(Objects::nonNull)
                 .map(CaUserRoleRelation::getUserId).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserModel> listUserByRoleId(Integer roleId) {
+        List<Integer> userIdList = listUserIdsByRoleId(roleId);
+
+        List<CaUser> userList = userService.listByIdList(userIdList);
+
+        return convert2UserModelList(userList);
+    }
+
+    private List<UserModel> convert2UserModelList(List<CaUser> userList) {
+        if (CollectionUtils.isEmpty(userList)) {
+            return Lists.newArrayList();
+        }
+
+        return userList.stream().filter(Objects::nonNull)
+                .map(this::convert2UserModel).collect(Collectors.toList());
+    }
+
+    private UserModel convert2UserModel(CaUser user) {
+        if (Objects.isNull(user)) {
+            return null;
+        }
+        UserModel model = new UserModel();
+        BeanUtils.copyProperties(user, model);
+        return model;
     }
 
     private void populateMenuList(List<RoleModel> roleModelList) {
