@@ -19,7 +19,6 @@ import com.card.alumni.vo.AlumniVO;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.enums.AlumniAuditStatusEnum;
 import com.card.alumni.vo.enums.AlumniRoleEnum;
-import com.card.alumni.vo.enums.AlumniTypeEnum;
 import com.card.alumni.vo.query.AlumniQuery;
 import com.card.alumni.vo.query.UserQuery;
 import com.github.pagehelper.PageHelper;
@@ -33,7 +32,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -186,7 +190,7 @@ public class AlumniServiceImpl implements AlumniService {
         List<AlumniVO> resultList = new ArrayList<>();
         if (!CollectionUtils.isEmpty(caAlumniRoles)) {
             List<Integer> alumniIds = caAlumniRoles.stream().map(CaAlumniRole::getAlumniId).collect(Collectors.toList());
-            CaAlumniExample alumniExample  = new CaAlumniExample();
+            CaAlumniExample alumniExample = new CaAlumniExample();
             alumniExample.createCriteria().andIdIn(alumniIds);
 
             List<CaAlumni> caAlumni = caAlumniMapper.selectByExample(alumniExample);
@@ -222,8 +226,41 @@ public class AlumniServiceImpl implements AlumniService {
         }
     }
 
+    private CaAlumniAuditLog findAlumniAuditByAlumniIdAndUserId(Integer alumniId, Integer userId, AlumniAuditStatusEnum statusEnum) {
+        CaAlumniAuditLogExample example = new CaAlumniAuditLogExample();
+        CaAlumniAuditLogExample.Criteria criteria = example.createCriteria();
+        criteria.andAlumniIdEqualTo(alumniId);
+        criteria.andStudentIdEqualTo(userId);
+        criteria.andAuditStatusEqualTo(statusEnum.getCode());
+        List<CaAlumniAuditLog> alumniAuditLogs = caAlumniAuditLogMapper.selectByExample(example);
+        return CollectionUtils.isEmpty(alumniAuditLogs) ? null : alumniAuditLogs.get(0);
+    }
+
+    private CaAlumniRole findAlumniRoleByAlumniIdAndUserId(Integer alumniId, Integer userId) {
+        CaAlumniRoleExample example = new CaAlumniRoleExample();
+        CaAlumniRoleExample.Criteria criteria = example.createCriteria();
+        criteria.andAlumniIdEqualTo(alumniId);
+        criteria.andStudentIdEqualTo(userId);
+        List<CaAlumniRole> alumniRoles = caAlumniRoleMapper.selectByExample(example);
+        return CollectionUtils.isEmpty(alumniRoles) ? null : alumniRoles.get(0);
+    }
+
     @Override
     public Boolean applyAlumni(Integer alumniId) throws CaException {
+        if (Objects.isNull(alumniId)) {
+            throw new CaException("协会ID不能为空");
+        }
+
+        CaAlumniAuditLog alumniAuditLog = findAlumniAuditByAlumniIdAndUserId(alumniId, RequestUtil.getUserId(), AlumniAuditStatusEnum.APPLY);
+        if (Objects.nonNull(alumniAuditLog)) {
+            throw new CaException("您已申请过了,请勿频繁操作~");
+        }
+
+        CaAlumniRole alumniRole = findAlumniRoleByAlumniIdAndUserId(alumniId, RequestUtil.getUserId());
+        if (Objects.nonNull(alumniRole)) {
+            throw new CaException("您已经在该协会中了,请勿重复操作~");
+        }
+
         int count = caAlumniAuditLogMapper.insert(buildCaAlumniAuditLog(alumniId));
         if (count != 1) {
             throw new CaException("申请失败");
