@@ -69,6 +69,16 @@ public class UserFriendApplyServiceImpl implements UserFriendApplyService {
             throw new CaException("已经是好友了，无需重复申请");
         }
 
+        CaUserFriendApply friendApply1 = findBySponsorIdAndTargetId(userId, request.getTargetId(), FriendApplyStatusEnum.WAITING);
+        if (Objects.nonNull(friendApply1)) {
+            throw new CaException("您已经发起过好友申请~");
+        }
+
+        CaUserFriendApply friendApply2 = findBySponsorIdAndTargetId(request.getTargetId(), userId, FriendApplyStatusEnum.WAITING);
+        if (Objects.nonNull(friendApply2)) {
+            throw new CaException("该用户已经向您发起了好友申请~");
+        }
+
         apply.setSponsorId(userId);
         apply.setUpdater(userId);
 
@@ -152,6 +162,20 @@ public class UserFriendApplyServiceImpl implements UserFriendApplyService {
         }
 
         return caUserFriendApplyMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public CaUserFriendApply findBySponsorIdAndTargetId(Integer sponsorId, Integer targetId, FriendApplyStatusEnum status) {
+        if (Objects.isNull(sponsorId) || Objects.isNull(targetId)) {
+            throw new CaException("参数不能为空");
+        }
+        CaUserFriendApplyExample example = new CaUserFriendApplyExample();
+        CaUserFriendApplyExample.Criteria criteria = example.createCriteria();
+        criteria.andSponsorIdEqualTo(sponsorId);
+        criteria.andTargetIdEqualTo(RequestUtil.getUserId());
+        criteria.andStatusEqualTo(status.getCode());
+        List<CaUserFriendApply> friendApplyList = caUserFriendApplyMapper.selectByExample(example);
+        return CollectionUtils.isEmpty(friendApplyList) ? null : friendApplyList.get(0);
     }
 
     @Override

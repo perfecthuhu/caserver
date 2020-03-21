@@ -2,6 +2,7 @@ package com.card.alumni.service;
 
 import com.card.alumni.common.PageData;
 import com.card.alumni.entity.CaUserFriendApply;
+import com.card.alumni.enums.FriendApplyStatusEnum;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.model.UserFriendApplyModel;
 import com.card.alumni.request.UserFriendApplyQueryRequest;
@@ -48,6 +49,16 @@ public interface UserFriendApplyService {
      * @throws CaException e
      */
     CaUserFriendApply findById(Integer id) throws CaException;
+
+    /**
+     * 根据发起人和目标人查询申请关系
+     *
+     * @param sponsorId 发起人ID
+     * @param targetId  目标ID
+     * @param status    好友申请枚举
+     * @return 申请关系
+     */
+    CaUserFriendApply findBySponsorIdAndTargetId(Integer sponsorId, Integer targetId, FriendApplyStatusEnum status);
 
     /**
      * 查询我未处理的好友申请数量
