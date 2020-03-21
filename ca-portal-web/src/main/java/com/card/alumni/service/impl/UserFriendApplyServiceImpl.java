@@ -172,7 +172,7 @@ public class UserFriendApplyServiceImpl implements UserFriendApplyService {
         CaUserFriendApplyExample example = new CaUserFriendApplyExample();
         CaUserFriendApplyExample.Criteria criteria = example.createCriteria();
         criteria.andSponsorIdEqualTo(sponsorId);
-        criteria.andTargetIdEqualTo(RequestUtil.getUserId());
+        criteria.andTargetIdEqualTo(targetId);
         criteria.andStatusEqualTo(status.getCode());
         List<CaUserFriendApply> friendApplyList = caUserFriendApplyMapper.selectByExample(example);
         return CollectionUtils.isEmpty(friendApplyList) ? null : friendApplyList.get(0);
