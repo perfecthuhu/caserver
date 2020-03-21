@@ -3,6 +3,7 @@ package com.card.alumni.controller;
 import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResult;
 import com.card.alumni.model.FeedBackModel;
+import com.card.alumni.request.FeedBackQueryRequest;
 import com.card.alumni.request.FeedBackRequest;
 import com.card.alumni.service.FeedBackService;
 import io.swagger.annotations.Api;
@@ -29,14 +30,9 @@ public class FeedBackController {
     @Resource
     private FeedBackService feedBackService;
 
-    /**
-     * 分页查询问题反馈
-     * @param feedBackRequest
-     * @return
-     */
     @PostMapping("/page")
     @ApiOperation(value = "分页查询用户反馈", notes = "分页查询用户反馈")
-    public UnifiedResult<PageData<FeedBackModel>> queryPage(@RequestBody FeedBackRequest feedBackRequest) {
+    public UnifiedResult<PageData<FeedBackModel>> queryPage(@RequestBody FeedBackQueryRequest feedBackRequest) {
         return UnifiedResult.success(feedBackService.queryPage(feedBackRequest));
     }
 
@@ -46,14 +42,17 @@ public class FeedBackController {
         return UnifiedResult.success(feedBackService.findModeById(id));
     }
 
-    /**
-     * 解决反馈问题（支持批量）
-     * @param feedBackRequest
-     */
-    @PutMapping
-    @ApiOperation(value = "将反馈问题置为已解决", notes = "将反馈问题置为已解决")
-    public UnifiedResult<Boolean> update(FeedBackRequest feedBackRequest) {
-        feedBackService.update(feedBackRequest);
+    @PutMapping("/{id}")
+    @ApiOperation(value = "单个解决", notes = "单个解决")
+    public UnifiedResult<Boolean> resolve(@PathVariable("id") Integer id) {
+        feedBackService.resolve(id);
+        return UnifiedResult.success();
+    }
+
+    @PutMapping("/batch")
+    @ApiOperation(value = "批量解决", notes = "批量解决")
+    public UnifiedResult<Boolean> batchResolve(FeedBackRequest feedBackRequest) {
+        feedBackService.batchResolve(feedBackRequest);
         return UnifiedResult.success();
     }
 }

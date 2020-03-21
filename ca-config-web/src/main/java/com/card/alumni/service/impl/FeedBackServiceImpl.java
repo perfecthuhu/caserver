@@ -8,6 +8,7 @@ import com.card.alumni.entity.UserFeedback;
 import com.card.alumni.entity.UserFeedbackExample;
 import com.card.alumni.exception.CaConfigException;
 import com.card.alumni.model.FeedBackModel;
+import com.card.alumni.request.FeedBackQueryRequest;
 import com.card.alumni.request.FeedBackRequest;
 import com.card.alumni.service.FeedBackService;
 import com.card.alumni.service.UserService;
@@ -41,7 +42,7 @@ public class FeedBackServiceImpl implements FeedBackService {
     private UserFeedbackMapper userFeedbackMapper;
 
     @Override
-    public PageData<FeedBackModel> queryPage(FeedBackRequest request) {
+    public PageData<FeedBackModel> queryPage(FeedBackQueryRequest request) {
         if (Objects.isNull(request)) {
             throw new CaConfigException("查询请求不能为空");
         }
@@ -80,6 +81,37 @@ public class FeedBackServiceImpl implements FeedBackService {
         populateUserInfo(model);
 
         return model;
+    }
+
+    @Override
+    public void resolve(Integer id) {
+        UserFeedback feedback = findById(id);
+        if (Objects.isNull(feedback)) {
+            throw new CaConfigException("反馈不存在");
+        }
+
+        feedback.setStatus(0);
+        feedback.setUpdateTime(new Date());
+
+        userFeedbackMapper.updateByPrimaryKeySelective(feedback);
+    }
+
+    @Override
+    public void batchResolve(FeedBackRequest request) {
+        if (Objects.isNull(request)) {
+            throw new CaConfigException("请求不能为空");
+        }
+        if (CollectionUtils.isEmpty(request.getIdList())) {
+            throw new CaConfigException("反馈ID集合不能为空");
+        }
+        UserFeedbackExample example = new UserFeedbackExample();
+        example.createCriteria().andIdIn(request.getIdList());
+
+        UserFeedback userFeedback = new UserFeedback();
+        userFeedback.setStatus(Objects.isNull(request.getStatus()) ? 0 : request.getStatus());
+        userFeedback.setUpdateTime(new Date());
+
+        userFeedbackMapper.updateByExampleSelective(userFeedback, example);
     }
 
     private void populateUserList(List<FeedBackModel> modelList) {
@@ -135,40 +167,16 @@ public class FeedBackServiceImpl implements FeedBackService {
         return feedBackModel;
     }
 
-    private UserFeedbackExample buildUserFeedbackExample(FeedBackRequest feedBackRequest) {
+    private UserFeedbackExample buildUserFeedbackExample(FeedBackQueryRequest feedBackRequest) {
         UserFeedbackExample example = new UserFeedbackExample();
         UserFeedbackExample.Criteria criteria = example.createCriteria();
         if (Objects.isNull(feedBackRequest)) {
             return example;
-        }
-        if (Objects.nonNull(feedBackRequest.getId())) {
-            criteria.andIdEqualTo(feedBackRequest.getId());
-        }
-        if (Objects.nonNull(feedBackRequest.getUserId())) {
-            criteria.andUserIdEqualTo(feedBackRequest.getUserId());
         }
         if (Objects.nonNull(feedBackRequest.getStatus())) {
             criteria.andStatusEqualTo(feedBackRequest.getStatus());
         }
 
         return example;
-    }
-
-    @Override
-    public void update(FeedBackRequest feedBackRequest) {
-        if (Objects.isNull(feedBackRequest)) {
-            throw new CaConfigException("参数为空");
-        }
-        if (CollectionUtils.isEmpty(feedBackRequest.getIdList())) {
-            throw new CaConfigException("参数为空");
-        }
-        UserFeedbackExample example = new UserFeedbackExample();
-        example.createCriteria().andIdIn(feedBackRequest.getIdList());
-
-        UserFeedback userFeedback = new UserFeedback();
-        userFeedback.setStatus(0);
-        userFeedback.setUpdateTime(new Date(System.currentTimeMillis()));
-
-        userFeedbackMapper.updateByExampleSelective(userFeedback, example);
     }
 }
