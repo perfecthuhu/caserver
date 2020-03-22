@@ -98,10 +98,10 @@ public class BaseInfoServiceImpl implements BaseInfoService {
         }
         Integer homeId = caHomePages.get(0).getId();
         CaHomeBannerExample exampleBanner = new CaHomeBannerExample();
-        exampleBanner.createCriteria().andHomePageIdEqualTo(homeId);
+        exampleBanner.createCriteria().andHomePageIdEqualTo(homeId).andIsDeleteEqualTo(Boolean.FALSE);
         List<CaHomeBanner> caHomeBanners = caHomeBannerMapper.selectByExample(exampleBanner);
         CaHomeGuideExample exampleGuide = new CaHomeGuideExample();
-        exampleGuide.createCriteria().andHomePageIdEqualTo(homeId);
+        exampleGuide.createCriteria().andHomePageIdEqualTo(homeId).andIsDeleteEqualTo(Boolean.FALSE);
         List<CaHomeGuide> caHomeGuides = caHomeGuideMapper.selectByExample(exampleGuide);
         homeVO.setBannerVOList(caHomeBanners.stream().map(s -> {
             HomeBannerVO homeBannerVO = new HomeBannerVO();
