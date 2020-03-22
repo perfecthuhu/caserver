@@ -1,15 +1,12 @@
 package com.card.alumni.exception;
 
-import com.card.alumni.common.UnifiedResponse;
 import com.card.alumni.common.UnifiedResult;
-import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
  * 全局异常类
