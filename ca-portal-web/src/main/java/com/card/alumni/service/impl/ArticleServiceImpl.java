@@ -96,6 +96,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public PageData<ArticleVO> queryPage(ArticleQuery articleQuery) {
         CaArticleExample example = buildCaArticleExample(articleQuery);
+        example.setOrderByClause("create_time desc");
 
         PageHelper.startPage(articleQuery.getPage(), articleQuery.getPageSize());
 
