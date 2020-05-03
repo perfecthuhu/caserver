@@ -2,7 +2,7 @@
 <configuration status="warn">
     <properties>
         <!-- 日志存储位置 -->
-        <property name="LOG_HOME">ca-portal-web/data/logs</property>
+        <property name="LOG_HOME">${sys:catalina.home}/logs/</property>
 
         <!-- 日志文件默认输出格式,不带行号输出(行号显示会影响日志输出性能);%C:大写,类名;%M:方法名;%m:错误信息;%n:换行 -->
         <property name="log_pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %C.%M - %m%n</property>
