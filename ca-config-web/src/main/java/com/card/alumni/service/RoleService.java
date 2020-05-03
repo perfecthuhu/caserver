@@ -8,6 +8,7 @@ import com.card.alumni.model.RoleModel;
 import com.card.alumni.model.UserModel;
 import com.card.alumni.request.RoleQueryRequest;
 import com.card.alumni.request.RoleRequest;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Map;
@@ -54,4 +55,5 @@ public interface RoleService {
 
     List<UserModel> listUserByRoleId(Integer roleId);
 
+    void batchSaveUserRoleRel(Integer id, List<Integer> userIdList);
 }

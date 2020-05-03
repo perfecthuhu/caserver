@@ -352,6 +352,55 @@ public class RoleServiceImpl implements RoleService {
         return convert2UserModelList(userList);
     }
 
+    @Override
+    public void batchSaveUserRoleRel(Integer id, List<Integer> userIdList) {
+        if (CollectionUtils.isEmpty(userIdList)) {
+            delUserRoleRel(id);
+            return;
+        }
+
+        Date now = new Date();
+        Integer operatorId = RequestUtil.getUserId();
+        List<CaUserRoleRelation> relationList = Lists.newLinkedList();
+        for (Integer userId : userIdList) {
+            CaUserRoleRelation relation = new CaUserRoleRelation();
+            relation.setRoleId(id);
+            relation.setUserId(userId);
+            relation.setCreateTime(now);
+            relation.setUpdateTime(now);
+            relation.setCreator(operatorId);
+            relation.setUpdater(operatorId);
+            relation.setIsDelete(Boolean.FALSE);
+            relationList.add(relation);
+        }
+
+        if (CollectionUtils.isEmpty(relationList)) {
+            return;
+        }
+
+        caUserRoleRelationMapper.batchInsert(relationList);
+    }
+
+    /**
+     * 删除用户角色关系
+     * @param roleId
+     */
+    private void delUserRoleRel(Integer roleId){
+        List<CaUserRoleRelation> relationList = userService.listUserRoleRelByRoleId(roleId);
+        if (CollectionUtils.isEmpty(relationList)) {
+            return;
+        }
+
+        Integer operatorId = RequestUtil.getUserId();
+        relationList.forEach(relation -> {
+            relation.setUpdateTime(new Date());
+            relation.setUpdater(operatorId);
+            relation.setIsDelete(Boolean.TRUE);
+        });
+
+        caUserRoleRelationMapper.batchUpdate(relationList);
+    }
+
     private List<UserModel> convert2UserModelList(List<CaUser> userList) {
         if (CollectionUtils.isEmpty(userList)) {
             return Lists.newArrayList();

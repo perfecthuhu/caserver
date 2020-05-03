@@ -50,4 +50,6 @@ public interface UserService {
 
     List<Integer> listRoleIdsByUserId(Integer userId) throws CaConfigException;
 
+    List<CaUserRoleRelation> listUserRoleRelByRoleId(Integer roleId) throws CaConfigException;
+
 }

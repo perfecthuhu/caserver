@@ -348,6 +348,19 @@ public class UserServiceImpl implements UserService {
                 .map(CaUserRoleRelation::getRoleId).collect(Collectors.toList());
     }
 
+    @Override
+    public List<CaUserRoleRelation> listUserRoleRelByRoleId(Integer roleId) throws CaConfigException {
+        if (Objects.isNull(roleId)) {
+            throw new CaConfigException("角色ID不能为空");
+        }
+        CaUserRoleRelationExample example = new CaUserRoleRelationExample();
+        CaUserRoleRelationExample.Criteria criteria = example.createCriteria();
+        criteria.andIsDeleteEqualTo(Boolean.FALSE);
+        criteria.andRoleIdEqualTo(roleId);
+
+        return caUserRoleRelationMapper.selectByExample(example);
+    }
+
     private void checkParam(UserRequest request) throws CaConfigException {
         if (Objects.isNull(request)) {
             throw new CaConfigException("用户信息不能为空");

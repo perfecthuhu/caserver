@@ -11,6 +11,7 @@ import com.card.alumni.request.RoleRequest;
 import com.card.alumni.service.MenuService;
 import com.card.alumni.service.RoleService;
 import com.card.alumni.utils.RequestUtil;
+import com.google.common.base.Preconditions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author liumingyu
@@ -137,5 +139,14 @@ public class RoleController {
         LOGGER.info("{} list menus by roleId. roleId = {}, operatorId = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
         List<Integer> roleIds = roleService.listMenuIdsByRoleId(id);
         return UnifiedResult.success(menuService.listRankModelByIdList(roleIds));
+    }
+
+    @PostMapping("/{id}/users")
+    @ApiOperation(value = "批量保存角色和用户的关联关系", notes = "批量保存角色和用户的关联关系")
+    public UnifiedResult batchSaveUserRoleRel(@PathVariable("id") Integer id, @RequestBody List<Integer> userIdList) throws Exception {
+        LOGGER.info("{} batch save user role rel. roleId = {}, useerIdList = {}, operatorId = {}", LOGGER_PREFIX, id, userIdList, RequestUtil.getUserId().toString());
+        Preconditions.checkArgument(Objects.nonNull(id), "roleId is null");
+        roleService.batchSaveUserRoleRel(id, userIdList);
+        return UnifiedResult.success();
     }
 }
