@@ -15,6 +15,9 @@
       <arg column="updater" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="is_delete" jdbcType="BIT" javaType="java.lang.Boolean" />
+      <arg column="weights" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="hasTop" jdbcType="BIT" javaType="java.lang.Boolean" />
+      <arg column="topTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
     </constructor>
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="com.card.alumni.entity.CaArticle" >
@@ -31,6 +34,9 @@
       <arg column="updater" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="is_delete" jdbcType="BIT" javaType="java.lang.Boolean" />
+      <arg column="weights" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="hasTop" jdbcType="BIT" javaType="java.lang.Boolean" />
+      <arg column="topTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="content" jdbcType="LONGVARCHAR" javaType="java.lang.String" />
     </constructor>
   </resultMap>
@@ -94,7 +100,7 @@
   </sql>
   <sql id="Base_Column_List" >
     id, title, sub_title, type, is_publish, publisher, publish_time, creator, create_time, 
-    updater, update_time, is_delete
+    updater, update_time, is_delete, weights, has_top, top_time
   </sql>
   <sql id="Blob_Column_List" >
     content
@@ -131,7 +137,7 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultType="com.card.alumni.entity.CaArticle" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     ,
@@ -154,12 +160,12 @@
       type, is_publish, publisher, 
       publish_time, creator, create_time, 
       updater, update_time, is_delete, 
-      content)
+      content, weights, has_top, top_time)
     values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{subTitle,jdbcType=VARCHAR}, 
       #{type,jdbcType=INTEGER}, #{isPublish,jdbcType=BIT}, #{publisher,jdbcType=INTEGER}, 
       #{publishTime,jdbcType=TIMESTAMP}, #{creator,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updater,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=BIT}, 
-      #{content,jdbcType=LONGVARCHAR})
+      #{content,jdbcType=LONGVARCHAR}, #{weights, jdbcType=INTEGER}, #{hasTop, jdbcType=BIT}, #{topTime, jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.card.alumni.entity.CaArticle" >
     insert into ca_article
@@ -374,6 +380,9 @@
       </if>
       <if test="content != null" >
         content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="weights != null" >
+        weights = #{weights,jdbcType=LONGVARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}

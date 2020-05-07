@@ -36,4 +36,9 @@ public class CaArticle {
 
     private String content;
 
+    private Integer weights;
+
+    private Boolean hasTop;
+
+    private Date topTime;
 }

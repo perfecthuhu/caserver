@@ -22,6 +22,7 @@ import com.card.alumni.utils.RequestUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -184,13 +185,14 @@ public class AlumniServiceImpl implements AlumniService {
         CaAlumniAuditLog caAlumniAuditLog = caAlumniAuditLogMapper.selectByPrimaryKey(alumniId);
 
         switch (status) {
-            case PASS:
+            case APPLY:
                 insertAlumniRole(caAlumniAuditLog);
                 break;
             case EXIT:
                 deleteAlumniRole(caAlumniAuditLog);
                 break;
             default:
+                throw new CaConfigException("审核失败");
         }
         CaAlumniAuditLog alumniAuditLog = new CaAlumniAuditLog();
         alumniAuditLog.setId(alumniId);
@@ -352,11 +354,34 @@ public class AlumniServiceImpl implements AlumniService {
             throw new CaConfigException("查询协会失败");
         }
 
-        Map<Integer, UserModel> userModelMap = userVOList.stream().collect(Collectors.toMap(UserModel::getId, Function.identity()));
+        Map<Integer, UserModel> userModelMap = userVOList.stream()
+                .filter(u -> {
+                    if (StringUtils.isNotBlank(queryRequest.getName()) && StringUtils.isNotBlank(queryRequest.getAlumniName())){
+                        return u.getName().equals(queryRequest.getName()) && u.getAlumniName().equals(queryRequest.getAlumniName());
+                    }
+                    if (StringUtils.isNotBlank(queryRequest.getName())){
+                        return u.getName().equals(queryRequest.getName());
+                    }
+                    if (StringUtils.isNotBlank(queryRequest.getAlumniName())){
+                        return u.getAlumniName().equals(queryRequest.getAlumniName());
+                    }
+                    return Boolean.TRUE;
+                })
+                .collect(Collectors.toMap(UserModel::getId, Function.identity()));
 
-        Map<Integer, AlumniModel> alumniModelMap = alumniModelList.stream().collect(Collectors.toMap(AlumniModel::getId, Function.identity()));
+        Map<Integer, AlumniModel> alumniModelMap = alumniModelList.stream()
+                .filter(t -> {
+                    if (StringUtils.isNotBlank(queryRequest.getAlumniName())){
+                        return t.getName().equals(queryRequest.getAlumniName());
+                    }
+                    return Boolean.TRUE;
+                })
+                .collect(Collectors.toMap(AlumniModel::getId, Function.identity()));
 
         List<AlumniAuditModel> resultList = caAlumniAuditLogs.stream().map(s -> {
+            if (Objects.isNull(alumniModelMap.get(s.getAlumniId())) || Objects.isNull(userModelMap.get(s.getStudentId()))){
+                return null;
+            }
             AlumniAuditModel alumniAuditModel = new AlumniAuditModel();
             alumniAuditModel.setId(s.getId());
             alumniAuditModel.setAlumniModel(alumniModelMap.get(s.getAlumniId()));

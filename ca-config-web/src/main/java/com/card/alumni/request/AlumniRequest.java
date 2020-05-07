@@ -26,6 +26,9 @@ public class AlumniRequest extends BaseQueryRequest implements Serializable {
     @ApiModelProperty(value = "组织名称")
     private String name;
 
+    @ApiModelProperty(value = "协会名称")
+    private String alumniName;
+
     @ApiModelProperty(value = "组织类型（1：学校组织， 2：校友会，3：协会）")
     private Integer type;
 

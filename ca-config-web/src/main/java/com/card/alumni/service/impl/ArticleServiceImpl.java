@@ -52,6 +52,7 @@ public class ArticleServiceImpl implements ArticleService {
         Date now = new Date();
         article.setCreateTime(now);
         article.setUpdateTime(now);
+        article.setTopTime(now);
 
         article.setIsPublish(Boolean.FALSE);
         article.setIsDelete(Boolean.FALSE);
@@ -75,8 +76,9 @@ public class ArticleServiceImpl implements ArticleService {
         if (Objects.isNull(article.getId())) {
             throw new CaConfigException("主键ID不能为空");
         }
-
-        article.setUpdateTime(new Date());
+        Date now = new Date();
+        article.setUpdateTime(now);
+        article.setTopTime(now);
         article.setUpdater(RequestUtil.getUserId());
 
         caArticleMapper.updateByPrimaryKeySelective(article);
@@ -238,6 +240,8 @@ public class ArticleServiceImpl implements ArticleService {
         entity.setTitle(request.getTitle());
         entity.setSubTitle(request.getSubTitle());
         entity.setContent(request.getContent());
+        entity.setWeights(request.getWeights());
+        entity.setHasTop(request.getHasTop());
         return entity;
     }
 }

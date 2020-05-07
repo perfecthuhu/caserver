@@ -30,4 +30,10 @@ public class ArticleRequest implements Serializable {
 
     @ApiModelProperty(value = "文章内容", required = true)
     private String content;
+
+    @ApiModelProperty(value = "权重", required = true)
+    private Integer weights;
+
+    @ApiModelProperty(value = "是否置顶", required = true)
+    private Boolean hasTop;
 }
