@@ -177,16 +177,8 @@ public class AlumniServiceImpl implements AlumniService {
     public Boolean auidtAlumniRecord(Integer alumniId, AlumniAuditStatusEnum status) throws CaException {
 
         CaAlumniAuditLog caAlumniAuditLog = caAlumniAuditLogMapper.selectByPrimaryKey(alumniId);
-
-        switch (status) {
-            case APPLY:
-                insertAlumniRole(caAlumniAuditLog);
-                break;
-            case EXIT:
-                deleteAlumniRole(caAlumniAuditLog);
-                break;
-            default:
-                throw new CaConfigException("审核失败");
+        if (!AlumniAuditStatusEnum.APPLY.getCode().equals(caAlumniAuditLog.getAuditStatus())) {
+            throw new CaConfigException("审核失败");
         }
         CaAlumniAuditLog alumniAuditLog = new CaAlumniAuditLog();
         alumniAuditLog.setId(alumniId);

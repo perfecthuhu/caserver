@@ -105,12 +105,8 @@
   <sql id="Blob_Column_List" >
     content
   </sql>
-  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.card.alumni.entity.CaArticleExample" >
+  <select id="selectByExampleWithBLOBs" resultType="com.card.alumni.entity.CaArticle" parameterType="com.card.alumni.entity.CaArticleExample" >
     select
-    <if test="distinct" >
-      distinct
-    </if>
-    'true' as QUERYID,
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
