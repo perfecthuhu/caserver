@@ -27,4 +27,6 @@ public interface CaAlumniAuditLogMapper {
     int updateByPrimaryKeySelective(CaAlumniAuditLog record);
 
     int updateByPrimaryKey(CaAlumniAuditLog record);
+
+    List<CaAlumniAuditLog> selectByNameLike(@Param("username") String username, @Param("alumniName") String alumniName, @Param("auditStatus") Integer auditStatus);
 }

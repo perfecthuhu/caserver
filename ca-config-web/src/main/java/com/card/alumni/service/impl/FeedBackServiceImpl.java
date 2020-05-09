@@ -12,8 +12,10 @@ import com.card.alumni.request.FeedBackQueryRequest;
 import com.card.alumni.request.FeedBackRequest;
 import com.card.alumni.service.FeedBackService;
 import com.card.alumni.service.UserService;
+import com.card.alumni.utils.RequestUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -25,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -92,6 +95,7 @@ public class FeedBackServiceImpl implements FeedBackService {
 
         feedback.setStatus(0);
         feedback.setUpdateTime(new Date());
+        feedback.setHandlerId(RequestUtil.getUserId());
 
         userFeedbackMapper.updateByPrimaryKeySelective(feedback);
     }
@@ -110,6 +114,7 @@ public class FeedBackServiceImpl implements FeedBackService {
         UserFeedback userFeedback = new UserFeedback();
         userFeedback.setStatus(Objects.isNull(request.getStatus()) ? 0 : request.getStatus());
         userFeedback.setUpdateTime(new Date());
+        userFeedback.setHandlerId(RequestUtil.getUserId());
 
         userFeedbackMapper.updateByExampleSelective(userFeedback, example);
     }
@@ -125,13 +130,20 @@ public class FeedBackServiceImpl implements FeedBackService {
         if (CollectionUtils.isEmpty(userIdList)) {
             return;
         }
+        Set<Integer> handlerIdList = modelList.stream().filter(Objects::nonNull).map(FeedBackModel::getHandlerId).collect(Collectors.toSet());
+        List<CaUser> handlerList = userService.listByIdList(Lists.newArrayList(handlerIdList));
 
         Map<Integer, CaUser> userMap = userList.stream().filter(Objects::nonNull).collect(Collectors.toMap(CaUser::getId, Function.identity(), (k1, k2) -> k2));
+        Map<Integer, CaUser> handlerMap = handlerList.stream().filter(Objects::nonNull).collect(Collectors.toMap(CaUser::getId, Function.identity(), (k1, k2) -> k2));
         modelList.forEach(feedBackModel -> {
             if (Objects.nonNull(feedBackModel.getUserId())) {
                 CaUser user = userMap.get(feedBackModel.getUserId());
+                CaUser handler = handlerMap.get(feedBackModel.getHandlerId());
                 if (Objects.nonNull(user)) {
                     feedBackModel.setUserName(user.getName());
+                }
+                if (Objects.nonNull(handler)){
+                    feedBackModel.setHandlerName(handler.getName());
                 }
             }
         });
@@ -147,7 +159,13 @@ public class FeedBackServiceImpl implements FeedBackService {
             return;
         }
 
+        CaUser handler = userService.findById(model.getHandlerId());
+        if (Objects.isNull(handler)) {
+            return;
+        }
+
         model.setUserName(user.getName());
+        model.setHandlerName(handler.getName());
     }
 
     private List<FeedBackModel> convert2ModelList(PageInfo<UserFeedback> pageInfo) {

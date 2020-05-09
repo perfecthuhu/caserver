@@ -32,6 +32,12 @@ public class FeedBackModel implements Serializable {
     @ApiModelProperty(value = "状态1，未处理，0已处理")
     private Integer status;
 
+    @ApiModelProperty(value = "处理人id")
+    private Integer handlerId;
+
+    @ApiModelProperty(value = "处理人")
+    private String handlerName;
+
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
 

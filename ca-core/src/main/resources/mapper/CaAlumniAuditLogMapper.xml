@@ -243,4 +243,17 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectByNameLike" resultType="com.card.alumni.entity.CaAlumniAuditLog">
+    select <include refid="Base_Column_List"/>
+    from ca_alumni_audit_log
+    where audit_status = #{auditStatus}
+    <if test="username != null" >
+      and student_id in (select id from ca_user where `name` like concat('%', #{username} ,'%'))
+    </if>
+    <if test="alumniName != null" >
+      and alumni_id in (select id from ca_alumni where `name` like concat('%', #{alumniName} ,'%'))
+    </if>
+
+  </select>
 </mapper>

@@ -370,7 +370,8 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private List<UserModel> convert2ModelList(List<CaUser> userList) {
+    @Override
+    public List<UserModel> convert2ModelList(List<CaUser> userList) {
         if (CollectionUtils.isEmpty(userList)) {
             return Lists.newArrayList();
         }

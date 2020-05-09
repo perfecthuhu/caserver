@@ -52,4 +52,5 @@ public interface UserService {
 
     List<CaUserRoleRelation> listUserRoleRelByRoleId(Integer roleId) throws CaConfigException;
 
+    List<UserModel> convert2ModelList(List<CaUser> userList);
 }

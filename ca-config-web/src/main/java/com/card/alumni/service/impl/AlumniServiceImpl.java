@@ -2,6 +2,7 @@ package com.card.alumni.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.card.alumni.common.PageData;
+import com.card.alumni.constant.CaConstants;
 import com.card.alumni.dao.CaAlumniAuditLogMapper;
 import com.card.alumni.dao.CaAlumniMapper;
 import com.card.alumni.dao.CaAlumniRoleMapper;
@@ -151,15 +152,8 @@ public class AlumniServiceImpl implements AlumniService {
     }
 
     private List<UserModel> queryByIdList(List<Integer> idList) throws CaConfigException {
-
-        UserQueryRequest userQuery = new UserQueryRequest();
-        userQuery.setUserIdList(idList);
-        PageData<UserModel> userModelPageData = userService.pageByRequest(userQuery);
-        List<UserModel> userVOList = null;
-        if (Objects.nonNull(userModelPageData)) {
-            userVOList = userModelPageData.getItems();
-        }
-        return userVOList;
+        List<CaUser> userList = userService.listByIdList(idList);
+        return userService.convert2ModelList(userList);
     }
 
     @Override
@@ -330,13 +324,10 @@ public class AlumniServiceImpl implements AlumniService {
         LOGGER.info("查询所有协会审核信息 param:{}", JSON.toJSONString(queryRequest));
         CaAlumniAuditLogExample example = new CaAlumniAuditLogExample();
 
-        example.createCriteria()
-                .andAuditStatusEqualTo(queryRequest.getAuditStatus());
-
         PageHelper.startPage(queryRequest.getPage(), queryRequest.getSize());
-        List<CaAlumniAuditLog> caAlumniAuditLogs = caAlumniAuditLogMapper.selectByExample(example);
+        List<CaAlumniAuditLog> caAlumniAuditLogs = caAlumniAuditLogMapper.selectByNameLike(queryRequest.getName(),
+                queryRequest.getAlumniName(), queryRequest.getAuditStatus());
         PageInfo<CaAlumniAuditLog> pageInfo = new PageInfo<>(caAlumniAuditLogs);
-
         if (CollectionUtils.isEmpty(caAlumniAuditLogs)) {
             return null;
         }
@@ -355,39 +346,18 @@ public class AlumniServiceImpl implements AlumniService {
         }
 
         Map<Integer, UserModel> userModelMap = userVOList.stream()
-                .filter(u -> {
-                    if (StringUtils.isNotBlank(queryRequest.getName()) && StringUtils.isNotBlank(queryRequest.getAlumniName())){
-                        return u.getName().equals(queryRequest.getName()) && u.getAlumniName().equals(queryRequest.getAlumniName());
-                    }
-                    if (StringUtils.isNotBlank(queryRequest.getName())){
-                        return u.getName().equals(queryRequest.getName());
-                    }
-                    if (StringUtils.isNotBlank(queryRequest.getAlumniName())){
-                        return u.getAlumniName().equals(queryRequest.getAlumniName());
-                    }
-                    return Boolean.TRUE;
-                })
                 .collect(Collectors.toMap(UserModel::getId, Function.identity()));
 
         Map<Integer, AlumniModel> alumniModelMap = alumniModelList.stream()
-                .filter(t -> {
-                    if (StringUtils.isNotBlank(queryRequest.getAlumniName())){
-                        return t.getName().equals(queryRequest.getAlumniName());
-                    }
-                    return Boolean.TRUE;
-                })
                 .collect(Collectors.toMap(AlumniModel::getId, Function.identity()));
 
         List<AlumniAuditModel> resultList = caAlumniAuditLogs.stream().map(s -> {
-            if (Objects.isNull(alumniModelMap.get(s.getAlumniId())) || Objects.isNull(userModelMap.get(s.getStudentId()))){
-                return null;
-            }
             AlumniAuditModel alumniAuditModel = new AlumniAuditModel();
             alumniAuditModel.setId(s.getId());
             alumniAuditModel.setAlumniModel(alumniModelMap.get(s.getAlumniId()));
             alumniAuditModel.setUserModel(userModelMap.get(s.getStudentId()));
             return alumniAuditModel;
-        }).collect(Collectors.toList());
+        }).filter(Objects::nonNull).collect(Collectors.toList());
 
         PageData<AlumniAuditModel> userModelPageData = new PageData<>(pageInfo.getTotal(), resultList);
 

@@ -11,15 +11,18 @@ public class UserFeedback {
 
     private Integer status;
 
+    private Integer handlerId;
+
     private Date createTime;
 
     private Date updateTime;
 
-    public UserFeedback(Integer id, Integer userId, String feedbackDesc, Integer status, Date createTime, Date updateTime) {
+    public UserFeedback(Integer id, Integer userId, String feedbackDesc, Integer status, Integer handlerId, Date createTime, Date updateTime) {
         this.id = id;
         this.userId = userId;
         this.feedbackDesc = feedbackDesc;
         this.status = status;
+        this.handlerId = handlerId;
         this.createTime = createTime;
         this.updateTime = updateTime;
     }
@@ -58,6 +61,14 @@ public class UserFeedback {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getHandlerId() {
+        return handlerId;
+    }
+
+    public void setHandlerId(Integer handlerId) {
+        this.handlerId = handlerId;
     }
 
     public Date getCreateTime() {
