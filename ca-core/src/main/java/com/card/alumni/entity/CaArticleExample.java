@@ -545,6 +545,186 @@ public class CaArticleExample {
             return (Criteria) this;
         }
 
+        public Criteria andWeightsIsNull() {
+            addCriterion("weights is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeightsIsNotNull() {
+            addCriterion("weights is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeightsEqualTo(Integer value) {
+            addCriterion("weights =", value, "weights");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeightsNotEqualTo(Integer value) {
+            addCriterion("weights <>", value, "weights");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeightsGreaterThan(Integer value) {
+            addCriterion("weights >", value, "weights");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeightsGreaterThanOrEqualTo(Integer value) {
+            addCriterion("weights >=", value, "weights");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeightsLessThan(Integer value) {
+            addCriterion("weights <", value, "weights");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeightsLessThanOrEqualTo(Integer value) {
+            addCriterion("weights <=", value, "weights");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeightsIn(List<Integer> values) {
+            addCriterion("weights in", values, "weights");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeightsNotIn(List<Integer> values) {
+            addCriterion("weights not in", values, "weights");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeightsBetween(Integer value1, Integer value2) {
+            addCriterion("weights between", value1, value2, "weights");
+            return (Criteria) this;
+        }
+
+        public Criteria andWeightsNotBetween(Integer value1, Integer value2) {
+            addCriterion("weights not between", value1, value2, "weights");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasTopIsNull() {
+            addCriterion("has_top is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasTopIsNotNull() {
+            addCriterion("has_top is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasTopEqualTo(Boolean value) {
+            addCriterion("has_top =", value, "hasTop");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasTopNotEqualTo(Boolean value) {
+            addCriterion("has_top <>", value, "hasTop");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasTopGreaterThan(Boolean value) {
+            addCriterion("has_top >", value, "hasTop");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasTopGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("has_top >=", value, "hasTop");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasTopLessThan(Boolean value) {
+            addCriterion("has_top <", value, "hasTop");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasTopLessThanOrEqualTo(Boolean value) {
+            addCriterion("has_top <=", value, "hasTop");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasTopIn(List<Boolean> values) {
+            addCriterion("has_top in", values, "hasTop");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasTopNotIn(List<Boolean> values) {
+            addCriterion("has_top not in", values, "hasTop");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasTopBetween(Boolean value1, Boolean value2) {
+            addCriterion("has_top between", value1, value2, "hasTop");
+            return (Criteria) this;
+        }
+
+        public Criteria andHasTopNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("has_top not between", value1, value2, "hasTop");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopTimeIsNull() {
+            addCriterion("top_time is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopTimeIsNotNull() {
+            addCriterion("top_time is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopTimeEqualTo(Date value) {
+            addCriterion("top_time =", value, "topTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopTimeNotEqualTo(Date value) {
+            addCriterion("top_time <>", value, "topTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopTimeGreaterThan(Date value) {
+            addCriterion("top_time >", value, "topTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("top_time >=", value, "topTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopTimeLessThan(Date value) {
+            addCriterion("top_time <", value, "topTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopTimeLessThanOrEqualTo(Date value) {
+            addCriterion("top_time <=", value, "topTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopTimeIn(List<Date> values) {
+            addCriterion("top_time in", values, "topTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopTimeNotIn(List<Date> values) {
+            addCriterion("top_time not in", values, "topTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopTimeBetween(Date value1, Date value2) {
+            addCriterion("top_time between", value1, value2, "topTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andTopTimeNotBetween(Date value1, Date value2) {
+            addCriterion("top_time not between", value1, value2, "topTime");
+            return (Criteria) this;
+        }
+
         public Criteria andCreatorIsNull() {
             addCriterion("creator is null");
             return (Criteria) this;

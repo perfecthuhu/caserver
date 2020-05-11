@@ -60,7 +60,12 @@ pagehelper:
   offsetAsPageNum: true #pageNum=offset pageSize=limit
 
 swagger:
-  enable: false
+  enable: true
+  title: ca-portal-web
+  description: 卡片校友门面
+  author: liumingyu
+  version: 1.0.0
+  base-package: com.card.alumni.controller
 
 logging:
   level:

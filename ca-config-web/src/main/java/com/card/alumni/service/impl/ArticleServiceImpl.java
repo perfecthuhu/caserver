@@ -7,6 +7,7 @@ import com.card.alumni.entity.CaArticle;
 import com.card.alumni.entity.CaArticleExample;
 import com.card.alumni.enums.ArticleTypeEnum;
 import com.card.alumni.exception.CaConfigException;
+import com.card.alumni.exception.CaException;
 import com.card.alumni.model.ArticleModel;
 import com.card.alumni.request.ArticleQueryRequest;
 import com.card.alumni.request.ArticleRequest;
@@ -184,7 +185,43 @@ public class ArticleServiceImpl implements ArticleService {
 
         return new PageData<>(pageInfo.getTotal(), convert2ModelList(articleList));
     }
+    @Override
+    public void topping(Integer id) {
+        CaArticle entity = findById(id);
+        if (Objects.isNull(entity) || entity.getIsDelete()) {
+            throw new CaException("当前文章不存在或已被删除");
+        }
+        if (!entity.getIsPublish()) {
+            throw new CaException("未发布不能置顶");
+        }
 
+        entity.setHasTop(Boolean.TRUE);
+        entity.setTopTime(new Date());
+        entity.setUpdater(RequestUtil.getUserId());
+        entity.setUpdateTime(new Date());
+
+        caArticleMapper.updateByPrimaryKeyWithBLOBs(entity);
+    }
+
+    @Override
+    public List<ArticleModel> listTopByRequest(ArticleQueryRequest request) {
+        CaArticleExample example = new CaArticleExample();
+        CaArticleExample.Criteria criteria = example.createCriteria();
+        criteria.andIsDeleteEqualTo(Boolean.FALSE);
+        criteria.andHasTopEqualTo(Boolean.TRUE);
+        criteria.andIsPublishEqualTo(Boolean.TRUE);
+        if (Objects.nonNull(request)) {
+            if (StringUtils.isNotBlank(request.getKeyword())) {
+                criteria.andTitleLike(CaConstants.LIKE + request.getKeyword() + CaConstants.LIKE);
+            }
+            if (Objects.nonNull(request.getType())) {
+                criteria.andTypeEqualTo(request.getType());
+            }
+        }
+        example.setOrderByClause("weights desc");
+        List<CaArticle> entityList = caArticleMapper.selectByExampleWithBLOBs(example);
+        return convert2ModelList(entityList);
+    }
     private void checkParam(ArticleRequest request) throws CaConfigException {
         if (Objects.isNull(request)) {
             throw new CaConfigException("请求不能为空");

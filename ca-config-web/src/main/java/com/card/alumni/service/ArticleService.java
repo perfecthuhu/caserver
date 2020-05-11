@@ -7,6 +7,8 @@ import com.card.alumni.model.ArticleModel;
 import com.card.alumni.request.ArticleQueryRequest;
 import com.card.alumni.request.ArticleRequest;
 
+import java.util.List;
+
 /**
  * @author liumingyu
  * @date 2019-12-10 7:57 PM
@@ -30,4 +32,8 @@ public interface ArticleService {
     ArticleModel findModelById(Integer id) throws CaConfigException;
 
     PageData<ArticleModel> pageByRequest(ArticleQueryRequest request) throws CaConfigException;
+
+    void topping(Integer id);
+
+    List<ArticleModel> listTopByRequest(ArticleQueryRequest request);
 }

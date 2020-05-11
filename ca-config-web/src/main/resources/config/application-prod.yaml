@@ -67,7 +67,12 @@ jwt:
   codeKey: code-key
 
 swagger:
-  enable: false
+  enable: true
+  title: ca-config-web
+  description: 卡片校友配置台
+  author: liumingyu
+  version: 1.0.0
+  base-package: com.card.alumni.controller
 
 logging:
   level:

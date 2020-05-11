@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author liumingyu
@@ -128,4 +129,20 @@ public class ArticleController {
         return UnifiedResult.success(articleService.pageByRequest(request));
     }
 
+    @PutMapping("/{id}/top")
+    @ApiOperation(value = "置顶", notes = "置顶", response = UnifiedResult.class)
+    public UnifiedResult topping(@PathVariable("id") Integer id) throws Exception {
+        LOGGER.info("{} topping article by id. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
+        articleService.topping(id);
+        return UnifiedResult.success();
+    }
+
+    @PostMapping("/top")
+    @ApiOperation(value = "查询置顶的文章列表", notes = "查询置顶的文章列表", response = UnifiedResult.class)
+    public UnifiedResult<List<ArticleModel>> listTopByRequest(@RequestBody ArticleQueryRequest request) throws Exception {
+
+        LOGGER.info("{} list top articles by request. request = {}, operator = {}", LOGGER_PREFIX, request, RequestUtil.getUserId().toString());
+
+        return UnifiedResult.success(articleService.listTopByRequest(request));
+    }
 }

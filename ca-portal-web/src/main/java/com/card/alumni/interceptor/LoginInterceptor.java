@@ -46,7 +46,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         }
         response.setCharacterEncoding("utf-8");
         UserContext userContext = UserContext.getCurrentUser();
-        String path = request.getRequestURI();
+        String path = request.getServletPath();
         LOGGER.info(path);
         if (Objects.isNull(userContext)) {
             userContext = new UserContext();

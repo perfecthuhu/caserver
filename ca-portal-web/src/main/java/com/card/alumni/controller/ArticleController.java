@@ -2,6 +2,8 @@ package com.card.alumni.controller;
 
 import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResult;
+import com.card.alumni.model.ArticleModel;
+import com.card.alumni.request.ArticleQueryRequest;
 import com.card.alumni.service.ArticleService;
 import com.card.alumni.vo.ArticleVO;
 import com.card.alumni.vo.query.ArticleQuery;
@@ -39,6 +41,12 @@ public class ArticleController {
     @ApiOperation(value = "查询首页新闻列表", notes = "查询首页新闻列表")
     public UnifiedResult<Map<Integer, List<ArticleVO>>> queryArticleService() throws Exception {
         return UnifiedResult.success(articleService.queryArticleService());
+    }
+
+    @PostMapping("/top")
+    @ApiOperation(value = "查询置顶的文章列表", notes = "查询置顶的文章列表", response = UnifiedResult.class)
+    public UnifiedResult<List<ArticleModel>> listTopByRequest(@RequestBody ArticleQueryRequest request) throws Exception {
+        return UnifiedResult.success(articleService.listTopByRequest(request));
     }
 
     @PostMapping("/queryPage")

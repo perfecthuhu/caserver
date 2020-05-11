@@ -2,6 +2,8 @@ package com.card.alumni.service;
 
 import com.card.alumni.common.PageData;
 import com.card.alumni.common.UnifiedResponse;
+import com.card.alumni.model.ArticleModel;
+import com.card.alumni.request.ArticleQueryRequest;
 import com.card.alumni.vo.ArticleVO;
 import com.card.alumni.vo.query.ArticleQuery;
 
@@ -33,4 +35,6 @@ public interface ArticleService {
      * @return
      */
     PageData<ArticleVO> queryPage(ArticleQuery articleQuery);
+
+    List<ArticleModel> listTopByRequest(ArticleQueryRequest request);
 }
