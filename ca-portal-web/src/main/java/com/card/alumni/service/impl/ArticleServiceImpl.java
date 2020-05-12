@@ -86,6 +86,10 @@ public class ArticleServiceImpl implements ArticleService {
             criteria.andPublishTimeLessThan(articleQuery.getPublishTimeEnd());
         }
 
+        if (Objects.nonNull(articleQuery.getHasTop())) {
+            criteria.andHasTopEqualTo(articleQuery.getHasTop());
+        }
+
         criteria.andIsPublishEqualTo(true);
 
         return example;

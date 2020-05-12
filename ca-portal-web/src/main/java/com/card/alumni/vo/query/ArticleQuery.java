@@ -25,6 +25,9 @@ public class ArticleQuery extends PageParam {
     @ApiModelProperty(value = "发布人")
     private Integer publisher;
 
+    @ApiModelProperty(value = "是否置顶")
+    private Boolean hasTop;
+
     @ApiModelProperty(value = "发布时间开始")
     private Date publishTimeStart;
 
