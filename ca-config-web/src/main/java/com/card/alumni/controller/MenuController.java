@@ -138,9 +138,12 @@ public class MenuController {
     @GetMapping("/build")
     @ApiOperation(value = "查询当前用户能查看的菜单树", notes = "查询当前用户能查看的菜单树")
     public UnifiedResult<List<MenuModel>> build() throws Exception {
+        LOGGER.info("查询当前用户能查看的菜单树 userId:{}", SecurityUtils.getUserId());
         List<Integer> roleIdList = userService.listRoleIdsByUserId(SecurityUtils.getUserId());
         List<Integer> menuIdList = roleService.listMenuIdsByRoleIdList(roleIdList);
         List<MenuModel> modelList = menuService.listRankModelByIdList(menuIdList);
-        return UnifiedResult.success(menuService.buildMenuTree(modelList));
+        List<MenuModel> menuModels = menuService.buildMenuTree(modelList);
+        LOGGER.info("查询当前用户能查看的菜单树 res:{}", menuModels);
+        return UnifiedResult.success(menuModels);
     }
 }

@@ -57,6 +57,9 @@ public class ArticleServiceImpl implements ArticleService {
 
         article.setIsPublish(Boolean.FALSE);
         article.setIsDelete(Boolean.FALSE);
+        if (Objects.isNull(request.getHasTop())){
+            article.setHasTop(Boolean.FALSE);
+        }
 
         caArticleMapper.insert(article);
 
