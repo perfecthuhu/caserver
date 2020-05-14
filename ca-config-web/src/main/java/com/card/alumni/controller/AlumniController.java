@@ -6,6 +6,7 @@ import com.card.alumni.exception.CaConfigException;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.model.AlumniAuditModel;
 import com.card.alumni.model.AlumniModel;
+import com.card.alumni.model.BatchCheckModel;
 import com.card.alumni.model.UserModel;
 import com.card.alumni.model.enums.AlumniAuditStatusEnum;
 import com.card.alumni.request.AlumniAppointAdminRequest;
@@ -99,6 +100,17 @@ public class AlumniController {
     @ApiOperation(value = "审核通过加入协会（id为待审核记录ID）", notes = "审核通过加入协会")
     public UnifiedResult<Boolean> passAlumni(@PathVariable Integer id) throws Exception {
         return UnifiedResult.success(alumniService.auidtAlumniRecord(id, AlumniAuditStatusEnum.PASS));
+    }
+
+    /**
+     * 审核通过加入协会
+     * @param batchCheckModel
+     * @return
+     */
+    @PostMapping("/audit/batch")
+    @ApiOperation(value = "批量审核或驳回", notes = "批量审核或驳回")
+    public UnifiedResult<Boolean> batchCheck(BatchCheckModel batchCheckModel) throws Exception {
+        return UnifiedResult.success(alumniService.batchCheck(batchCheckModel));
     }
 
     /**

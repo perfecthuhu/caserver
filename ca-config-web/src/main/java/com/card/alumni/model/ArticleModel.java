@@ -34,6 +34,12 @@ public class ArticleModel implements Serializable {
     @ApiModelProperty(value = "是否发布")
     private Boolean isPublish;
 
+    @ApiModelProperty(value = "是否置顶")
+    private Boolean hasTop;
+
+    @ApiModelProperty(value = "权重")
+    private Integer weights;
+
     @ApiModelProperty(value = "发布人")
     private Integer publisher;
 

@@ -35,5 +35,7 @@ public interface ArticleService {
 
     void topping(Integer id);
 
+    void unpin(Integer id);
+
     List<ArticleModel> listTopByRequest(ArticleQueryRequest request);
 }

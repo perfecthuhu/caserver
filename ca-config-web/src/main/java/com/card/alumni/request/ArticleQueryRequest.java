@@ -25,4 +25,7 @@ public class ArticleQueryRequest extends BaseQueryRequest {
 
     @ApiModelProperty(value = "是否发布")
     private Boolean isPublish;
+
+    @ApiModelProperty(value = "是否置顶")
+    private Boolean hasTop = Boolean.FALSE;
 }

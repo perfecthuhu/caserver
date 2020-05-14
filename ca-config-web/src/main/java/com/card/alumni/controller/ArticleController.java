@@ -137,6 +137,14 @@ public class ArticleController {
         return UnifiedResult.success();
     }
 
+    @PutMapping("/{id}/unpin")
+    @ApiOperation(value = "取消置顶", notes = "取消置顶", response = UnifiedResult.class)
+    public UnifiedResult unpin(@PathVariable("id") Integer id) throws Exception {
+        LOGGER.info("{} unpin article by id. id = {}, operator = {}", LOGGER_PREFIX, id, RequestUtil.getUserId().toString());
+        articleService.unpin(id);
+        return UnifiedResult.success();
+    }
+
     @PostMapping("/top")
     @ApiOperation(value = "查询置顶的文章列表", notes = "查询置顶的文章列表", response = UnifiedResult.class)
     public UnifiedResult<List<ArticleModel>> listTopByRequest(@RequestBody ArticleQueryRequest request) throws Exception {

@@ -120,8 +120,20 @@ public class AlumniServiceImpl implements AlumniService {
         alumniVO.setLeader(userMap.get(3) == null ? null : userMap.get(0).get(0));
         alumniVO.setAdminVO(userMap.get(2));
         alumniVO.setUserVOList(userMap.get(1));
+        populateRelation(alumniVO);
         LOGGER.info("查询协会细节 result:{}", alumniVO);
         return alumniVO;
+    }
+
+
+    private void populateRelation(AlumniVO alumniVO) {
+        if (Objects.isNull(alumniVO)) {
+            return;
+        }
+        CaAlumniAuditLog alumniAuditLog = findAlumniAuditByAlumniIdAndUserId(alumniVO.getId(), RequestUtil.getUserId(), null);
+        if (Objects.nonNull(alumniAuditLog)) {
+            alumniVO.setRelation(alumniAuditLog.getAuditStatus());
+        }
     }
 
     public Map<Integer, List<UserVO>> queryAllAlumniPerson(Integer id) {

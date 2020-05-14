@@ -172,6 +172,7 @@ public class ArticleServiceImpl implements ArticleService {
         CaArticleExample example = new CaArticleExample();
         CaArticleExample.Criteria criteria = example.createCriteria();
         criteria.andIsDeleteEqualTo(Boolean.FALSE);
+        criteria.andHasTopEqualTo(request.getHasTop());
         if (StringUtils.isNotBlank(request.getKeyword())) {
             criteria.andTitleLike(CaConstants.LIKE + request.getKeyword() + CaConstants.LIKE);
         }
@@ -200,6 +201,25 @@ public class ArticleServiceImpl implements ArticleService {
 
         entity.setHasTop(Boolean.TRUE);
         entity.setTopTime(new Date());
+        entity.setUpdater(RequestUtil.getUserId());
+        entity.setUpdateTime(new Date());
+
+        caArticleMapper.updateByPrimaryKeyWithBLOBs(entity);
+    }
+
+    @Override
+    public void unpin(Integer id) {
+        CaArticle entity = findById(id);
+        if (Objects.isNull(entity) || entity.getIsDelete()) {
+            throw new CaException("当前文章不存在或已被删除");
+        }
+
+        if (!entity.getHasTop()) {
+            return;
+        }
+
+        entity.setHasTop(Boolean.FALSE);
+        entity.setTopTime(null);
         entity.setUpdater(RequestUtil.getUserId());
         entity.setUpdateTime(new Date());
 
@@ -263,6 +283,8 @@ public class ArticleServiceImpl implements ArticleService {
         model.setTitle(article.getTitle());
         model.setSubTitle(article.getSubTitle());
         model.setContent(article.getContent());
+        model.setHasTop(article.getHasTop());
+        model.setWeights(article.getWeights());
         model.setIsPublish(article.getIsPublish());
         model.setPublisher(article.getPublisher());
         model.setPublishTime(article.getPublishTime());

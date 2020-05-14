@@ -11,6 +11,7 @@ import com.card.alumni.exception.CaConfigException;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.model.AlumniAuditModel;
 import com.card.alumni.model.AlumniModel;
+import com.card.alumni.model.BatchCheckModel;
 import com.card.alumni.model.UserModel;
 import com.card.alumni.model.enums.AlumniAuditStatusEnum;
 import com.card.alumni.model.enums.AlumniRoleEnum;
@@ -22,6 +23,7 @@ import com.card.alumni.service.UserService;
 import com.card.alumni.utils.RequestUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -391,6 +393,29 @@ public class AlumniServiceImpl implements AlumniService {
                 .andStudentIdEqualTo(id)
                 .andAlumniIdEqualTo(alumniId);
         caAlumniRoleMapper.deleteByExample(example);
+        return true;
+    }
+
+    @Override
+    public Boolean batchCheck(BatchCheckModel model) {
+        Preconditions.checkArgument(Objects.nonNull(model), "req is null");
+        Preconditions.checkArgument(org.apache.commons.collections.CollectionUtils.isNotEmpty(model.getIdList()), "idList is null");
+        Integer auditStatus = model.getAuditStatus();
+        Preconditions.checkArgument(Objects.nonNull(auditStatus), "auditStatus is null");
+        Preconditions.checkArgument(Objects.nonNull(AlumniAuditStatusEnum.getEnum(auditStatus)), "auditStatus is illegal");
+        model.getIdList().forEach(alumniId -> {
+            CaAlumniAuditLog caAlumniAuditLog = caAlumniAuditLogMapper.selectByPrimaryKey(alumniId);
+            if (!AlumniAuditStatusEnum.APPLY.getCode().equals(caAlumniAuditLog.getAuditStatus())) {
+                throw new CaConfigException("审核失败");
+            }
+            CaAlumniAuditLog alumniAuditLog = new CaAlumniAuditLog();
+            alumniAuditLog.setId(alumniId);
+            alumniAuditLog.setAuditStatus(auditStatus);
+            int count = caAlumniAuditLogMapper.updateByPrimaryKeySelective(alumniAuditLog);
+            if (count != 1) {
+                throw new CaConfigException("审核失败");
+            }
+        });
         return true;
     }
 

@@ -238,6 +238,9 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isNotBlank(request.getPhone())) {
             criteria.andPhoneEqualTo(request.getPhone());
         }
+        if (StringUtils.isNotBlank(request.getName())) {
+            criteria.andNameEqualTo(request.getName());
+        }
         if (StringUtils.isNotBlank(request.getKeyword())) {
             criteria.andNameLike(CaConstants.LIKE + request.getKeyword() + CaConstants.LIKE);
         }

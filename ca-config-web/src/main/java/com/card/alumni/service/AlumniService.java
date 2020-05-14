@@ -5,6 +5,7 @@ import com.card.alumni.exception.CaConfigException;
 import com.card.alumni.exception.CaException;
 import com.card.alumni.model.AlumniAuditModel;
 import com.card.alumni.model.AlumniModel;
+import com.card.alumni.model.BatchCheckModel;
 import com.card.alumni.model.UserModel;
 import com.card.alumni.model.enums.AlumniAuditStatusEnum;
 import com.card.alumni.request.AlumniRequest;
@@ -94,4 +95,6 @@ public interface AlumniService {
      * @return
      */
     Boolean exitAlumni(Integer alumniId, Integer id, AlumniAuditStatusEnum exit);
+
+    Boolean batchCheck(BatchCheckModel model);
 }
