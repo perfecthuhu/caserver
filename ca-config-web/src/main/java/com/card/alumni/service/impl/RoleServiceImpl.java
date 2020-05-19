@@ -354,8 +354,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void batchSaveUserRoleRel(Integer id, List<Integer> userIdList) {
+        delUserRoleRel(id);
         if (CollectionUtils.isEmpty(userIdList)) {
-            delUserRoleRel(id);
             return;
         }
 

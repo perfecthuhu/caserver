@@ -243,7 +243,9 @@ public class AlumniServiceImpl implements AlumniService {
         CaAlumniAuditLogExample.Criteria criteria = example.createCriteria();
         criteria.andAlumniIdEqualTo(alumniId);
         criteria.andStudentIdEqualTo(userId);
-        criteria.andAuditStatusEqualTo(statusEnum.getCode());
+        if (Objects.nonNull(statusEnum)){
+            criteria.andAuditStatusEqualTo(statusEnum.getCode());
+        }
         List<CaAlumniAuditLog> alumniAuditLogs = caAlumniAuditLogMapper.selectByExample(example);
         return CollectionUtils.isEmpty(alumniAuditLogs) ? null : alumniAuditLogs.get(0);
     }

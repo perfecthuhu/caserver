@@ -254,7 +254,7 @@ public class UserServiceImpl implements UserService {
             criteria.andSexEqualTo(request.getSex());
         }
         if (Objects.nonNull(request.getClassId())) {
-            criteria.andIdEqualTo(request.getClassId());
+            criteria.andClassIdEqualTo(request.getClassId());
         }
         if (Objects.nonNull(request.getCollegeId())) {
             criteria.andCollegeIdEqualTo(request.getCollegeId());
