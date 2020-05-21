@@ -20,7 +20,11 @@ public enum ArticleTypeEnum {
     /**
      * 新闻类型
      */
-    NEWS(2, "新闻");
+    NEWS(2, "新闻"),
+    /**
+     * 招聘类型
+     */
+    ADVERTISEMENT(3, "招聘");
 
     private int code;
 

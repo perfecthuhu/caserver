@@ -79,3 +79,8 @@ logging:
     cn.code.chameleon: error
     org.springframework.web: error
   config: classpath:log/log4j2.xml
+
+qiniu:
+  ACCESS_KEY: QCD7SK9ep1JmmGDFQm2cr4PddkKVHVodtMFa9P9A
+  SECRET_KEY: EdOOpUTsU9TXKw3GNGQX3NCBjrP6H_WYB_OZhdM5
+  bucket: caoos

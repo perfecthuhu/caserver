@@ -92,7 +92,7 @@ public class AlumniServiceImpl implements AlumniService {
             if (Objects.isNull(caAlumniAuditLog)) {
                 caAlumniAuditLogMap.put(s.getAlumniId(), s);
             } else {
-                if (s.getCreateTime().compareTo(caAlumniAuditLog.getCreateTime()) == 1) {
+                if (s.getCreateTime().compareTo(caAlumniAuditLog.getCreateTime()) > 0) {
                     caAlumniAuditLogMap.put(s.getAlumniId(), s);
                 }
             }

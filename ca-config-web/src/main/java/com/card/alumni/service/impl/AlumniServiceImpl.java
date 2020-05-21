@@ -176,6 +176,7 @@ public class AlumniServiceImpl implements AlumniService {
     }
 
     @Override
+    @Transactional
     public Boolean auidtAlumniRecord(Integer alumniId, AlumniAuditStatusEnum status) throws CaException {
 
         CaAlumniAuditLog caAlumniAuditLog = caAlumniAuditLogMapper.selectByPrimaryKey(alumniId);
@@ -186,6 +187,9 @@ public class AlumniServiceImpl implements AlumniService {
         alumniAuditLog.setId(alumniId);
         alumniAuditLog.setAuditStatus(status.getCode());
         int count = caAlumniAuditLogMapper.updateByPrimaryKeySelective(alumniAuditLog);
+        if (AlumniAuditStatusEnum.PASS.equals(status)){
+            insertAlumniRole(caAlumniAuditLog);
+        }
         if (count != 1) {
             throw new CaConfigException("审核失败");
         }

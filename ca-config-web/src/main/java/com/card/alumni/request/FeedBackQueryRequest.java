@@ -21,6 +21,9 @@ public class FeedBackQueryRequest extends BaseQueryRequest implements Serializab
     @ApiModelProperty(value = "用户ID")
     private Integer userId;
 
+    @ApiModelProperty(value = "用户名")
+    private String userName;
+
     @ApiModelProperty(value = "状态1，未处理0已处理")
     private Integer status;
 

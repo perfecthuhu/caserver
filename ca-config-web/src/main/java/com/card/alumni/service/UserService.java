@@ -29,6 +29,8 @@ public interface UserService {
 
     CaUser findById(Integer id) throws CaConfigException;
 
+    List<CaUser> findByName(String userName) throws CaConfigException;
+
     CaUser findByPhone(String phone) throws CaConfigException;
 
     UserModel findModelById(Integer id) throws CaConfigException;

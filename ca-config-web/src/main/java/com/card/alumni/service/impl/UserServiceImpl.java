@@ -148,6 +148,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<CaUser> findByName(String userName) throws CaConfigException {
+        if (StringUtils.isBlank(userName)) {
+            throw new CaConfigException("用户名不能为空");
+        }
+        CaUserExample example = new CaUserExample();
+        CaUserExample.Criteria criteria = example.createCriteria();
+        criteria.andNameEqualTo(userName);
+        return caUserMapper.selectByExample(example);
+    }
+
+    @Override
     public CaUser findByPhone(String phone) throws CaConfigException {
         if (StringUtils.isBlank(phone)) {
             throw new CaConfigException("手机号不能为空");

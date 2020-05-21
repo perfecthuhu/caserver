@@ -54,9 +54,16 @@ public class FeedBackServiceImpl implements FeedBackService {
         int size = Objects.isNull(request.getSize()) ? 20 : request.getSize();
         String orderField = StringUtils.isBlank(request.getOrderField()) ? "create_time" : request.getOrderField();
         String orderType = StringUtils.isBlank(request.getOrderType()) ? "desc" : request.getOrderType();
-
+        List<CaUser> userList = null;
+        if (StringUtils.isNoneEmpty(request.getUserName())){
+            userList = userService.findByName(request.getUserName());
+        }
         PageHelper.startPage(page, size);
-        UserFeedbackExample example = buildUserFeedbackExample(request);
+        List<Integer> userIds = null;
+        if (CollectionUtils.isNotEmpty(userList)){
+            userIds = userList.stream().map(CaUser::getId).collect(Collectors.toList());
+        }
+        UserFeedbackExample example = buildUserFeedbackExample(request, userIds);
         example.setOrderByClause(orderField + CaConstants.BLANK + orderType);
 
         List<UserFeedback> userFeedbacks = userFeedbackMapper.selectByExample(example);
@@ -185,7 +192,7 @@ public class FeedBackServiceImpl implements FeedBackService {
         return feedBackModel;
     }
 
-    private UserFeedbackExample buildUserFeedbackExample(FeedBackQueryRequest feedBackRequest) {
+    private UserFeedbackExample buildUserFeedbackExample(FeedBackQueryRequest feedBackRequest, List<Integer> userIds) {
         UserFeedbackExample example = new UserFeedbackExample();
         UserFeedbackExample.Criteria criteria = example.createCriteria();
         if (Objects.isNull(feedBackRequest)) {
@@ -194,7 +201,9 @@ public class FeedBackServiceImpl implements FeedBackService {
         if (Objects.nonNull(feedBackRequest.getStatus())) {
             criteria.andStatusEqualTo(feedBackRequest.getStatus());
         }
-
+        if (CollectionUtils.isNotEmpty(userIds)){
+            criteria.andUserIdIn(userIds);
+        }
         return example;
     }
 }

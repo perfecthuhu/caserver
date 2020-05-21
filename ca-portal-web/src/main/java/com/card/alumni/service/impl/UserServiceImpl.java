@@ -14,6 +14,7 @@ import com.card.alumni.exception.CaException;
 import com.card.alumni.model.SimpleUserModel;
 import com.card.alumni.request.FeedbackRequest;
 import com.card.alumni.request.UserSchoolAlumniRequest;
+import com.card.alumni.service.AlumniService;
 import com.card.alumni.service.UserLocalService;
 import com.card.alumni.service.UserService;
 import com.card.alumni.utils.EncryptUtils;
@@ -69,6 +70,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private CaAlumniRoleMapper caAlumniRoleMapper;
+
+    @Resource
+    private AlumniService alumniService;
 
     @Override
     public CaUser login(UserVO userVO, String verificatioCode) throws Exception {
