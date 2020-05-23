@@ -438,8 +438,10 @@ public class UserServiceImpl implements UserService {
 
     private List<Integer> populateUserTag(Integer userId) throws CaConfigException {
         CaUserTag userTag = userTagService.findByUserId(userId);
-
         List<Integer> userTagIdList = Lists.newArrayList();
+        if (Objects.isNull(userTag)) {
+            return userTagIdList;
+        }
 
         if (StatusEnum.YES.getCode().equals(userTag.getGirlFriend())) {
             userTagIdList.add(UserTagEnum.GIRL_FRIEND.getCode());
