@@ -2522,6 +2522,11 @@ public class CaUserExample {
             return (Criteria) this;
         }
 
+        public Criteria andUpdaterEqualTo(String value) {
+            addCriterion("updater =", value, "updater");
+            return (Criteria) this;
+        }
+
         public Criteria andPhotoListEqualTo(String value) {
             addCriterion("photo_list =", value, "photoList");
             return (Criteria) this;

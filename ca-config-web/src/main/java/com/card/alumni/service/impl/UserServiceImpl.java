@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
         }
         CaUser user = convert(request);
         user.setUpdateTime(new Date());
-
+        user.setUpdater(RequestUtil.getUserId());
         caUserMapper.updateByPrimaryKeySelective(user);
 
         userTagService.update(convert2CaUserTag(user.getId(), request));

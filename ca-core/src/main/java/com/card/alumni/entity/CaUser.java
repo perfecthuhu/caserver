@@ -76,8 +76,9 @@ public class CaUser {
     private Date pwdLastResetTime;
 
     private String photoList;
+    private Integer updater;
 
-    public CaUser(Integer id, String phone, String name, String namePy, String idCard, Integer sex, String professional, Integer education, String acceptAnceDate, String graduateDate, Date birthday, Integer status, String secondTel, String qq, String wx, String email, String address, Integer classId, String className, Integer collegeId, String collegeName, Integer facultyId, String facultyName, String photoImg, String workUnit, String duty, Integer alumniId, String alumniName, String signature, Integer schoolId, String schoolName, Date createTime, Date updateTime, Integer yn, String pwd, Date pwdLastResetTime, String photoList) {
+    public CaUser(Integer id, String phone, String name, String namePy, String idCard, Integer sex, String professional, Integer education, String acceptAnceDate, String graduateDate, Date birthday, Integer status, String secondTel, String qq, String wx, String email, String address, Integer classId, String className, Integer collegeId, String collegeName, Integer facultyId, String facultyName, String photoImg, String workUnit, String duty, Integer alumniId, String alumniName, String signature, Integer schoolId, String schoolName, Date createTime, Date updateTime, Integer yn, String pwd, Date pwdLastResetTime, String photoList, Integer updater) {
         this.id = id;
         this.phone = phone;
         this.name = name;
@@ -115,6 +116,7 @@ public class CaUser {
         this.pwd = pwd;
         this.pwdLastResetTime = pwdLastResetTime;
         this.photoList = photoList;
+        this.updater = updater;
     }
 
     public CaUser() {
@@ -415,5 +417,13 @@ public class CaUser {
 
     public void setPhotoList(String photoList) {
         this.photoList = photoList == null ? null : photoList.trim();
+    }
+
+    public Integer getUpdater() {
+        return updater;
+    }
+
+    public void setUpdater(Integer updater) {
+        this.updater = updater;
     }
 }

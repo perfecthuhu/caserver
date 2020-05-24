@@ -40,6 +40,7 @@
       <arg column="pwd" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="pwd_last_reset_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="photo_list" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="updater" jdbcType="INTEGER" javaType="java.lang.Integer" />
     </constructor>
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -105,7 +106,7 @@
     graduate_date, birthday, status, second_tel, qq, wx, email, address, class_id, class_name, 
     college_id, college_name, faculty_id, faculty_name, photo_img, work_unit, duty, alumni_id, 
     alumni_name, signature, school_id, school_name, create_time, update_time, yn, pwd, 
-    pwd_last_reset_time, photo_list
+    pwd_last_reset_time, photo_list,updater
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.card.alumni.entity.CaUserExample" >
     select
@@ -151,7 +152,7 @@
       alumni_name, signature, school_id, 
       school_name, create_time, update_time, 
       yn, pwd, pwd_last_reset_time, 
-      photo_list)
+      photo_list,updater)
     values (#{id,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{namePy,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, 
       #{professional,jdbcType=VARCHAR}, #{education,jdbcType=INTEGER}, #{acceptAnceDate,jdbcType=VARCHAR}, 
@@ -164,7 +165,7 @@
       #{alumniName,jdbcType=VARCHAR}, #{signature,jdbcType=VARCHAR}, #{schoolId,jdbcType=INTEGER}, 
       #{schoolName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{yn,jdbcType=INTEGER}, #{pwd,jdbcType=VARCHAR}, #{pwdLastResetTime,jdbcType=TIMESTAMP}, 
-      #{photoList,jdbcType=VARCHAR})
+      #{photoList,jdbcType=VARCHAR},#{updater,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.card.alumni.entity.CaUser" useGeneratedKeys="true" keyProperty="id" >
     insert into ca_user
@@ -280,6 +281,9 @@
       <if test="photoList != null" >
         photo_list,
       </if>
+      <if test="updater != null" >
+        updater,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -392,6 +396,9 @@
       </if>
       <if test="photoList != null" >
         #{photoList,jdbcType=VARCHAR},
+      </if>
+      <if test="updater != null" >
+        #{updater,jdbcType=INTEGER}
       </if>
     </trim>
   </insert>
@@ -515,6 +522,9 @@
       <if test="record.photoList != null" >
         photo_list = #{record.photoList,jdbcType=VARCHAR},
       </if>
+      <if test="record.updater != null" >
+        updater = #{record.updater,jdbcType=INTEGER}
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -559,6 +569,7 @@
       pwd = #{record.pwd,jdbcType=VARCHAR},
       pwd_last_reset_time = #{record.pwdLastResetTime,jdbcType=TIMESTAMP},
       photo_list = #{record.photoList,jdbcType=VARCHAR}
+      updater = #{record.updater,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -674,6 +685,9 @@
       <if test="photoList != null" >
         photo_list = #{photoList,jdbcType=VARCHAR},
       </if>
+      <if test="updater != null" >
+        updater = #{updater,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -715,6 +729,7 @@
       pwd = #{pwd,jdbcType=VARCHAR},
       pwd_last_reset_time = #{pwdLastResetTime,jdbcType=TIMESTAMP},
       photo_list = #{photoList,jdbcType=VARCHAR}
+      updater = #{updater,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
