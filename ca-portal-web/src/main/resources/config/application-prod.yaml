@@ -7,7 +7,7 @@ spring:
       driver-class-name: com.mysql.jdbc.Driver
       url: jdbc:mysql://39.101.173.52:3306/ca?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&serverTimezone=Asia/Shanghai
       username: caserver
-      password: bhnd%$..ivhs
+      password: bhnd%$22234235252521..i3dfgadfsdsvh3434323s
       initialSize: 1
       minIdle: 3
       maxActive: 20
