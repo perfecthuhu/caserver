@@ -95,7 +95,7 @@ public class AlumniController {
 
     @PostMapping("/school")
     @ApiOperation(value = "查询学校组织校友会成员接口", notes = "查询学校组织校友会成员接口")
-    public UnifiedResult<PageData<UserVO>> querySchoolAlumni(@RequestBody UserSchoolAlumniRequest request) {
+    public UnifiedResult<List<UserVO>> querySchoolAlumni(@RequestBody UserSchoolAlumniRequest request) {
         return UnifiedResult.success(userService.querySchoolAlumni(request));
     }
 

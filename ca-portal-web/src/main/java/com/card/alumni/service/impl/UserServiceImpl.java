@@ -42,6 +42,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -449,16 +450,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageData<UserVO> querySchoolAlumni(UserSchoolAlumniRequest request) {
-        CaUserExample example = buildCaUserExample(request.getAlumniId(), request.getType());
-
-        PageHelper.startPage(request.getPage(), request.getSize());
-        List<CaUser> caUsers = caUserMapper.selectByExample(example);
-        PageInfo<CaUser> pageInfo = new PageInfo<>(caUsers);
-
-        PageData<UserVO> userVOPageData = new PageData<>(pageInfo.getTotal(), convertUserVOList(caUsers));
-
-        return userVOPageData;
+    public List<UserVO> querySchoolAlumni(UserSchoolAlumniRequest request) {
+        Map<Integer, List<UserVO>> map = alumniService.queryAllAlumniPerson(request.getAlumniId());
+        return map.get(1);
     }
 
     private CaUserExample buildCaUserExample(Integer alumniId, Integer type) {

@@ -110,5 +110,5 @@ public interface UserService {
      * @param request
      * @return
      */
-    PageData<UserVO> querySchoolAlumni(UserSchoolAlumniRequest request);
+    List<UserVO> querySchoolAlumni(UserSchoolAlumniRequest request);
 }

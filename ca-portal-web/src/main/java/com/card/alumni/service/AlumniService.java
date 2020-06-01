@@ -56,4 +56,11 @@ public interface AlumniService {
      */
     List<AlumniVO> queryMyAlumni(Integer userId);
 
+    /**
+     * 查询所有协会成功
+     * @param id
+     * @return
+     */
+    Map<Integer, List<UserVO>> queryAllAlumniPerson(Integer id);
+
 }
