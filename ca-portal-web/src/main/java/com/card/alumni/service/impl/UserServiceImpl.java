@@ -253,6 +253,14 @@ public class UserServiceImpl implements UserService {
         return userVOPageData;
     }
 
+    @Override
+    public List<UserVO> queryUserList(UserQuery userQuery) {
+        LOGGER.info("查询用户列表 param:{}", JSON.toJSONString(userQuery));
+        List<CaUser> caUsers = caUserMapper.selectByExample(buildCaUserExample(userQuery));
+        LOGGER.info("查询用户列表 param:{}", JSON.toJSONString(caUsers));
+        return convertUserVOList(caUsers);
+    }
+
     private List<UserVO> convertUserVOList(List<CaUser> caUsers) {
         if (CollectionUtils.isEmpty(caUsers)) {
             return Lists.newArrayList();

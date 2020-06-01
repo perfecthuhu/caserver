@@ -11,6 +11,7 @@ import com.card.alumni.vo.AlumniVO;
 import com.card.alumni.vo.UserVO;
 import com.card.alumni.vo.enums.AlumniAuditStatusEnum;
 import com.card.alumni.vo.query.AlumniQuery;
+import com.google.api.client.util.Lists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -95,8 +96,12 @@ public class AlumniController {
 
     @PostMapping("/school")
     @ApiOperation(value = "查询学校组织校友会成员接口", notes = "查询学校组织校友会成员接口")
-    public UnifiedResult<List<UserVO>> querySchoolAlumni(@RequestBody UserSchoolAlumniRequest request) {
-        return UnifiedResult.success(userService.querySchoolAlumni(request));
+    public UnifiedResult<PageData<UserVO>> querySchoolAlumni(@RequestBody UserSchoolAlumniRequest request) {
+        if (request.getPage() != 1){
+            return UnifiedResult.success(new PageData(0, Lists.newArrayList()));
+        }
+        List<UserVO> userVOS = userService.querySchoolAlumni(request);
+        return UnifiedResult.success(new PageData(userVOS.size(), userVOS));
     }
 
 }

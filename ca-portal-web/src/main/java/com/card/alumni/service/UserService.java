@@ -53,6 +53,14 @@ public interface UserService {
     PageData<UserVO> queryUserVO(UserQuery userQuery);
 
     /**
+     * 查询用户信息
+     *
+     * @param userQuery
+     * @return
+     */
+    List<UserVO> queryUserList(UserQuery userQuery);
+
+    /**
      * 手机号查询用户信息
      *
      * @param phone

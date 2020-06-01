@@ -161,12 +161,7 @@ public class AlumniServiceImpl implements AlumniService {
     private List<UserVO> queryByIdList(List<Integer> idList) {
         UserQuery userQuery = new UserQuery();
         userQuery.setIdList(idList);
-        PageData<UserVO> userVOPageData = userService.queryUserVO(userQuery);
-        List<UserVO> userVOList = null;
-        if (Objects.nonNull(userVOPageData)) {
-            userVOList = userVOPageData.getItems();
-        }
-        return userVOList;
+        return userService.queryUserList(userQuery);
     }
 
 
